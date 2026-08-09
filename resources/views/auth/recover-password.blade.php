@@ -3,7 +3,7 @@
 @section('title', 'Recuperar Senha')
 @section('content')
 
-    <form action="{{ route('auth.new-password') }}" class="w-72.5 md:w-80">
+    <form action="{{ route('new-password') }}" class="w-72.5 md:w-80">
         <h1 class="mb-8 text-[2rem] font-medium md:text-[2.5rem]">Recuperar Senha</h1>
 
         <x-login.login-input label="E-mail" type="email">
@@ -17,7 +17,7 @@
             Se o e-mail informado estiver cadastrado, você receberá um link para criar uma nova senha.
         </x-login.login-span>
 
-        <a href="{{ route("auth.login") }}"
+        <a href="{{ route("login") }}"
             class="mb-8 block text-right text-base font-medium text-[#8590AD] transition duration-500 hover:text-[#ef5b97]">Acessar
             o sistema</a>
 

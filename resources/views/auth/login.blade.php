@@ -3,7 +3,7 @@
 @section('title', 'Entrar')
 @section('content')
 
-    <form action="" class="w-72.5 md:w-80">
+    <form action="{{ route('home') }}" class="w-72.5 md:w-80">
         <h1 class="mb-8 text-[2rem] font-medium md:text-[2.5rem]">Seja Bem-vindo!</h1>
 
         <x-login.login-input label="Usuário">
@@ -18,7 +18,7 @@
             </x-slot:icon>
         </x-login.login-input>
 
-        <a href="{{ route("recover.password") }}"
+        <a href="{{ route("recover-password") }}"
             class="mb-8 block text-right text-base font-medium text-[#8590AD] transition duration-500 hover:text-[#ef5b97]">Esqueceu
             a Senha?</a>
 
