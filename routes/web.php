@@ -112,7 +112,7 @@ Route::get('/beneficiarias', function () {
         [
             'label' => 'Beneficiárias ativas',
             'value' => '4',
-            'context' => 'Acompanhamento em andamento',
+            'context' => 'Beneficiárias com acompanhamento ativo',
             'trend' => '+2',
             'trendType' => 'up',
             'icon' => 'users',
@@ -121,7 +121,7 @@ Route::get('/beneficiarias', function () {
         [
             'label' => 'Total cadastrado',
             'value' => '6',
-            'context' => 'Histórico completo da base',
+            'context' => 'Beneficiárias cadastradas no sistema',
             'trend' => '+12%',
             'trendType' => 'up',
             'icon' => 'badge-check',
@@ -170,7 +170,7 @@ Route::get('/beneficiarias', function () {
                     [
                         'icon' => 'eye',
                         'route' => route('beneficiaries.show', preg_replace('/\D/', '', $beneficiary['cpf'])),
-                        'title' => 'Editar',
+                        'title' => 'Visualizar',
                     ],
                     [
                         'icon' => 'trash-2',

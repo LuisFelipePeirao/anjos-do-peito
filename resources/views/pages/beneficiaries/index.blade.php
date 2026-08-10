@@ -24,6 +24,7 @@
                     :value="$kpi['value']"
                     :tone="$kpi['tone']"
                     :icon="$kpi['icon']"
+                    :context="$kpi['context']"
                 />
             @endforeach
         </div>

@@ -50,6 +50,12 @@
 
 .app-shell[data-sidebar-collapsed='true'] .sidebar-link {
     justify-content: center;
+    gap: 0;
+    width: 3.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .app-shell[data-sidebar-collapsed='true'] .sidebar-user {
@@ -60,6 +66,15 @@
     justify-content: center;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-brand {
+    flex: 0 0 0;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-collapse-button {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .app-shell[data-sidebar-collapsed='true'] .sidebar-logo {
@@ -84,6 +99,30 @@
     .app-sidebar {
         width: 16rem;
         transform: translateX(-100%);
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-text,
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-brand {
+        width: auto;
+        opacity: 1;
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-brand {
+        flex: 1 1 0%;
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-logo {
+        display: flex;
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-link {
+        justify-content: flex-start;
+        gap: 0.75rem;
+        width: auto;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
     }
 
     .app-shell[data-mobile-sidebar-open='true'] .app-sidebar {

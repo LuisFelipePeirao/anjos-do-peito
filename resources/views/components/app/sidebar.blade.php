@@ -24,7 +24,7 @@
 
         <div class="sidebar-brand min-w-0 flex-1">
             <strong class="block truncate text-sm font-semibold text-[#111827]">Anjos do Peito</strong>
-            <span class="block truncate text-xs text-[#667085]">Sistema administrativo</span>
+            {{-- <span class="block truncate text-xs text-[#667085]">Sistema administrativo</span> --}}
         </div>
 
         <button

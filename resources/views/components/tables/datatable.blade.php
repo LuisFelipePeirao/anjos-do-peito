@@ -35,9 +35,12 @@
                             <x-lucide-filter class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
                             <select
                                 name="{{ $filter['name'] }}"
-                                class="h-11 w-full appearance-none rounded-[8px] border border-[#e4d8d9] bg-white pl-10 pr-9 text-sm font-medium text-[#111827] outline-none transition focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]">
+                                class="h-11 w-full appearance-none rounded-[8px] border border-[#e4d8d9] bg-white pl-10 pr-9 text-sm font-medium text-[#111827] outline-none transition focus:border-[#ef5b97] hover:cursor-pointer focus:outline-none focus:ring-3 focus:ring-[#fdecef]">
                                 @foreach (($filter['options'] ?? []) as $option)
-                                    <option value="{{ $option['value'] }}" @selected(($filter['value'] ?? null) === $option['value'])>
+                                    <option
+                                        value="{{ $option['value'] }}"
+                                        class="bg-white px-4 py-2 text-sm font-medium text-[#111827] hover:bg-[#fdecef] hover:text-[#9f4053] checked:bg-[#fdecef] checked:text-[#9f4053]"
+                                        @selected(($filter['value'] ?? null) === $option['value'])>
                                         {{ $option['label'] }}
                                     </option>
                                 @endforeach
@@ -47,7 +50,7 @@
 
                     <button
                         type="submit"
-                        class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#252f3f]">
+                        class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#252f3f] hover:cursor-pointer focus:outline-none focus:ring-3 focus:ring-[#fdecef]">
                         Aplicar filtros
                     </button>
                 </div>
@@ -109,7 +112,7 @@
                                     [
                                         'icon' => 'eye',
                                         'route' => $actions['view'] ?? '#',
-                                        'title' => 'Editar',
+                                        'title' => 'Visualizar',
                                         'variant' => 'default',
                                     ],
                                     [
@@ -130,7 +133,7 @@
                                             $actionRoute = $action['route'] ?? '#';
                                             $actionTitle = $action['title'] ?? 'Ação';
                                             $actionClass = ($action['variant'] ?? 'default') === 'danger'
-                                                ? 'inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#667085] transition hover:bg-[#fff1f1] hover:text-[#c2414b]'
+                                                ? 'inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1] hover:text-[#c2414b]'
                                                 : 'inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]';
                                         @endphp
 
