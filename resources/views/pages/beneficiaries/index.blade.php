@@ -13,7 +13,7 @@
             description="Consulte, filtre e acompanhe os cadastros das mães atendidas pela ONG."
             :firstButton="[
                 'label' => 'Nova beneficiária',
-                'link' => '#nova-beneficiaria',
+                'link' => route('beneficiaries.create'),
                 'icon' => 'plus',
             ]" />
 

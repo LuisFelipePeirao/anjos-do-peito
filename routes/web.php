@@ -196,6 +196,10 @@ Route::get('/beneficiarias', function () {
     ]);
 })->name('beneficiaries.index');
 
+Route::get('/beneficiarias/nova', function () {
+    return view('pages.beneficiaries.create');
+})->name('beneficiaries.create');
+
 Route::get('/beneficiarias/{cpf}', function (string $cpf) {
     $beneficiary = [
         'name' => 'Maria da Silva',
@@ -217,8 +221,8 @@ Route::get('/beneficiarias/{cpf}', function (string $cpf) {
     ];
 
     $attendances = [
-        ['date' => '08/08/2026', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial na ONG', 'summary' => 'Orientações sobre amamentação e pega correta', 'return' => '20/08/2026', '_actions' => ['view' => '#']],
-        ['date' => '29/07/2026', 'professional' => 'Camila Rocha', 'modality' => 'Presencial na ONG', 'summary' => 'Avaliação de ganho de peso do bebê', 'return' => '-', '_actions' => ['view' => '#']],
+        ['date' => '08/08/2026', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'summary' => 'Orientações sobre amamentação e pega correta', 'return' => '20/08/2026', '_actions' => ['view' => '#']],
+        ['date' => '29/07/2026', 'professional' => 'Camila Rocha', 'modality' => 'Presencial', 'summary' => 'Avaliação de ganho de peso do bebê', 'return' => '-', '_actions' => ['view' => '#']],
     ];
 
     $pumps = [
@@ -261,3 +265,225 @@ Route::get('/beneficiarias/{cpf}', function (string $cpf) {
         'cpf'
     ));
 })->name('beneficiaries.show');
+
+Route::get('/atendimentos', function () {
+    $kpis = [
+        [
+            'label' => 'Atendimentos no mês',
+            'value' => '42',
+            'context' => 'Registros realizados em agosto',
+            'trend' => '+18,4%',
+            'trendType' => 'up',
+            'icon' => 'clipboard-list',
+            'tone' => 'rose',
+        ],
+        [
+            'label' => 'Agendados',
+            'value' => '12',
+            'context' => 'Atendimentos futuros confirmados',
+            'trend' => '+4',
+            'trendType' => 'up',
+            'icon' => 'calendar-days',
+            'tone' => 'blue',
+        ],
+        [
+            'label' => 'Retornos pendentes',
+            'value' => '5',
+            'context' => 'Casos aguardando novo contato',
+            'trend' => '+2',
+            'trendType' => 'down',
+            'icon' => 'clock',
+            'tone' => 'amber',
+        ],
+        [
+            'label' => 'Realizados hoje',
+            'value' => '3',
+            'context' => 'Atendimentos concluídos em 10/08',
+            'trend' => null,
+            'trendType' => 'up',
+            'icon' => 'circle-check',
+            'tone' => 'green',
+        ],
+    ];
+
+    $attendances = [
+        ['date' => '10/08/2026', 'time' => '14:30', 'beneficiary' => 'Maria da Silva', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Agendado', 'summary' => 'Orientações sobre amamentação'],
+        ['date' => '10/08/2026', 'time' => '09:15', 'beneficiary' => 'Ana Souza', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Realizado', 'summary' => 'Retorno sobre ganho de peso'],
+        ['date' => '09/08/2026', 'time' => '16:00', 'beneficiary' => 'Juliana Martins', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Retorno pendente', 'summary' => 'Avaliação de pega correta'],
+        ['date' => '08/08/2026', 'time' => '13:40', 'beneficiary' => 'Patrícia Lima', 'professional' => 'Mariana Fernandes', 'modality' => 'Presencial', 'status' => 'Realizado', 'summary' => 'Entrega de itens e orientação'],
+        ['date' => '07/08/2026', 'time' => '10:20', 'beneficiary' => 'Camila Rocha', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Cancelado', 'summary' => 'Beneficiária solicitou reagendamento'],
+        ['date' => '06/08/2026', 'time' => '15:10', 'beneficiary' => 'Renata Alves', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Realizado', 'summary' => 'Acompanhamento puerperal'],
+    ];
+
+    $search = trim((string) request('q', ''));
+    $status = request('status', 'all');
+    $modality = request('modality', 'all');
+
+    $filteredAttendances = collect($attendances)
+        ->when($status !== 'all', fn ($items) => $items->where('status', $status))
+        ->when($modality !== 'all', fn ($items) => $items->where('modality', $modality))
+        ->when($search !== '', function ($items) use ($search) {
+            $lowerSearch = mb_strtolower($search);
+
+            return $items->filter(function ($attendance) use ($lowerSearch) {
+                return str_contains(mb_strtolower($attendance['beneficiary']), $lowerSearch)
+                    || str_contains(mb_strtolower($attendance['professional']), $lowerSearch)
+                    || str_contains(mb_strtolower($attendance['summary']), $lowerSearch);
+            });
+        })
+        ->map(function ($attendance, $index) {
+            $attendance['_id'] = $index + 1;
+            $attendance['_actions'] = [
+                'items' => [
+                    [
+                        'icon' => 'eye',
+                        'route' => route('attendances.show', $index + 1),
+                        'title' => 'Visualizar',
+                    ],
+                    [
+                        'icon' => 'pencil',
+                        'route' => route('attendances.edit', $index + 1),
+                        'title' => 'Editar',
+                    ],
+                    [
+                        'icon' => 'trash-2',
+                        'route' => '#',
+                        'title' => 'Excluir',
+                        'variant' => 'danger',
+                    ],
+                ],
+            ];
+
+            return $attendance;
+        })
+        ->values()
+        ->all();
+
+    return view('pages.attendances.index', [
+        'attendances' => $filteredAttendances,
+        'search' => $search,
+        'status' => $status,
+        'modality' => $modality,
+        'kpis' => $kpis,
+    ]);
+})->name('attendances.index');
+
+Route::get('/atendimentos/novo', function () {
+    $attendanceData = [
+        'id' => null,
+        'beneficiary' => '',
+        'professional' => '',
+        'date' => '',
+        'time' => '',
+        'duration' => '45',
+        'status' => 'Agendado',
+        'modality' => 'Presencial',
+        'location' => '',
+        'return_date' => '',
+        'priority' => 'Média',
+        'summary' => '',
+        'objective' => '',
+        'complaint' => '',
+        'evaluation' => '',
+        'conduct' => '',
+        'referral' => '',
+        'notes' => '',
+    ];
+
+    return view('pages.attendances.form', [
+        'mode' => 'create',
+        'attendanceData' => $attendanceData,
+        'beneficiaries' => ['Maria da Silva', 'Ana Souza', 'Juliana Martins', 'Patrícia Lima', 'Renata Alves'],
+        'professionals' => ['Fernanda Souza', 'Camila Rocha', 'Mariana Fernandes'],
+        'locations' => ['Hospital Azambuja', 'Domiciliar', 'Google Meet', 'Teleatendimento'],
+    ]);
+})->name('attendances.create');
+
+Route::get('/atendimentos/{attendance}/editar', function (string $attendance) {
+    $attendanceData = [
+        'id' => $attendance,
+        'beneficiary' => 'Maria da Silva',
+        'professional' => 'Fernanda Souza',
+        'date' => '2026-08-10',
+        'time' => '14:30',
+        'duration' => '45',
+        'status' => 'Agendado',
+        'modality' => 'Presencial',
+        'location' => 'Domiciliar',
+        'return_date' => '2026-08-20',
+        'priority' => 'Média',
+        'summary' => 'Orientações sobre amamentação e pega correta.',
+        'objective' => 'Avaliar a amamentação, orientar manejo de dor e definir necessidade de retorno.',
+        'complaint' => 'Dor durante a mamada e insegurança sobre pega correta.',
+        'evaluation' => 'Bebê ativo, mãe orientada e com boa resposta às correções de posicionamento.',
+        'conduct' => 'Foi reforçada a posição confortável da mãe, sinais de pega efetiva e livre demanda.',
+        'referral' => 'Retorno agendado para acompanhamento do ganho de peso.',
+        'notes' => 'Confirmar presença por telefone no dia anterior.',
+    ];
+
+    return view('pages.attendances.form', [
+        'mode' => 'edit',
+        'attendanceData' => $attendanceData,
+        'beneficiaries' => ['Maria da Silva', 'Ana Souza', 'Juliana Martins', 'Patrícia Lima', 'Renata Alves'],
+        'professionals' => ['Fernanda Souza', 'Camila Rocha', 'Mariana Fernandes'],
+        'locations' => ['Hospital Azambuja', 'Domiciliar', 'Google Meet', 'Teleatendimento'],
+    ]);
+})->name('attendances.edit');
+
+Route::get('/atendimentos/{attendance}', function (string $attendance) {
+    $attendanceData = [
+        'id' => $attendance,
+        'date' => '10/08/2026',
+        'time' => '14:30',
+        'status' => 'Agendado',
+        'modality' => 'Presencial',
+        'beneficiary' => 'Maria da Silva',
+        'beneficiary_initials' => 'Md',
+        'cpf' => '123.456.789-00',
+        'phone' => '(47) 99999-1234',
+        'baby_name' => 'Lucas',
+        'professional' => 'Fernanda Souza',
+        'registered_by' => 'Mariana Fernandes',
+        'location' => 'Domiciliar',
+        'return_date' => '20/08/2026',
+        'summary' => 'Orientações sobre amamentação e pega correta.',
+        'objective' => 'Avaliar a amamentação, orientar manejo de dor e definir necessidade de retorno.',
+        'conduct' => 'Foi reforçada a posição confortável da mãe, sinais de pega efetiva e livre demanda. Retorno agendado para acompanhamento do ganho de peso.',
+    ];
+
+    $kpis = [
+        ['label' => 'Duração prevista', 'value' => '45 min', 'context' => 'Janela reservada na agenda', 'trend' => null, 'trendType' => 'up', 'icon' => 'clock', 'tone' => 'rose'],
+        ['label' => 'Retorno previsto', 'value' => '20/08', 'context' => 'Próximo acompanhamento', 'trend' => null, 'trendType' => 'up', 'icon' => 'calendar-days', 'tone' => 'blue'],
+        ['label' => 'Atendimentos da beneficiária', 'value' => '6', 'context' => 'Histórico acumulado', 'trend' => '+1', 'trendType' => 'up', 'icon' => 'clipboard-list', 'tone' => 'green'],
+        ['label' => 'Prioridade', 'value' => 'Média', 'context' => 'Sem alerta crítico no momento', 'trend' => null, 'trendType' => 'down', 'icon' => 'triangle-alert', 'tone' => 'amber'],
+    ];
+
+    $evolution = [
+        ['item' => 'Queixa principal', 'description' => 'Dor durante a mamada e insegurança sobre pega correta.', 'responsible' => 'Fernanda Souza'],
+        ['item' => 'Avaliação', 'description' => 'Bebê ativo, mãe orientada e com boa resposta às correções de posicionamento.', 'responsible' => 'Fernanda Souza'],
+        ['item' => 'Conduta', 'description' => 'Manter livre demanda, observar sinais de saciedade e retornar em 10 dias.', 'responsible' => 'Fernanda Souza'],
+    ];
+
+    $referrals = [
+        ['date' => '10/08/2026', 'type' => 'Retorno agendado', 'description' => 'Acompanhar ganho de peso e adaptação da pega.', 'status' => 'Agendado'],
+        ['date' => '10/08/2026', 'type' => 'Material educativo', 'description' => 'Orientações impressas sobre posições de amamentação.', 'status' => 'Realizado'],
+    ];
+
+    $history = [
+        ['date' => '10/08/2026', 'type' => 'Atendimento agendado', 'description' => 'Atendimento registrado na agenda da equipe.', 'responsible' => 'Mariana Fernandes', 'icon' => 'calendar-days'],
+        ['date' => '09/08/2026', 'type' => 'Contato confirmado', 'description' => 'Beneficiária confirmou presença por telefone.', 'responsible' => 'Camila Rocha', 'icon' => 'phone'],
+        ['date' => '08/08/2026', 'type' => 'Triagem atualizada', 'description' => 'Caso marcado para orientação de amamentação.', 'responsible' => 'Fernanda Souza', 'icon' => 'clipboard-list'],
+    ];
+
+    $tab = request('tab', 'overview');
+
+    return view('pages.attendances.show', compact(
+        'attendance',
+        'attendanceData',
+        'kpis',
+        'evolution',
+        'referrals',
+        'history',
+        'tab'
+    ));
+})->name('attendances.show');

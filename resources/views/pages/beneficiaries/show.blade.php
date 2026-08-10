@@ -124,8 +124,8 @@
                         @php
                             $icon = 'lucide-' . $info['icon'];
                         @endphp
-                        <div class="rounded-[8px] border border-[#eadfe0] p-4">
-                            <div class="flex items-start gap-3">
+                        <div class="flex h-full flex-col rounded-[8px] border border-[#eadfe0] p-4">
+                            <div class="flex items-start gap-3 pb-4">
                                 <x-dynamic-component :component="$icon" class="mt-0.5 h-4 w-4 shrink-0 text-[#bf5d6f]" />
                                 <div class="min-w-0">
                                     <p class="font-semibold text-[#111827]">{{ $info['title'] }}</p>
@@ -133,7 +133,7 @@
                                     <p class="mt-2 text-xs text-[#667085]">{{ $info['meta'] }}</p>
                                 </div>
                             </div>
-                            <a href="{{ $info['link'] }}" class="mt-4 inline-flex h-10 w-full items-center justify-center rounded-[8px] border border-[#e4d8d9] text-sm font-semibold text-[#111827] transition hover:bg-[#fbf1f3]">
+                            <a href="{{ $info['link'] }}" class="mt-auto inline-flex h-10 w-full items-center justify-center rounded-[8px] border border-[#e4d8d9] text-sm font-semibold text-[#111827] transition hover:bg-[#fbf1f3]">
                                 {{ $info['button'] }}
                             </a>
                         </div>

@@ -6,7 +6,7 @@
     $items = [
         ['label' => 'Início', 'route' => 'home', 'icon' => 'layout-dashboard'],
         ['label' => 'Beneficiárias', 'route' => 'beneficiaries.index', 'icon' => 'users'],
-        ['label' => 'Atendimentos', 'route' => null, 'icon' => 'clipboard-list'],
+        ['label' => 'Atendimentos', 'route' => 'attendances.index', 'icon' => 'clipboard-list'],
         ['label' => 'Bombas de leite', 'route' => null, 'icon' => 'wrench'],
         ['label' => 'Doações e estoque', 'route' => null, 'icon' => 'package'],
         ['label' => 'Relatórios', 'route' => null, 'icon' => 'chart-column'],
@@ -19,7 +19,7 @@
     aria-label="Menu principal">
     <div class="flex h-16 items-center gap-3 border-b border-[#eadfe0] px-5">
         <div class="sidebar-logo flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fdecef] text-[#ef5b97]">
-            <img src="assets/img/logo_ong.png" alt="Logo" class="h-10 w-10" />
+            <img src="{{ asset('assets/img/logo_ong.png') }}" alt="Logo" class="h-10 w-10" />
         </div>
 
         <div class="sidebar-brand min-w-0 flex-1">

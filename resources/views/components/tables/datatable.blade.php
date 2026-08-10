@@ -95,8 +95,17 @@
                                     @endif
                                 </th>
                             @elseif ($key === 'status')
+                                @php
+                                    $statusClass = match ($value) {
+                                        'Ativa', 'Realizado' => 'bg-[#e8f8ee] text-[#23845a]',
+                                        'Agendado' => 'bg-[#eef4ff] text-[#2f66d0]',
+                                        'Retorno pendente', 'Em atraso' => 'bg-[#fff7e6] text-[#b76b00]',
+                                        'Cancelado', 'Inativa' => 'bg-[#fff1f1] text-[#c2414b]',
+                                        default => 'bg-[#f2f4f7] text-[#667085]',
+                                    };
+                                @endphp
                                 <td class="px-5 py-4">
-                                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $value === 'Ativa' ? 'bg-[#e8f8ee] text-[#23845a]' : 'bg-[#f2f4f7] text-[#667085]' }}">
+                                    <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClass }}">
                                         {{ $value }}
                                     </span>
                                 </td>
