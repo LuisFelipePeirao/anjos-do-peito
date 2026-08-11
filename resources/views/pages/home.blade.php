@@ -13,12 +13,12 @@
             description="Indicadores de atendimento, estoque e pontos de atenção para hoje, {{ date('d/m/Y') }}."
             :firstButton="[
                 'label' => 'Novo atendimento',
-                'link' => '#',
+                'link' => route('attendances.create'),
                 'icon' => 'clipboard-list',
             ]"
             :secondButton="[
                 'label' => 'Nova beneficiária',
-                'link' => '#',
+                'link' => route('beneficiaries.create'),
                 'icon' => 'users',
             ]"
         />

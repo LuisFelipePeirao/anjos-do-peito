@@ -7,9 +7,9 @@
         ['label' => 'Início', 'route' => 'home', 'icon' => 'layout-dashboard'],
         ['label' => 'Beneficiárias', 'route' => 'beneficiaries.index', 'icon' => 'users'],
         ['label' => 'Atendimentos', 'route' => 'attendances.index', 'icon' => 'clipboard-list'],
-        ['label' => 'Bombas de leite', 'route' => null, 'icon' => 'wrench'],
-        ['label' => 'Doações e estoque', 'route' => null, 'icon' => 'package'],
-        ['label' => 'Relatórios', 'route' => null, 'icon' => 'chart-column'],
+        ['label' => 'Bombas de leite', 'route' => 'pumps.index', 'icon' => 'milk'],
+        ['label' => 'Doações e estoque', 'route' => 'donations.index', 'icon' => 'package'],
+        ['label' => 'Relatórios', 'route' => 'reports.index', 'icon' => 'chart-column'],
     ];
 @endphp
 
@@ -29,7 +29,7 @@
 
         <button
             type="button"
-            class="sidebar-collapse-button hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#f7edef] hover:text-[#ef5b97] md:inline-flex"
+            class="sidebar-collapse-button hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#f7edef] hover:text-[#ef5b97] md:inline-flex hover:cursor-pointer"
             data-sidebar-collapse
             aria-label="Recolher menu"
             aria-expanded="true">

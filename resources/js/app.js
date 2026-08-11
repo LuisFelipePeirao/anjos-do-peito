@@ -41,3 +41,26 @@ if (shell) {
         link.addEventListener('click', () => setMobileSidebar(false));
     });
 }
+
+const pumpContractTypes = document.querySelectorAll('[data-pump-contract-type]');
+const pumpBillingSection = document.querySelector('[data-pump-billing-section]');
+
+if (pumpContractTypes.length && pumpBillingSection) {
+    const pumpBillingFields = pumpBillingSection.querySelectorAll('[data-pump-billing-field]');
+
+    const syncPumpBillingSection = () => {
+        const selectedType = document.querySelector('[data-pump-contract-type]:checked')?.value;
+        const isRental = selectedType === 'aluguel';
+
+        pumpBillingSection.classList.toggle('hidden', !isRental);
+        pumpBillingFields.forEach((field) => {
+            field.disabled = !isRental;
+        });
+    };
+
+    pumpContractTypes.forEach((input) => {
+        input.addEventListener('change', syncPumpBillingSection);
+    });
+
+    syncPumpBillingSection();
+}
