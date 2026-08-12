@@ -4,7 +4,7 @@
     'data',
 ])
 
-<article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+<article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
     <h3 class="text-lg font-bold text-[#111827]">{{ $title }}</h3>
     <p class="mt-1 text-sm text-[#667085]">{{ $description }}</p>
 
@@ -13,7 +13,7 @@
             <div class="flex gap-3">
                 <div class="flex flex-col items-center">
                     <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#bf5d6f]">
-                        <x-lucide-activity class="h-4 w-4" />
+                        <x-gmdi-timeline-o class="h-4 w-4" />
                     </span>
                     @if (!$loop->last)
                         <span class="mt-2 h-full min-h-8 w-px bg-[#eadfe0]"></span>

@@ -7,10 +7,10 @@
 
 @php
     $reportKpis = [
-        ['label' => 'Renovações no prazo', 'value' => '67%', 'context' => 'Contratos renovados antes do vencimento', 'trend' => '+8%', 'trendType' => 'up', 'icon' => 'refresh-cw', 'tone' => 'green'],
-        ['label' => 'Aluguéis em aberto', 'value' => 'R$ 110,00', 'context' => '1 mensalidade a receber no período', 'trend' => '-22%', 'trendType' => 'up', 'icon' => 'wallet', 'tone' => 'amber'],
-        ['label' => 'Retornos concluídos', 'value' => '86%', 'context' => 'Acompanhamentos finalizados no período', 'trend' => '+11%', 'trendType' => 'up', 'icon' => 'check-circle-2', 'tone' => 'blue'],
-        ['label' => 'Cobertura de estoque', 'value' => '12 dias', 'context' => 'Estimativa pelos itens de maior saída', 'trend' => '-4 dias', 'trendType' => 'down', 'icon' => 'package-check', 'tone' => 'rose'],
+        ['label' => 'Renovações no prazo', 'value' => '67%', 'context' => 'Contratos renovados antes do vencimento', 'trend' => '+8%', 'trendType' => 'up', 'icon' => 'autorenew', 'tone' => 'green'],
+        ['label' => 'Aluguéis em aberto', 'value' => 'R$ 110,00', 'context' => '1 mensalidade a receber no período', 'trend' => '-22%', 'trendType' => 'up', 'icon' => 'attach-money', 'tone' => 'amber'],
+        ['label' => 'Retornos concluídos', 'value' => '86%', 'context' => 'Acompanhamentos finalizados no período', 'trend' => '+11%', 'trendType' => 'up', 'icon' => 'check', 'tone' => 'blue'],
+        ['label' => 'Cobertura de estoque', 'value' => '12 dias', 'context' => 'Estimativa pelos itens de maior saída', 'trend' => '-4 dias', 'trendType' => 'down', 'icon' => 'inventory-o', 'tone' => 'rose'],
     ];
 
     $pumpOverview = [
@@ -67,7 +67,7 @@
                 'icon' => 'download',
             ]" />
 
-        <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+        <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
             <form action="{{ route('reports.index') }}" method="GET" class="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(180px,0.8fr)_minmax(180px,0.8fr)_minmax(220px,1fr)_minmax(220px,1fr)_auto]">
                 <label class="block">
                     <span class="mb-1.5 block text-xs font-semibold uppercase text-[#667085]">Início do período</span>
@@ -77,7 +77,7 @@
                             type="date"
                             name="start_date"
                             value="{{ $startDate }}"
-                            class="h-11 w-full rounded-[8px] border border-[#e4d8d9] bg-white pl-10 pr-3 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]" />
+                            class="h-11 w-full rounded-lg border border-[#e4d8d9] bg-white pl-10 pr-3 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]" />
                     </span>
                 </label>
 
@@ -89,14 +89,14 @@
                             type="date"
                             name="end_date"
                             value="{{ $endDate }}"
-                            class="h-11 w-full rounded-[8px] border border-[#e4d8d9] bg-white pl-10 pr-3 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]" />
+                            class="h-11 w-full rounded-lg border border-[#e4d8d9] bg-white pl-10 pr-3 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]" />
                     </span>
                 </label>
 
                 <label class="relative block xl:mt-5">
                     <span class="sr-only">Seção</span>
                     <x-lucide-filter class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
-                    <select name="section" class="h-11 w-full appearance-none rounded-[8px] border border-[#e4d8d9] bg-white pl-10 pr-9 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]">
+                    <select name="section" class="h-11 w-full appearance-none rounded-lg border border-[#e4d8d9] bg-white pl-10 pr-9 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]">
                         <option value="all" @selected($section === 'all')>Todas as seções</option>
                         <option value="pumps" @selected($section === 'pumps')>Bombas de leite</option>
                         <option value="attendances" @selected($section === 'attendances')>Atendimentos</option>
@@ -107,7 +107,7 @@
                 <label class="relative block xl:mt-5">
                     <span class="sr-only">Unidade</span>
                     <x-lucide-map-pin class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
-                    <select name="location" class="h-11 w-full appearance-none rounded-[8px] border border-[#e4d8d9] bg-white pl-10 pr-9 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]">
+                    <select name="location" class="h-11 w-full appearance-none rounded-lg border border-[#e4d8d9] bg-white pl-10 pr-9 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]">
                         <option value="all" @selected($location === 'all')>Todas as unidades</option>
                         <option value="ong" @selected($location === 'ong')>ONG</option>
                         <option value="home" @selected($location === 'home')>Domiciliar</option>
@@ -115,7 +115,7 @@
                     </select>
                 </label>
 
-                <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#252f3f] xl:mt-5">
+                <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#252f3f] xl:mt-5">
                     <x-lucide-filter class="h-4 w-4" />
                     Aplicar filtros
                 </button>
@@ -145,7 +145,7 @@
 
                 <div class="grid gap-4 md:grid-cols-3">
                     @foreach ($pumpOverview as $item)
-                        <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+                        <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                             <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $item['tone'] }}">{{ $item['label'] }}</span>
                             <p class="mt-4 text-3xl font-bold text-[#111827]">{{ $item['value'] }}</p>
                             <p class="mt-2 text-sm leading-6 text-[#667085]">{{ $item['description'] }}</p>
@@ -160,7 +160,7 @@
                         :data="$pumpContractChart"
                     />
 
-                    <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+                    <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                         <div class="border-b border-[#f0e7e8] pb-5">
                             <h3 class="text-lg font-bold text-[#111827]">Prazos de renovação</h3>
                             <p class="mt-1 text-sm text-[#667085]">Bombas com datas de expiração e próxima renovação.</p>
@@ -177,7 +177,7 @@
                                     };
                                 @endphp
 
-                                <div class="rounded-[8px] border border-[#f0e7e8] p-4">
+                                <div class="rounded-lg border border-[#f0e7e8] p-4">
                                     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
                                             <p class="text-base font-bold text-[#111827]">{{ $loan['pump'] }} · {{ $loan['type'] }}</p>
@@ -188,11 +188,11 @@
                                         </span>
                                     </div>
                                     <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                                        <div class="rounded-[8px] bg-[#fbfaf9] px-3 py-2">
+                                        <div class="rounded-lg bg-[#fbfaf9] px-3 py-2">
                                             <p class="text-[11px] font-semibold uppercase text-[#667085]">Expiração</p>
                                             <p class="mt-1 text-sm font-semibold text-[#111827]">{{ $loan['expires_at'] }}</p>
                                         </div>
-                                        <div class="rounded-[8px] bg-[#fbfaf9] px-3 py-2">
+                                        <div class="rounded-lg bg-[#fbfaf9] px-3 py-2">
                                             <p class="text-[11px] font-semibold uppercase text-[#667085]">Renovação</p>
                                             <p class="mt-1 text-sm font-semibold text-[#111827]">{{ $loan['renewal_at'] }}</p>
                                         </div>
@@ -232,7 +232,7 @@
             <section class="space-y-4">
                 <div>
                     <h3 class="text-xl font-bold text-[#111827]">Doações e estoque</h3>
-                    <p class="mt-1 text-sm text-[#667085]">Leitura de cobertura, necessidade futura e origem das doações, complementar ao saldo resumido da Home.</p>
+                    <p class="mt-1 text-sm text-[#667085]">Leitura de cobertura, necessidade futura e origem das doações.</p>
                 </div>
 
                 <div class="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
@@ -242,7 +242,7 @@
                         :data="$stockCoverageChart"
                     />
 
-                    <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+                    <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                         <div class="border-b border-[#f0e7e8] pb-5">
                             <h3 class="text-lg font-bold text-[#111827]">Origem das doações</h3>
                             <p class="mt-1 text-sm text-[#667085]">Entradas recentes agrupadas por campanha ou recorrência.</p>
@@ -256,7 +256,7 @@
                                         : 'bg-[#fff7e6] text-[#b76b00]';
                                 @endphp
 
-                                <div class="rounded-[8px] border border-[#f0e7e8] p-4">
+                                <div class="rounded-lg border border-[#f0e7e8] p-4">
                                     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
                                             <p class="text-base font-bold text-[#111827]">{{ $source['source'] }}</p>
@@ -267,11 +267,11 @@
                                         </span>
                                     </div>
                                     <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                                        <div class="rounded-[8px] bg-[#fbfaf9] px-3 py-2">
+                                        <div class="rounded-lg bg-[#fbfaf9] px-3 py-2">
                                             <p class="text-[11px] font-semibold uppercase text-[#667085]">Entradas</p>
                                             <p class="mt-1 text-sm font-semibold text-[#111827]">{{ $source['entries'] }}</p>
                                         </div>
-                                        <div class="rounded-[8px] bg-[#fbfaf9] px-3 py-2">
+                                        <div class="rounded-lg bg-[#fbfaf9] px-3 py-2">
                                             <p class="text-[11px] font-semibold uppercase text-[#667085]">Itens</p>
                                             <p class="mt-1 text-sm font-semibold text-[#111827]">{{ $source['items'] }}</p>
                                         </div>

@@ -34,32 +34,32 @@
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                     <x-lucide-hand-heart class="h-4 w-4" />
                     Registrar distribuição
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-gift class="h-4 w-4" />
                     Registrar entrada
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-pencil class="h-4 w-4" />
                     Editar
                 </a>
             </div>
         </div>
 
-        <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+        <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
             <div class="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]">
                 <div class="flex items-start gap-4">
                     <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#fdecef] text-[#8f4050]">
-                        <x-lucide-package class="h-7 w-7" />
+                        <x-gmdi-inventory-2-o class="h-7 w-7" />
                     </div>
                     <div>
                         <div class="flex flex-wrap items-center gap-3">
                             <h3 class="text-xl font-bold text-[#111827]">{{ $stockItem['description'] }}</h3>
                             <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClass }}">
-                                <x-lucide-circle-check class="h-3.5 w-3.5" />
+                                <x-gmdi-check class="h-3.5 w-3.5" />
                                 {{ $stockItem['status'] }}
                             </span>
                         </div>
@@ -115,9 +115,9 @@
                 @endforeach
             </div>
 
-            <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="flex items-start gap-3">
-                    <x-lucide-triangle-alert class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
+                    <x-gmdi-report-problem-o class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
                     <div>
                         <h3 class="text-lg font-bold text-[#111827]">Prioridade de distribuição</h3>
                         <p class="mt-2 text-sm leading-6 text-[#667085]">
@@ -139,7 +139,7 @@
                 :show-actions="false"
             />
         @elseif ($tab === 'history')
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <h3 class="text-lg font-bold text-[#111827]">Histórico do material</h3>
                     <p class="mt-1 text-sm text-[#667085]">Eventos relevantes de estoque e distribuição.</p>
@@ -148,7 +148,7 @@
                 <div class="space-y-5 p-5">
                     @foreach ($history as $event)
                         @php
-                            $icon = 'lucide-' . $event['icon'];
+                            $icon = 'gmdi-' . $event['icon'];
                         @endphp
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">

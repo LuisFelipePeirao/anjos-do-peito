@@ -8,11 +8,11 @@
 
 @php
     if (isset($firstButton['icon'])) {
-        $firstButton['icon'] = 'lucide-' . $firstButton['icon'];
+        $firstButton['icon'] = 'gmdi-' . $firstButton['icon'];
     }
 
     if (isset($secondButton['icon'])) {
-        $secondButton['icon'] = 'lucide-' . $secondButton['icon'];
+        $secondButton['icon'] = 'gmdi-' . $secondButton['icon'];
     }
 @endphp
 
@@ -27,14 +27,14 @@
 
     <div class="flex flex-col gap-3 sm:flex-row">
         <a href="{{ $firstButton['link'] }}"
-            class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#ef5b97] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+            class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
             <x-dynamic-component :component="$firstButton['icon']" class="h-4 w-4" />
             {{ $firstButton['label'] }}
         </a>
 
         @if ($secondButton)
             <a href="{{ $secondButton['link'] }}"
-                class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                 <x-dynamic-component :component="$secondButton['icon']" class="h-5 w-5" />
                 {{ $secondButton['label'] }}
             </a>

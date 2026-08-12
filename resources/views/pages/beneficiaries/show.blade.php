@@ -24,23 +24,23 @@
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                     Novo atendimento
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="#" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     Registrar entrega
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="#" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     Novo empréstimo
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-pencil class="h-4 w-4" />
                     Editar cadastro
                 </a>
             </div>
         </div>
 
-        <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+        <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
             <div class="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]">
                 <div class="flex items-start gap-4">
                     <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#fdecef] text-xl font-bold text-[#8f4050]">
@@ -113,7 +113,7 @@
                 @endforeach
             </div>
 
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <h3 class="text-lg font-bold text-[#111827]">Informações recentes</h3>
                     <p class="mt-1 text-sm text-[#667085]">Resumo integrado dos três módulos.</p>
@@ -122,9 +122,9 @@
                 <div class="grid gap-4 p-5 lg:grid-cols-3">
                     @foreach ($recentInfo as $info)
                         @php
-                            $icon = 'lucide-' . $info['icon'];
+                            $icon = 'gmdi-' . $info['icon'];
                         @endphp
-                        <div class="flex h-full flex-col rounded-[8px] border border-[#eadfe0] p-4">
+                        <div class="flex h-full flex-col rounded-lg border border-[#eadfe0] p-4">
                             <div class="flex items-start gap-3 pb-4">
                                 <x-dynamic-component :component="$icon" class="mt-0.5 h-4 w-4 shrink-0 text-[#bf5d6f]" />
                                 <div class="min-w-0">
@@ -158,7 +158,7 @@
                 :show-actions="false"
             />
         @elseif ($tab === 'history')
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <h3 class="text-lg font-bold text-[#111827]">Histórico integrado</h3>
                     <p class="mt-1 text-sm text-[#667085]">Todas as interações da beneficiária com a ONG, em ordem cronológica.</p>
@@ -167,7 +167,7 @@
                 <div class="space-y-5 p-5">
                     @foreach ($history as $item)
                         @php
-                            $icon = 'lucide-' . $item['icon'];
+                            $icon = 'gmdi-' . $item['icon'];
                         @endphp
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">

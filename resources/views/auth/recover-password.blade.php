@@ -8,7 +8,7 @@
 
         <x-login.login-input label="E-mail" type="email">
             <x-slot:icon>
-                <x-lucide-mail />
+                <x-gmdi-mail-o />
             </x-slot:icon>
         </x-login.login-input>
 

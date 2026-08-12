@@ -4,12 +4,12 @@
 
 @php
     $items = [
-        ['label' => 'Início', 'route' => 'home', 'icon' => 'layout-dashboard'],
-        ['label' => 'Beneficiárias', 'route' => 'beneficiaries.index', 'icon' => 'users'],
-        ['label' => 'Atendimentos', 'route' => 'attendances.index', 'icon' => 'clipboard-list'],
-        ['label' => 'Bombas de leite', 'route' => 'pumps.index', 'icon' => 'milk'],
-        ['label' => 'Doações e estoque', 'route' => 'donations.index', 'icon' => 'package'],
-        ['label' => 'Relatórios', 'route' => 'reports.index', 'icon' => 'chart-column'],
+        ['label' => 'Início', 'route' => 'home', 'icon' => 'gmdi-dashboard-o'],
+        ['label' => 'Beneficiárias', 'route' => 'beneficiaries.index', 'icon' => 'gmdi-people-o'],
+        ['label' => 'Atendimentos', 'route' => 'attendances.index', 'icon' => 'gmdi-content-paste-o'],
+        ['label' => 'Bombas de leite', 'route' => 'pumps.index', 'icon' => 'lucide-milk'],
+        ['label' => 'Doações e estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
+        ['label' => 'Relatórios', 'route' => 'reports.index', 'icon' => 'gmdi-bar-chart-o'],
     ];
 @endphp
 
@@ -43,14 +43,13 @@
             @php
                 $isActive = $active === $item['route'] || ($item['route'] && request()->routeIs($item['route']));
                 $href = $item['route'] ? route($item['route']) : '#';
-                $icon = 'lucide-' . $item['icon'];
             @endphp
 
             <a
                 href="{{ $href }}"
                 class="sidebar-link {{ $isActive ? 'is-active' : '' }} flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]"
                 title="{{ $item['label'] }}">
-                <x-dynamic-component :component="$icon" class="h-5 w-5 shrink-0" />
+                <x-dynamic-component :component="$item['icon']" class="h-5 w-5 shrink-0" />
                 <span class="sidebar-text truncate">{{ $item['label'] }}</span>
             </a>
         @endforeach

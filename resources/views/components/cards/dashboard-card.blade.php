@@ -20,17 +20,17 @@
         'down' => 'bg-[#fdecec] text-[#c2414b]',
     ];
 
-    $lucideIcon = 'lucide-' . $icon;
+    $mdIcon = 'gmdi-' . $icon;
 @endphp
 
-<article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+<article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
     <div class="flex items-start justify-between gap-4">
         <div>
             <p class="text-sm font-semibold text-[#667085]"> {{ $label  }}</p>
             <p class="mt-4 text-3xl font-bold text-[#111827]">{{ $value }}</p>
         </div>
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] {{ $colors[$tone] ?? $colors['rose'] }}">
-            <x-dynamic-component :component="$lucideIcon" class="h-5 w-5" />
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg {{ $colors[$tone] ?? $colors['rose'] }}">
+            <x-dynamic-component :component="$mdIcon" class="h-5 w-5" />
         </span>
     </div>
 
@@ -42,9 +42,9 @@
         @if ($percent)
             <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2 py-1 text-xs font-semibold leading-none {{ $arrowColors[$arrow] ?? $arrowColors['down'] }}">
                 @if ($arrow === 'up')
-                    <x-lucide-arrow-up-right class="h-3.5 w-3.5 shrink-0" />
+                    <x-gmdi-trending-up-o class="h-3.5 w-3.5 shrink-0" />
                 @else
-                    <x-lucide-arrow-down-right class="h-3.5 w-3.5 shrink-0" />
+                    <x-gmdi-trending-down-o class="h-3.5 w-3.5 shrink-0" />
                 @endif
                 {{ $percent }}
             </span>

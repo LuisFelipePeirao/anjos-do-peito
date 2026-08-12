@@ -14,12 +14,12 @@
             :firstButton="[
                 'label' => 'Novo atendimento',
                 'link' => route('attendances.create'),
-                'icon' => 'clipboard-list',
+                'icon' => 'content-paste-o',
             ]"
             :secondButton="[
                 'label' => 'Nova beneficiária',
                 'link' => route('beneficiaries.create'),
-                'icon' => 'users',
+                'icon' => 'person-add-o',
             ]"
         />
 

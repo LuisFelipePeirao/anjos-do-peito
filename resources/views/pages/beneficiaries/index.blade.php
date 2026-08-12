@@ -14,7 +14,7 @@
             :firstButton="[
                 'label' => 'Nova beneficiária',
                 'link' => route('beneficiaries.create'),
-                'icon' => 'plus',
+                'icon' => 'add',
             ]" />
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

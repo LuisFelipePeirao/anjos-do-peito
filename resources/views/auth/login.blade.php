@@ -8,13 +8,13 @@
 
         <x-login.login-input label="Usuário">
             <x-slot:icon>
-                <x-lucide-circle-user />
+                <x-gmdi-account-circle-o />
             </x-slot:icon>
         </x-login.login-input>
 
         <x-login.login-input label="Senha" type="password">
             <x-slot:icon>
-                <x-lucide-lock-keyhole />
+                <x-gmdi-lock-o />
             </x-slot:icon>
         </x-login.login-input>
 

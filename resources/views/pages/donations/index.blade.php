@@ -14,12 +14,12 @@
             :firstButton="[
                 'label' => 'Registrar doação',
                 'link' => '#registrar-doacao',
-                'icon' => 'plus',
+                'icon' => 'add',
             ]"
             :secondButton="[
                 'label' => 'Registrar distribuição',
                 'link' => '#registrar-distribuicao',
-                'icon' => 'hand-heart',
+                'icon' => 'volunteer-activism-o',
             ]" />
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

@@ -22,7 +22,7 @@ Route::get('/home', function () {
             'context' => '+12 novos cadastros em agosto',
             'trend' => '+7,1%',
             'trendType' => 'up',
-            'icon' => 'users',
+            'icon' => 'people-o',
             'tone' => 'rose',
         ],
         [
@@ -31,7 +31,7 @@ Route::get('/home', function () {
             'context' => 'Meta mensal: 55 atendimentos',
             'trend' => '+18,4%',
             'trendType' => 'up',
-            'icon' => 'clipboard-list',
+            'icon' => 'content-paste-o',
             'tone' => 'blue',
         ],
         [
@@ -40,7 +40,7 @@ Route::get('/home', function () {
             'context' => '40% do parque operacional livre',
             'trend' => '-2 un.',
             'trendType' => 'down',
-            'icon' => 'package',
+            'icon' => 'inventory-2-o',
             'tone' => 'green',
         ],
         [
@@ -49,7 +49,7 @@ Route::get('/home', function () {
             'context' => '3 devoluções e 6 itens críticos',
             'trend' => '+3',
             'trendType' => 'down',
-            'icon' => 'triangle-alert',
+            'icon' => 'report-problem-o',
             'tone' => 'amber',
         ],
     ];
@@ -115,7 +115,7 @@ Route::get('/beneficiarias', function () {
             'context' => 'Beneficiárias com acompanhamento ativo',
             'trend' => '+2',
             'trendType' => 'up',
-            'icon' => 'users',
+            'icon' => 'people-o',
             'tone' => 'rose',
         ],
         [
@@ -124,7 +124,7 @@ Route::get('/beneficiarias', function () {
             'context' => 'Beneficiárias cadastradas no sistema',
             'trend' => '+12%',
             'trendType' => 'up',
-            'icon' => 'badge-check',
+            'icon' => 'check',
             'tone' => 'green',
         ],
         [
@@ -133,7 +133,7 @@ Route::get('/beneficiarias', function () {
             'context' => 'Sem acompanhamento ativo',
             'trend' => '-1',
             'trendType' => 'down',
-            'icon' => 'triangle-alert',
+            'icon' => 'report-problem-o',
             'tone' => 'amber',
         ],
     ];
@@ -168,12 +168,12 @@ Route::get('/beneficiarias', function () {
             $beneficiary['_actions'] = [
                 'items' => [
                     [
-                        'icon' => 'eye',
+                        'icon' => 'visibility-o',
                         'route' => route('beneficiaries.show', preg_replace('/\D/', '', $beneficiary['cpf'])),
                         'title' => 'Visualizar',
                     ],
                     [
-                        'icon' => 'trash-2',
+                        'icon' => 'delete-o',
                         'route' => '#',
                         'title' => 'Excluir',
                         'variant' => 'danger',
@@ -214,15 +214,15 @@ Route::get('/beneficiarias/{cpf}', function (string $cpf) {
     ];
 
     $kpis = [
-        ['label' => 'Atendimentos realizados', 'value' => '6', 'context' => '', 'trend' => null, 'trendType' => 'up', 'icon' => 'clipboard-list', 'tone' => 'rose'],
-        ['label' => 'Último atendimento', 'value' => '07/08/2026', 'context' => '', 'trend' => null, 'trendType' => 'up', 'icon' => 'calendar-days', 'tone' => 'blue'],
-        ['label' => 'Bomba em uso', 'value' => 'BP-004', 'context' => '', 'trend' => null, 'trendType' => 'down', 'icon' => 'wrench', 'tone' => 'rose'],
-        ['label' => 'Distribuições recebidas', 'value' => '4', 'context' => '', 'trend' => null, 'trendType' => 'up', 'icon' => 'package', 'tone' => 'amber'],
+        ['label' => 'Atendimentos realizados', 'value' => '6', 'context' => '', 'trend' => null, 'trendType' => 'up', 'icon' => 'content-paste-o', 'tone' => 'rose'],
+        ['label' => 'Último atendimento', 'value' => '07/08/2026', 'context' => '', 'trend' => null, 'trendType' => 'up', 'icon' => 'calendar-month-o', 'tone' => 'blue'],
+        ['label' => 'Bomba em uso', 'value' => 'BP-004', 'context' => '', 'trend' => null, 'trendType' => 'down', 'icon' => 'info-o', 'tone' => 'rose'],
+        ['label' => 'Distribuições recebidas', 'value' => '4', 'context' => '', 'trend' => null, 'trendType' => 'up', 'icon' => 'inventory-2-o', 'tone' => 'amber'],
     ];
 
     $attendances = [
-        ['date' => '08/08/2026', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'summary' => 'Orientações sobre amamentação e pega correta', 'return' => '20/08/2026', '_actions' => ['view' => '#']],
-        ['date' => '29/07/2026', 'professional' => 'Camila Rocha', 'modality' => 'Presencial', 'summary' => 'Avaliação de ganho de peso do bebê', 'return' => '-', '_actions' => ['view' => '#']],
+        ['date' => '08/08/2026', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'summary' => 'Orientações sobre amamentação e pega correta', 'return' => '20/08/2026', '_actions' => ['visibility-o' => '#']],
+        ['date' => '29/07/2026', 'professional' => 'Camila Rocha', 'modality' => 'Presencial', 'summary' => 'Avaliação de ganho de peso do bebê', 'return' => '-', '_actions' => ['visibility-o' => '#']],
     ];
 
     $pumps = [
@@ -237,18 +237,18 @@ Route::get('/beneficiarias/{cpf}', function (string $cpf) {
     ];
 
     $history = [
-        ['date' => '07/08/2026', 'type' => 'Atendimento realizado', 'description' => 'Orientações relacionadas à amamentação e pega correta.', 'responsible' => 'Fernanda Souza', 'icon' => 'clipboard-list'],
-        ['date' => '01/08/2026', 'type' => 'Distribuição de itens', 'description' => '1 pacote de fralda tamanho P e 1 kit de higiene.', 'responsible' => 'Camila Rocha', 'icon' => 'gift'],
-        ['date' => '22/07/2026', 'type' => 'Empréstimo de bomba', 'description' => 'Bomba BP-004 - previsão de devolução em 05/08/2026.', 'responsible' => 'Camila Rocha', 'icon' => 'wrench'],
-        ['date' => '12/07/2026', 'type' => 'Distribuição de itens', 'description' => '2 latas de leite em pó.', 'responsible' => 'Fernanda Souza', 'icon' => 'gift'],
-        ['date' => '29/06/2026', 'type' => 'Atendimento realizado', 'description' => 'Avaliação de ganho de peso do bebê Lucas.', 'responsible' => 'Camila Rocha', 'icon' => 'clipboard-list'],
-        ['date' => '14/05/2026', 'type' => 'Cadastro realizado', 'description' => 'Beneficiária cadastrada no sistema da ONG.', 'responsible' => 'Mariana Fernandes', 'icon' => 'clipboard-list'],
+        ['date' => '07/08/2026', 'type' => 'Atendimento realizado', 'description' => 'Orientações relacionadas à amamentação e pega correta.', 'responsible' => 'Fernanda Souza', 'icon' => 'content-paste-o'],
+        ['date' => '01/08/2026', 'type' => 'Distribuição de itens', 'description' => '1 pacote de fralda tamanho P e 1 kit de higiene.', 'responsible' => 'Camila Rocha', 'icon' => 'card-giftcard-o'],
+        ['date' => '22/07/2026', 'type' => 'Empréstimo de bomba', 'description' => 'Bomba BP-004 - previsão de devolução em 05/08/2026.', 'responsible' => 'Camila Rocha', 'icon' => 'info-o'],
+        ['date' => '12/07/2026', 'type' => 'Distribuição de itens', 'description' => '2 latas de leite em pó.', 'responsible' => 'Fernanda Souza', 'icon' => 'card-giftcard-o'],
+        ['date' => '29/06/2026', 'type' => 'Atendimento realizado', 'description' => 'Avaliação de ganho de peso do bebê Lucas.', 'responsible' => 'Camila Rocha', 'icon' => 'content-paste-o'],
+        ['date' => '14/05/2026', 'type' => 'Cadastro realizado', 'description' => 'Beneficiária cadastrada no sistema da ONG.', 'responsible' => 'Mariana Fernandes', 'icon' => 'content-paste-o'],
     ];
 
     $recentInfo = [
-        ['title' => 'Último atendimento', 'description' => '08/08/2026 - Orientações sobre amamentação e pega correta', 'meta' => 'Profissional: Fernanda Souza', 'link' => route('beneficiaries.show', ['cpf' => $cpf, 'tab' => 'attendances']), 'button' => 'Ver atendimentos', 'icon' => 'clipboard-list'],
-        ['title' => 'Empréstimo atual', 'description' => 'Bomba BP-004 - retirada em 22/07/2026', 'meta' => 'Devolução atrasada', 'link' => route('beneficiaries.show', ['cpf' => $cpf, 'tab' => 'pumps']), 'button' => 'Ver bombas', 'icon' => 'wrench'],
-        ['title' => 'Última distribuição', 'description' => '01/08/2026 - 1 pacote de Fralda tamanho P', 'meta' => 'Responsável: Camila Rocha', 'link' => route('beneficiaries.show', ['cpf' => $cpf, 'tab' => 'donations']), 'button' => 'Ver doações', 'icon' => 'gift'],
+        ['title' => 'Último atendimento', 'description' => '08/08/2026 - Orientações sobre amamentação e pega correta', 'meta' => 'Profissional: Fernanda Souza', 'link' => route('beneficiaries.show', ['cpf' => $cpf, 'tab' => 'attendances']), 'button' => 'Ver atendimentos', 'icon' => 'inventory-2-o'],
+        ['title' => 'Empréstimo atual', 'description' => 'Bomba BP-004 - retirada em 22/07/2026', 'meta' => 'Devolução atrasada', 'link' => route('beneficiaries.show', ['cpf' => $cpf, 'tab' => 'pumps']), 'button' => 'Ver bombas', 'icon' => 'info-o'],
+        ['title' => 'Última distribuição', 'description' => '01/08/2026 - 1 pacote de Fralda tamanho P', 'meta' => 'Responsável: Camila Rocha', 'link' => route('beneficiaries.show', ['cpf' => $cpf, 'tab' => 'donations']), 'button' => 'Ver doações', 'icon' => 'card-giftcard-o'],
     ];
 
     $tab = request('tab', 'overview');
@@ -274,7 +274,7 @@ Route::get('/atendimentos', function () {
             'context' => 'Registros realizados em agosto',
             'trend' => '+18,4%',
             'trendType' => 'up',
-            'icon' => 'clipboard-list',
+            'icon' => 'content-paste-o',
             'tone' => 'rose',
         ],
         [
@@ -301,7 +301,7 @@ Route::get('/atendimentos', function () {
             'context' => 'Atendimentos concluídos em 10/08',
             'trend' => null,
             'trendType' => 'up',
-            'icon' => 'circle-check',
+            'icon' => 'check',
             'tone' => 'green',
         ],
     ];
@@ -336,12 +336,12 @@ Route::get('/atendimentos', function () {
             $attendance['_actions'] = [
                 'items' => [
                     [
-                        'icon' => 'eye',
+                        'icon' => 'visibility-o',
                         'route' => route('attendances.show', $index + 1),
                         'title' => 'Visualizar',
                     ],
                     [
-                        'icon' => 'trash-2',
+                        'icon' => 'delete-o',
                         'route' => '#',
                         'title' => 'Excluir',
                         'variant' => 'danger',
@@ -449,8 +449,8 @@ Route::get('/atendimentos/{attendance}', function (string $attendance) {
     $kpis = [
         ['label' => 'Duração prevista', 'value' => '45 min', 'context' => 'Janela reservada na agenda', 'trend' => null, 'trendType' => 'up', 'icon' => 'clock', 'tone' => 'rose'],
         ['label' => 'Retorno previsto', 'value' => '20/08', 'context' => 'Próximo acompanhamento', 'trend' => null, 'trendType' => 'up', 'icon' => 'calendar-days', 'tone' => 'blue'],
-        ['label' => 'Sessões da beneficiária', 'value' => '6', 'context' => 'Histórico acumulado', 'trend' => '+1', 'trendType' => 'up', 'icon' => 'clipboard-list', 'tone' => 'green'],
-        ['label' => 'Prioridade', 'value' => 'Média', 'context' => 'Sem alerta crítico no momento', 'trend' => null, 'trendType' => 'down', 'icon' => 'triangle-alert', 'tone' => 'amber'],
+        ['label' => 'Sessões da beneficiária', 'value' => '6', 'context' => 'Histórico acumulado', 'trend' => '+1', 'trendType' => 'up', 'icon' => 'content-paste-o', 'tone' => 'green'],
+        ['label' => 'Prioridade', 'value' => 'Média', 'context' => 'Sem alerta crítico no momento', 'trend' => null, 'trendType' => 'down', 'icon' => 'report-problem-o', 'tone' => 'amber'],
     ];
 
     $evolution = [
@@ -467,7 +467,7 @@ Route::get('/atendimentos/{attendance}', function (string $attendance) {
     $history = [
         ['date' => '10/08/2026', 'type' => 'Atendimento agendado', 'description' => 'Atendimento registrado na agenda da equipe.', 'responsible' => 'Mariana Fernandes', 'icon' => 'calendar-days'],
         ['date' => '09/08/2026', 'type' => 'Contato confirmado', 'description' => 'Beneficiária confirmou presença por telefone.', 'responsible' => 'Camila Rocha', 'icon' => 'phone'],
-        ['date' => '08/08/2026', 'type' => 'Triagem atualizada', 'description' => 'Caso marcado para orientação de amamentação.', 'responsible' => 'Fernanda Souza', 'icon' => 'clipboard-list'],
+        ['date' => '08/08/2026', 'type' => 'Triagem atualizada', 'description' => 'Caso marcado para orientação de amamentação.', 'responsible' => 'Fernanda Souza', 'icon' => 'content-paste-o'],
     ];
 
     $tab = request('tab', 'overview');
@@ -521,7 +521,7 @@ Route::get('/bombas-de-leite', function () {
             'context' => 'Prontas para novo empréstimo',
             'trend' => null,
             'trendType' => 'up',
-            'icon' => 'circle-check',
+            'icon' => 'check',
             'tone' => 'green',
         ],
         [
@@ -539,7 +539,7 @@ Route::get('/bombas-de-leite', function () {
             'context' => 'Exigem contato da equipe',
             'trend' => '+1',
             'trendType' => 'down',
-            'icon' => 'triangle-alert',
+            'icon' => 'report-problem-o',
             'tone' => 'amber',
         ],
     ];
@@ -593,12 +593,12 @@ Route::get('/bombas-de-leite', function () {
             $pump['_actions'] = [
                 'items' => [
                     [
-                        'icon' => 'eye',
+                        'icon' => 'visibility-o',
                         'route' => route('pumps.show', $pump['code']),
                         'title' => 'Visualizar',
                     ],
                     [
-                        'icon' => 'trash-2',
+                        'icon' => 'delete-o',
                         'route' => '#',
                         'title' => 'Excluir',
                         'variant' => 'danger',
@@ -667,7 +667,7 @@ Route::get('/bombas-de-leite/{pump}', function (string $pump) {
     ];
 
     $kpis = [
-        ['label' => 'Situação atual', 'value' => $pumpData['status'], 'context' => $isAvailable ? 'Pronta para nova saída' : 'Contrato ativo no momento', 'trend' => null, 'trendType' => 'up', 'icon' => 'circle-check', 'tone' => $isAvailable ? 'green' : 'blue'],
+        ['label' => 'Situação atual', 'value' => $pumpData['status'], 'context' => $isAvailable ? 'Pronta para nova saída' : 'Contrato ativo no momento', 'trend' => null, 'trendType' => 'up', 'icon' => 'check', 'tone' => $isAvailable ? 'green' : 'blue'],
         ['label' => 'Expiração', 'value' => $currentContract['expires_at'] ?? '-', 'context' => $isAvailable ? 'Sem contrato ativo' : 'Data prevista de devolução', 'trend' => null, 'trendType' => 'down', 'icon' => 'calendar-days', 'tone' => $isAvailable ? 'green' : 'amber'],
         ['label' => 'Próxima renovação', 'value' => $currentContract['next_renewal_at'] ?? '-', 'context' => $isAvailable ? 'Não aplicável' : 'Renovação do contrato atual', 'trend' => null, 'trendType' => 'up', 'icon' => 'refresh-cw', 'tone' => 'rose'],
         ['label' => 'Mensalidade', 'value' => $currentContract['monthly_fee'] ?? '-', 'context' => $isRental ? 'Aluguel ativo' : 'Sem cobrança recorrente', 'trend' => null, 'trendType' => 'up', 'icon' => 'receipt', 'tone' => $isRental ? 'blue' : 'green'],
@@ -721,7 +721,7 @@ Route::get('/doacoes-e-estoque', function () {
             'context' => 'Unidades disponíveis para distribuição',
             'trend' => '+34',
             'trendType' => 'up',
-            'icon' => 'package',
+            'icon' => 'inventory-2-o',
             'tone' => 'rose',
         ],
         [
@@ -730,7 +730,7 @@ Route::get('/doacoes-e-estoque', function () {
             'context' => 'Entradas registradas em agosto',
             'trend' => '+6',
             'trendType' => 'up',
-            'icon' => 'gift',
+            'icon' => 'card-giftcard-o',
             'tone' => 'green',
         ],
         [
@@ -739,7 +739,7 @@ Route::get('/doacoes-e-estoque', function () {
             'context' => 'Entregas realizadas no mês',
             'trend' => '+12%',
             'trendType' => 'up',
-            'icon' => 'hand-heart',
+            'icon' => 'volunteer-activism-o',
             'tone' => 'blue',
         ],
         [
@@ -748,7 +748,7 @@ Route::get('/doacoes-e-estoque', function () {
             'context' => 'Abaixo do estoque mínimo',
             'trend' => '+1',
             'trendType' => 'down',
-            'icon' => 'triangle-alert',
+            'icon' => 'report-problem-o',
             'tone' => 'amber',
         ],
     ];
@@ -806,17 +806,17 @@ Route::get('/doacoes-e-estoque', function () {
                 'view' => route('donations.show', $materialId),
                 'items' => [
                     [
-                        'icon' => 'eye',
+                        'icon' => 'visibility-o',
                         'route' => route('donations.show', $materialId),
                         'title' => 'Visualizar',
                     ],
                     [
-                        'icon' => 'hand-heart',
+                        'icon' => 'volunteer-activism-o',
                         'route' => '#',
                         'title' => 'Distribuir',
                     ],
                     [
-                        'icon' => 'pencil',
+                        'icon' => 'edit-o',
                         'route' => '#',
                         'title' => 'Editar',
                     ],
@@ -860,10 +860,10 @@ Route::get('/doacoes-e-estoque/{item}', function (string $item) {
     $stockItem = $items[$item] ?? $items['leite-em-po'];
 
     $kpis = [
-        ['label' => 'Quantidade atual', 'value' => $stockItem['quantity'], 'context' => 'Disponível para distribuição', 'trend' => null, 'trendType' => 'up', 'icon' => 'package', 'tone' => 'rose'],
-        ['label' => 'Estoque mínimo', 'value' => $stockItem['minimum'], 'context' => 'Limite operacional recomendado', 'trend' => null, 'trendType' => 'down', 'icon' => 'triangle-alert', 'tone' => $stockItem['status'] === 'Crítico' ? 'amber' : 'blue'],
-        ['label' => 'Demanda mensal', 'value' => $stockItem['monthly_demand'], 'context' => 'Média esperada para distribuição', 'trend' => '+8%', 'trendType' => 'up', 'icon' => 'hand-heart', 'tone' => 'green'],
-        ['label' => 'Situação', 'value' => $stockItem['status'], 'context' => $stockItem['last_movement'], 'trend' => null, 'trendType' => 'up', 'icon' => 'circle-check', 'tone' => $stockItem['status'] === 'Crítico' ? 'amber' : 'blue'],
+        ['label' => 'Quantidade atual', 'value' => $stockItem['quantity'], 'context' => 'Disponível para distribuição', 'trend' => null, 'trendType' => 'up', 'icon' => 'inventory-2-o', 'tone' => 'rose'],
+        ['label' => 'Estoque mínimo', 'value' => $stockItem['minimum'], 'context' => 'Limite operacional recomendado', 'trend' => null, 'trendType' => 'down', 'icon' => 'report-problem-o', 'tone' => $stockItem['status'] === 'Crítico' ? 'amber' : 'blue'],
+        ['label' => 'Demanda mensal', 'value' => $stockItem['monthly_demand'], 'context' => 'Média esperada para distribuição', 'trend' => '+8%', 'trendType' => 'up', 'icon' => 'volunteer-activism-o', 'tone' => 'green'],
+        ['label' => 'Situação', 'value' => $stockItem['status'], 'context' => $stockItem['last_movement'], 'trend' => null, 'trendType' => 'up', 'icon' => 'check', 'tone' => $stockItem['status'] === 'Crítico' ? 'amber' : 'blue'],
     ];
 
     $movements = [
@@ -879,9 +879,9 @@ Route::get('/doacoes-e-estoque/{item}', function (string $item) {
     ];
 
     $history = [
-        ['date' => '10/08/2026', 'type' => 'Entrada registrada', 'description' => 'Nova entrada adicionada ao estoque.', 'responsible' => 'Mariana Fernandes', 'icon' => 'gift'],
-        ['date' => '08/08/2026', 'type' => 'Distribuição registrada', 'description' => 'Material entregue para beneficiária acompanhada.', 'responsible' => 'Camila Rocha', 'icon' => 'hand-heart'],
-        ['date' => '05/08/2026', 'type' => 'Conferência de estoque', 'description' => 'Saldo ajustado após contagem física.', 'responsible' => 'Luzilene Zimmerman', 'icon' => 'clipboard-check'],
+        ['date' => '10/08/2026', 'type' => 'Entrada registrada', 'description' => 'Nova entrada adicionada ao estoque.', 'responsible' => 'Mariana Fernandes', 'icon' => 'card-giftcard-o'],
+        ['date' => '08/08/2026', 'type' => 'Distribuição registrada', 'description' => 'Material entregue para beneficiária acompanhada.', 'responsible' => 'Camila Rocha', 'icon' => 'volunteer-activism-o'],
+        ['date' => '05/08/2026', 'type' => 'Conferência de estoque', 'description' => 'Saldo ajustado após contagem física.', 'responsible' => 'Luzilene Zimmerman', 'icon' => 'check'],
     ];
 
     $tab = request('tab', 'overview');
@@ -904,10 +904,10 @@ Route::get('/relatorios', function () {
     $location = request('location', 'all');
 
     $summaryKpis = [
-        ['label' => 'Atendimentos realizados', 'value' => '42', 'context' => 'No período selecionado', 'trend' => '+18,4%', 'trendType' => 'up', 'icon' => 'clipboard-list', 'tone' => 'rose'],
+        ['label' => 'Atendimentos realizados', 'value' => '42', 'context' => 'No período selecionado', 'trend' => '+18,4%', 'trendType' => 'up', 'icon' => 'content-paste-o', 'tone' => 'rose'],
         ['label' => 'Bombas em uso', 'value' => '10', 'context' => '8 empréstimos e 2 aluguéis', 'trend' => '+3', 'trendType' => 'up', 'icon' => 'milk', 'tone' => 'blue'],
-        ['label' => 'Distribuições registradas', 'value' => '27', 'context' => 'Materiais entregues às beneficiárias', 'trend' => '+12%', 'trendType' => 'up', 'icon' => 'hand-heart', 'tone' => 'green'],
-        ['label' => 'Alertas críticos', 'value' => '7', 'context' => 'Estoque, devoluções e retornos pendentes', 'trend' => '+2', 'trendType' => 'down', 'icon' => 'triangle-alert', 'tone' => 'amber'],
+        ['label' => 'Distribuições registradas', 'value' => '27', 'context' => 'Materiais entregues às beneficiárias', 'trend' => '+12%', 'trendType' => 'up', 'icon' => 'volunteer-activism-o', 'tone' => 'green'],
+        ['label' => 'Alertas críticos', 'value' => '7', 'context' => 'Estoque, devoluções e retornos pendentes', 'trend' => '+2', 'trendType' => 'down', 'icon' => 'report-problem-o', 'tone' => 'amber'],
     ];
 
     $attendanceChart = [

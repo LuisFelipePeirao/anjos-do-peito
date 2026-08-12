@@ -13,7 +13,7 @@
     $availableDeg = $stockTotal > 0 ? round(($availableStock / $stockTotal) * 360) : 0;
 @endphp
 
-<article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+<article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
     <div class="border-b border-[#f0e7e8] pb-5">
         <h3 class="text-lg font-bold text-[#111827]">{{ $title }}</h3>
         <p class="mt-1 text-sm text-[#667085]">{{ $description }}</p>

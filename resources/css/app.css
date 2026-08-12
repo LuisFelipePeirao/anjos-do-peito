@@ -1,8 +1,8 @@
 @import 'tailwindcss';
-@import "flowbite/src/themes/default";
+/* @import "flowbite/src/themes/default"; */
 
-@plugin "flowbite/plugin";
-@source "../../node_modules/flowbite";
+/* @plugin "flowbite/plugin";
+@source "../../node_modules/flowbite"; */
 
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -11,6 +11,14 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.auth-input,
+.auth-input:focus,
+.auth-input:focus-visible {
+    border-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .app-shell {

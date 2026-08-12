@@ -120,13 +120,13 @@
                             @php
                                 $defaultActions = [
                                     [
-                                        'icon' => 'eye',
+                                        'icon' => 'visibility-o',
                                         'route' => $actions['view'] ?? '#',
                                         'title' => 'Visualizar',
                                         'variant' => 'default',
                                     ],
                                     [
-                                        'icon' => 'trash-2',
+                                        'icon' => 'delete-o',
                                         'route' => $actions['delete'] ?? '#',
                                         'title' => 'Excluir',
                                         'variant' => 'danger',
@@ -139,7 +139,7 @@
                                 <div class="flex justify-end gap-2">
                                     @foreach ($tableActions as $action)
                                         @php
-                                            $actionIcon = 'lucide-' . ($action['icon'] ?? 'eye');
+                                            $actionIcon = 'gmdi-' . ($action['icon'] ?? 'visibility-o');
                                             $actionRoute = $action['route'] ?? '#';
                                             $actionTitle = $action['title'] ?? 'Ação';
                                             $actionClass = ($action['variant'] ?? 'default') === 'danger'
