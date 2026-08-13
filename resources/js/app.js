@@ -64,3 +64,60 @@ if (pumpContractTypes.length && pumpBillingSection) {
 
     syncPumpBillingSection();
 }
+
+const confirmDialogOpeners = new WeakMap();
+
+document.addEventListener('click', (event) => {
+    const openButton = event.target.closest('[data-confirm-dialog-open]');
+
+    if (openButton) {
+        const dialog = document.getElementById(openButton.dataset.confirmDialogOpen);
+
+        if (dialog instanceof HTMLDialogElement) {
+            confirmDialogOpeners.set(dialog, openButton);
+            dialog.showModal();
+        }
+
+        return;
+    }
+
+    const closeButton = event.target.closest('[data-confirm-dialog-close]');
+
+    if (closeButton) {
+        closeButton.closest('dialog')?.close();
+        return;
+    }
+
+    const confirmButton = event.target.closest('[data-confirm-dialog-confirm]');
+
+    if (confirmButton) {
+        const dialog = confirmButton.closest('dialog');
+
+        dialog?.dispatchEvent(new CustomEvent('confirm-dialog:confirmed', {
+            bubbles: true,
+            detail: { id: dialog.id },
+        }));
+        dialog?.close('confirmed');
+    }
+});
+
+document.querySelectorAll('[data-confirm-dialog-modal]').forEach((dialog) => {
+    dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) {
+            dialog.close();
+        }
+    });
+
+    dialog.addEventListener('close', () => {
+        confirmDialogOpeners.get(dialog)?.focus();
+        confirmDialogOpeners.delete(dialog);
+    });
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
+        return;
+    }
+
+    document.querySelector('[data-confirm-dialog-modal][open]')?.close();
+});

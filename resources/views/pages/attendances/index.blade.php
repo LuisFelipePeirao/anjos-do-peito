@@ -14,7 +14,7 @@
             :firstButton="[
                 'label' => 'Novo atendimento',
                 'link' => route('attendances.create'),
-                'icon' => 'plus',
+                'icon' => 'add',
             ]" />
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -39,7 +39,6 @@
                 'Profissional',
                 'Modalidade',
                 'Situação',
-                'Resumo',
             ]"
             :data="$attendances"
             :action="route('attendances.index')"

@@ -7,6 +7,21 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <script type="module" src="https://cdn.jsdelivr.net/gh/datvm/material-web@v2.3.0/dist/bundle.esm.min.js"></script>
+
+
+    <script type="importmap">
+    {
+        "imports": {
+        "@material/web/": "https://esm.run"
+        }
+    }
+    </script>
+    <script type="module">
+    import '@material/web/all.js';
+    </script>
+
+
     <title>@yield('title')</title>
 </head>
 
@@ -26,6 +41,16 @@
             </div>
         </main>
     </div>
+
+    <x-app.confirm-modal
+        id="logout-confirmation"
+        title="Sair do sistema?"
+        message="Você será direcionada para a tela de login."
+        confirm-label="Sair"
+        variant="warning"
+        icon="gmdi-logout-o"
+        :href="route('login')"
+    />
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
 </body>

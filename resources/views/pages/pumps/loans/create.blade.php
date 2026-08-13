@@ -7,8 +7,8 @@
 
 @section('content')
     @php
-        $inputClass = 'mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] bg-white px-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#98a2b3] focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15';
-        $textareaClass = 'mt-2 min-h-28 w-full rounded-[8px] border border-[#e4d8d9] bg-white px-3 py-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#98a2b3] focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15';
+        $inputClass = 'mt-2 h-11 w-full rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#98a2b3] focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15';
+        $textareaClass = 'mt-2 min-h-28 w-full rounded-lg border border-[#e4d8d9] bg-white px-3 py-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#98a2b3] focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15';
         $labelClass = 'text-sm font-semibold text-[#344054]';
         $hintClass = 'mt-1 text-xs text-[#667085]';
     @endphp
@@ -27,10 +27,10 @@
         <form method="POST" action="#" class="space-y-6">
             @csrf
 
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fdecef] text-[#ef5b97]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fdecef] text-[#ef5b97]">
                             <x-lucide-handshake class="h-5 w-5" />
                         </span>
                         <div>
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="grid gap-4 p-5 md:grid-cols-2">
-                    <label class="flex h-full cursor-pointer flex-col rounded-[8px] border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
+                    <label class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
                         <span class="flex items-start gap-3">
                             <input type="radio" name="contract_type" value="emprestimo" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type checked>
                             <span>
@@ -52,7 +52,7 @@
                         <span class="mt-4 inline-flex w-fit rounded-full bg-[#e8f8ee] px-2.5 py-1 text-xs font-semibold text-[#23845a]">Sem custo</span>
                     </label>
 
-                    <label class="flex h-full cursor-pointer flex-col rounded-[8px] border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
+                    <label class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
                         <span class="flex items-start gap-3">
                             <input type="radio" name="contract_type" value="aluguel" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type>
                             <span>
@@ -65,10 +65,10 @@
                 </div>
             </article>
 
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#eef4ff] text-[#2f66d0]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef4ff] text-[#2f66d0]">
                             <x-lucide-milk class="h-5 w-5" />
                         </span>
                         <div>
@@ -102,10 +102,10 @@
                 </div>
             </article>
 
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#ecfdf3] text-[#23845a]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ecfdf3] text-[#23845a]">
                             <x-lucide-calendar-days class="h-5 w-5" />
                         </span>
                         <div>
@@ -138,10 +138,10 @@
                 </div>
             </article>
 
-            <article class="hidden overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]" data-pump-billing-section>
+            <article class="hidden overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]" data-pump-billing-section>
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fff7e6] text-[#b76b00]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fff7e6] text-[#b76b00]">
                             <x-lucide-receipt class="h-5 w-5" />
                         </span>
                         <div>
@@ -186,10 +186,10 @@
             </article>
             
 
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fdecef] text-[#ef5b97]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fdecef] text-[#ef5b97]">
                             <x-lucide-file-check-2 class="h-5 w-5" />
                         </span>
                         <div>
@@ -217,10 +217,10 @@
 
             <div class="sticky bottom-0 -mx-4 border-t border-[#eadfe0] bg-[#fbfaf9]/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8">
                 <div class="mx-auto flex max-w-6xl flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
-                    <a href="{{ route('pumps.index') }}" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                    <a href="{{ route('pumps.index') }}" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                         Cancelar
                     </a>
-                    <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#ef5b97] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+                    <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
                         <x-lucide-save class="h-4 w-4" />
                         Registrar saída
                     </button>

@@ -283,7 +283,7 @@ Route::get('/atendimentos', function () {
             'context' => 'Atendimentos futuros confirmados',
             'trend' => '+4',
             'trendType' => 'up',
-            'icon' => 'calendar-days',
+            'icon' => 'calendar-month-o',
             'tone' => 'blue',
         ],
         [
@@ -292,7 +292,7 @@ Route::get('/atendimentos', function () {
             'context' => 'Casos aguardando novo contato',
             'trend' => '+2',
             'trendType' => 'down',
-            'icon' => 'clock',
+            'icon' => 'schedule-o',
             'tone' => 'amber',
         ],
         [
@@ -307,12 +307,12 @@ Route::get('/atendimentos', function () {
     ];
 
     $attendances = [
-        ['date' => '10/08/2026', 'time' => '14:30', 'beneficiary' => 'Maria da Silva', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Agendado', 'summary' => 'Orientações sobre amamentação'],
-        ['date' => '10/08/2026', 'time' => '09:15', 'beneficiary' => 'Ana Souza', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Realizado', 'summary' => 'Retorno sobre ganho de peso'],
-        ['date' => '09/08/2026', 'time' => '16:00', 'beneficiary' => 'Juliana Martins', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Retorno pendente', 'summary' => 'Avaliação de pega correta'],
-        ['date' => '08/08/2026', 'time' => '13:40', 'beneficiary' => 'Patrícia Lima', 'professional' => 'Mariana Fernandes', 'modality' => 'Presencial', 'status' => 'Realizado', 'summary' => 'Entrega de itens e orientação'],
-        ['date' => '07/08/2026', 'time' => '10:20', 'beneficiary' => 'Camila Rocha', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Cancelado', 'summary' => 'Beneficiária solicitou reagendamento'],
-        ['date' => '06/08/2026', 'time' => '15:10', 'beneficiary' => 'Renata Alves', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Realizado', 'summary' => 'Acompanhamento puerperal'],
+        ['date' => '10/08/2026', 'time' => '14:30', 'beneficiary' => 'Maria da Silva', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Agendado'],
+        ['date' => '10/08/2026', 'time' => '09:15', 'beneficiary' => 'Ana Souza', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Realizado'],
+        ['date' => '09/08/2026', 'time' => '16:00', 'beneficiary' => 'Juliana Martins', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Retorno pendente'],
+        ['date' => '08/08/2026', 'time' => '13:40', 'beneficiary' => 'Patrícia Lima', 'professional' => 'Mariana Fernandes', 'modality' => 'Presencial', 'status' => 'Realizado'],
+        ['date' => '07/08/2026', 'time' => '10:20', 'beneficiary' => 'Camila Rocha', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Cancelado'],
+        ['date' => '06/08/2026', 'time' => '15:10', 'beneficiary' => 'Renata Alves', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Realizado'],
     ];
 
     $search = trim((string) request('q', ''));
@@ -447,8 +447,8 @@ Route::get('/atendimentos/{attendance}', function (string $attendance) {
     ];
 
     $kpis = [
-        ['label' => 'Duração prevista', 'value' => '45 min', 'context' => 'Janela reservada na agenda', 'trend' => null, 'trendType' => 'up', 'icon' => 'clock', 'tone' => 'rose'],
-        ['label' => 'Retorno previsto', 'value' => '20/08', 'context' => 'Próximo acompanhamento', 'trend' => null, 'trendType' => 'up', 'icon' => 'calendar-days', 'tone' => 'blue'],
+        ['label' => 'Duração prevista', 'value' => '45 min', 'context' => 'Janela reservada na agenda', 'trend' => null, 'trendType' => 'up', 'icon' => 'schedule-o', 'tone' => 'rose'],
+        ['label' => 'Retorno previsto', 'value' => '20/08', 'context' => 'Próximo acompanhamento', 'trend' => null, 'trendType' => 'up', 'icon' => 'calendar-month-o', 'tone' => 'blue'],
         ['label' => 'Sessões da beneficiária', 'value' => '6', 'context' => 'Histórico acumulado', 'trend' => '+1', 'trendType' => 'up', 'icon' => 'content-paste-o', 'tone' => 'green'],
         ['label' => 'Prioridade', 'value' => 'Média', 'context' => 'Sem alerta crítico no momento', 'trend' => null, 'trendType' => 'down', 'icon' => 'report-problem-o', 'tone' => 'amber'],
     ];
@@ -465,7 +465,7 @@ Route::get('/atendimentos/{attendance}', function (string $attendance) {
     ];
 
     $history = [
-        ['date' => '10/08/2026', 'type' => 'Atendimento agendado', 'description' => 'Atendimento registrado na agenda da equipe.', 'responsible' => 'Mariana Fernandes', 'icon' => 'calendar-days'],
+        ['date' => '10/08/2026', 'type' => 'Atendimento agendado', 'description' => 'Atendimento registrado na agenda da equipe.', 'responsible' => 'Mariana Fernandes', 'icon' => 'calendar-month-o'],
         ['date' => '09/08/2026', 'type' => 'Contato confirmado', 'description' => 'Beneficiária confirmou presença por telefone.', 'responsible' => 'Camila Rocha', 'icon' => 'phone'],
         ['date' => '08/08/2026', 'type' => 'Triagem atualizada', 'description' => 'Caso marcado para orientação de amamentação.', 'responsible' => 'Fernanda Souza', 'icon' => 'content-paste-o'],
     ];
@@ -512,7 +512,7 @@ Route::get('/bombas-de-leite', function () {
             'context' => 'Equipamentos registrados no sistema',
             'trend' => '+2',
             'trendType' => 'up',
-            'icon' => 'milk',
+            'icon' => 'coffee-maker-o',
             'tone' => 'rose',
         ],
         [
@@ -530,7 +530,7 @@ Route::get('/bombas-de-leite', function () {
             'context' => 'Em uso por beneficiárias',
             'trend' => '+3',
             'trendType' => 'up',
-            'icon' => 'arrow-up-right',
+            'icon' => 'trending-up',
             'tone' => 'blue',
         ],
         [
@@ -668,8 +668,8 @@ Route::get('/bombas-de-leite/{pump}', function (string $pump) {
 
     $kpis = [
         ['label' => 'Situação atual', 'value' => $pumpData['status'], 'context' => $isAvailable ? 'Pronta para nova saída' : 'Contrato ativo no momento', 'trend' => null, 'trendType' => 'up', 'icon' => 'check', 'tone' => $isAvailable ? 'green' : 'blue'],
-        ['label' => 'Expiração', 'value' => $currentContract['expires_at'] ?? '-', 'context' => $isAvailable ? 'Sem contrato ativo' : 'Data prevista de devolução', 'trend' => null, 'trendType' => 'down', 'icon' => 'calendar-days', 'tone' => $isAvailable ? 'green' : 'amber'],
-        ['label' => 'Próxima renovação', 'value' => $currentContract['next_renewal_at'] ?? '-', 'context' => $isAvailable ? 'Não aplicável' : 'Renovação do contrato atual', 'trend' => null, 'trendType' => 'up', 'icon' => 'refresh-cw', 'tone' => 'rose'],
+        ['label' => 'Expiração', 'value' => $currentContract['expires_at'] ?? '-', 'context' => $isAvailable ? 'Sem contrato ativo' : 'Data prevista de devolução', 'trend' => null, 'trendType' => 'down', 'icon' => 'calendar-month-o', 'tone' => $isAvailable ? 'green' : 'amber'],
+        ['label' => 'Próxima renovação', 'value' => $currentContract['next_renewal_at'] ?? '-', 'context' => $isAvailable ? 'Não aplicável' : 'Renovação do contrato atual', 'trend' => null, 'trendType' => 'up', 'icon' => 'autorenew', 'tone' => 'rose'],
         ['label' => 'Mensalidade', 'value' => $currentContract['monthly_fee'] ?? '-', 'context' => $isRental ? 'Aluguel ativo' : 'Sem cobrança recorrente', 'trend' => null, 'trendType' => 'up', 'icon' => 'receipt', 'tone' => $isRental ? 'blue' : 'green'],
     ];
 

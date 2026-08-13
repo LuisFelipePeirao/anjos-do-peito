@@ -14,12 +14,12 @@
             :firstButton="[
                 'label' => 'Nova bomba',
                 'link' => route('pumps.create'),
-                'icon' => 'plus',
+                'icon' => 'add',
             ]"
             :secondButton="[
                 'label' => 'Registrar empréstimo',
                 'link' => route('pumps.loans.create'),
-                'icon' => 'arrow-up-right',
+                'icon' => 'trending-up',
             ]" />
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

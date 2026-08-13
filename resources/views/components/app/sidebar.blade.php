@@ -10,6 +10,7 @@
         ['label' => 'Bombas de leite', 'route' => 'pumps.index', 'icon' => 'lucide-milk'],
         ['label' => 'Doações e estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
         ['label' => 'Relatórios', 'route' => 'reports.index', 'icon' => 'gmdi-bar-chart-o'],
+        ['label' => 'Usuários', 'route' => '', 'icon' => 'gmdi-account-circle-o'],
     ];
 @endphp
 
@@ -66,12 +67,13 @@
             </div>
         </div>
 
-        <a
-            href="{{ route('login') }}"
-            class="sidebar-link flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]"
+        <button
+            type="button"
+            data-confirm-dialog-open="logout-confirmation"
+            class="sidebar-link flex h-10 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-medium text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]"
             title="Sair">
-            <x-lucide-log-out class="h-5 w-5 shrink-0" />
+            <x-gmdi-logout-o class="h-5 w-5 shrink-0" />
             <span class="sidebar-text truncate">Sair</span>
-        </a>
+        </button>
     </div>
 </aside>
