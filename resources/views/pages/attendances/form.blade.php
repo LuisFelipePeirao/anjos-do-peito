@@ -58,42 +58,39 @@
                         <input type="time" name="time" value="{{ $attendanceData['time'] }}" class="{{ $inputClass }}" required>
                     </label>
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Duração prevista</span>
-                        <select name="duration" class="{{ $inputClass }}">
-                            @foreach (['30', '45', '60', '90'] as $duration)
-                                <option value="{{ $duration }}" @selected($attendanceData['duration'] === $duration)>{{ $duration }} minutos</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="duration"
+                        label="Duração prevista"
+                        :options="collect(['30', '45', '60', '90'])->map(fn ($duration) => [
+                            'value' => $duration,
+                            'label' => $duration.' minutos',
+                        ])->all()"
+                        :selected="$attendanceData['duration']"
+                    />
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Situação</span>
-                        <select name="status" class="{{ $inputClass }}">
-                            @foreach (['Agendado', 'Realizado', 'Retorno pendente', 'Cancelado'] as $status)
-                                <option value="{{ $status }}" @selected($attendanceData['status'] === $status)>{{ $status }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="status"
+                        label="Situação"
+                        :options="['Agendado', 'Realizado', 'Retorno pendente', 'Cancelado']"
+                        :selected="$attendanceData['status']"
+                    />
 
-                    <label class="block md:col-span-2">
-                        <span class="{{ $labelClass }}">Modalidade</span>
-                        <select name="modality" class="{{ $inputClass }}">
-                            @foreach (['Presencial', 'Remota'] as $modality)
-                                <option value="{{ $modality }}" @selected($attendanceData['modality'] === $modality)>{{ $modality }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="modality"
+                        label="Modalidade"
+                        :options="['Presencial', 'Remota']"
+                        :selected="$attendanceData['modality']"
+                        wrapper-class="md:col-span-2"
+                    />
 
-                    <label class="block md:col-span-2">
-                        <span class="{{ $labelClass }}">Local</span>
-                        <select name="location" class="{{ $inputClass }}">
-                            <option value="">Selecione</option>
-                            @foreach ($locations as $location)
-                                <option value="{{ $location }}" @selected($attendanceData['location'] === $location)>{{ $location }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="location"
+                        label="Local"
+                        :options="$locations"
+                        :selected="$attendanceData['location']"
+                        placeholder="Selecione"
+                        wrapper-class="md:col-span-2"
+                    />
                 </div>
             </article>
 
@@ -111,34 +108,30 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Beneficiária</span>
-                        <select name="beneficiary" class="{{ $inputClass }}" required>
-                            <option value="">Selecione</option>
-                            @foreach ($beneficiaries as $beneficiary)
-                                <option value="{{ $beneficiary }}" @selected($attendanceData['beneficiary'] === $beneficiary)>{{ $beneficiary }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="beneficiary"
+                        label="Beneficiária"
+                        :options="$beneficiaries"
+                        :selected="$attendanceData['beneficiary']"
+                        placeholder="Selecione"
+                        required
+                    />
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Profissional</span>
-                        <select name="professional" class="{{ $inputClass }}" required>
-                            <option value="">Selecione</option>
-                            @foreach ($professionals as $professional)
-                                <option value="{{ $professional }}" @selected($attendanceData['professional'] === $professional)>{{ $professional }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="professional"
+                        label="Profissional"
+                        :options="$professionals"
+                        :selected="$attendanceData['professional']"
+                        placeholder="Selecione"
+                        required
+                    />
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Prioridade</span>
-                        <select name="priority" class="{{ $inputClass }}">
-                            @foreach (['Baixa', 'Média', 'Alta'] as $priority)
-                                <option value="{{ $priority }}" @selected($attendanceData['priority'] === $priority)>{{ $priority }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="priority"
+                        label="Prioridade"
+                        :options="['Baixa', 'Média', 'Alta']"
+                        :selected="$attendanceData['priority']"
+                    />
                 </div>
             </article>
 

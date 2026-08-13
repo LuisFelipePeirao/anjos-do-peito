@@ -79,25 +79,24 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Bomba disponível</span>
-                        <select name="pump" class="{{ $inputClass }}" required>
-                            <option value="">Selecione</option>
-                            @foreach ($availablePumps as $pump)
-                                <option value="{{ $pump['code'] }}">{{ $pump['code'] }} - {{ $pump['model'] }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="pump"
+                        label="Bomba disponível"
+                        :options="collect($availablePumps)->map(fn ($pump) => [
+                            'value' => $pump['code'],
+                            'label' => $pump['code'].' - '.$pump['model'],
+                        ])->all()"
+                        placeholder="Selecione"
+                        required
+                    />
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Beneficiária</span>
-                        <select name="beneficiary" class="{{ $inputClass }}" required>
-                            <option value="">Selecione</option>
-                            @foreach ($beneficiaries as $beneficiary)
-                                <option value="{{ $beneficiary }}">{{ $beneficiary }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="beneficiary"
+                        label="Beneficiária"
+                        :options="$beneficiaries"
+                        placeholder="Selecione"
+                        required
+                    />
 
                 </div>
             </article>
@@ -126,14 +125,12 @@
                         <input type="date" name="expected_return" class="{{ $inputClass }}" required>
                     </label>
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Renovação</span>
-                        <select name="renewal" class="{{ $inputClass }}">
-                            <option value="Sem renovação automática">Sem renovação automática</option>
-                            <option value="A cada 30 dias">A cada 30 dias</option>
-                            <option value="A cada 60 dias">A cada 60 dias</option>
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="renewal"
+                        label="Renovação"
+                        :options="['Sem renovação automática', 'A cada 30 dias', 'A cada 60 dias']"
+                        selected="Sem renovação automática"
+                    />
 
                 </div>
             </article>
@@ -162,15 +159,14 @@
                         <input type="number" name="due_day" class="{{ $inputClass }}" placeholder="Ex.: 10" min="1" max="31" data-pump-billing-field disabled>
                     </label>
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Forma de cobrança</span>
-                        <select name="billing_method" class="{{ $inputClass }}" data-pump-billing-field disabled>
-                            <option value="">Selecione</option>
-                            <option value="Pix">Pix</option>
-                            <option value="Dinheiro">Dinheiro</option>
-                            <option value="Boleto">Boleto</option>
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="billing_method"
+                        label="Forma de cobrança"
+                        :options="['Pix', 'Dinheiro', 'Boleto']"
+                        placeholder="Selecione"
+                        data-pump-billing-field
+                        disabled
+                    />
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Primeira cobrança</span>
@@ -200,13 +196,12 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2">
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Gerar termo para assinatura?</span>
-                        <select name="term_signed" class="{{ $inputClass }}">
-                            <option value="Sim">Sim</option>
-                            <option value="Não">Não</option>
-                        </select>
-                    </label>
+                    <x-material.select
+                        name="term_signed"
+                        label="Gerar termo para assinatura?"
+                        :options="['Sim', 'Não']"
+                        selected="Sim"
+                    />
 
                     <label class="block md:col-span-2">
                         <span class="{{ $labelClass }}">Observações do contrato</span>
