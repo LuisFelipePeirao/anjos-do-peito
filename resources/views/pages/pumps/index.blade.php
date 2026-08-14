@@ -47,6 +47,12 @@
             ]"
             :data="$pumps"
             :action="route('pumps.index')"
+            :delete-confirmation="[
+                'title' => 'Excluir bomba de leite?',
+                'message' => 'Bombas com empréstimos ou manutenções vinculadas serão apenas inativadas. Deseja continuar?',
+                'confirmLabel' => 'Excluir bomba',
+                'variant' => 'danger',
+            ]"
             :filters="[
                 'search' => [
                     'name' => 'q',

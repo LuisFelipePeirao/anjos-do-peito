@@ -42,6 +42,11 @@
             ]"
             :data="$attendances"
             :action="route('attendances.index')"
+            :delete-confirmation="[
+                'title' => 'Excluir atendimento?',
+                'message' => 'As informações deste atendimento deixarão de aparecer no histórico. Deseja continuar?',
+                'confirmLabel' => 'Excluir atendimento',
+            ]"
             :filters="[
                 'search' => [
                     'name' => 'q',

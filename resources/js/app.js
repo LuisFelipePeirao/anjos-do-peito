@@ -71,6 +71,7 @@ document.addEventListener('click', (event) => {
     const openButton = event.target.closest('[data-confirm-dialog-open]');
 
     if (openButton) {
+        event.preventDefault();
         const dialog = document.getElementById(openButton.dataset.confirmDialogOpen);
 
         if (dialog instanceof HTMLDialogElement) {

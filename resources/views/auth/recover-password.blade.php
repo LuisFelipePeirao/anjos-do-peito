@@ -6,11 +6,11 @@
     <form action="{{ route('new-password') }}" class="w-72.5 md:w-80">
         <h1 class="mb-8 text-[2rem] font-medium md:text-[2.5rem]">Recuperar Senha</h1>
 
-        <x-login.login-input label="E-mail" type="email">
+        <x-material.input label="E-mail" type="email">
             <x-slot:icon>
                 <x-gmdi-mail-o />
             </x-slot:icon>
-        </x-login.login-input>
+        </x-material.input>
 
         <x-login.login-span>
             Insira o seu e-mail no campo acima para recuperar sua senha. 

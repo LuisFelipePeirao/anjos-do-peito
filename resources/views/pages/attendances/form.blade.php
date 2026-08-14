@@ -15,6 +15,16 @@
         $inputClass = 'mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] bg-white px-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#98a2b3] focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15';
         $textareaClass = 'mt-2 min-h-28 w-full rounded-[8px] border border-[#e4d8d9] bg-white px-3 py-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#98a2b3] focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15';
         $labelClass = 'text-sm font-semibold text-[#344054]';
+        $cancelRoute = $isEdit
+            ? route('attendances.show', $attendanceData['id'])
+            : route('attendances.index');
+        $unsavedChangesConfirmation = [
+            'title' => 'Sair sem salvar?',
+            'message' => 'As informações preenchidas nesta página não serão salvas. Deseja realmente sair?',
+            'confirmLabel' => 'Sair sem salvar',
+            'cancelLabel' => 'Continuar editando',
+            'variant' => 'warning',
+        ];
     @endphp
 
     <section class="space-y-6">
@@ -26,7 +36,11 @@
                 'label' => 'Voltar para lista',
                 'link' => route('attendances.index'),
                 'icon' => 'arrow-left',
-            ]" />
+            ]"
+            confirmation-id="attendance-leave-page-confirmation"
+            :confirmation="array_merge($unsavedChangesConfirmation, [
+                'href' => route('attendances.index'),
+            ])" />
 
         <form method="POST" action="#" class="space-y-6">
             @csrf
@@ -209,7 +223,11 @@
 
             <div class="sticky bottom-0 -mx-4 border-t border-[#eadfe0] bg-[#fbfaf9]/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8">
                 <div class="mx-auto flex max-w-6xl flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
-                    <a href="{{ $isEdit ? route('attendances.show', $attendanceData['id']) : route('attendances.index') }}" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                    <a
+                        href="{{ $cancelRoute }}"
+                        data-confirm-dialog-open="attendance-cancel-confirmation"
+                        class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]"
+                    >
                         Cancelar
                     </a>
                     <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#ef5b97] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
@@ -219,5 +237,15 @@
                 </div>
             </div>
         </form>
+
+        <x-app.confirm-modal
+            id="attendance-cancel-confirmation"
+            :title="$unsavedChangesConfirmation['title']"
+            :message="$unsavedChangesConfirmation['message']"
+            :confirm-label="$unsavedChangesConfirmation['confirmLabel']"
+            :cancel-label="$unsavedChangesConfirmation['cancelLabel']"
+            :variant="$unsavedChangesConfirmation['variant']"
+            :href="$cancelRoute"
+        />
     </section>
 @endsection

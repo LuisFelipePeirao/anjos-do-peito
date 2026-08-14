@@ -6,6 +6,8 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        <script type="module" src="https://cdn.jsdelivr.net/gh/datvm/material-web@v2.3.0/dist/bundle.esm.min.js"></script>
+
         <title>@yield('title')</title>
     </head>
     <body class="m-0 min-h-screen overflow-hidden font-sans text-[#ef5b97]">

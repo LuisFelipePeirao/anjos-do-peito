@@ -4,6 +4,7 @@
     'filters' => [],
     'action' => url()->current(),
     'showActions' => true,
+    'deleteConfirmation' => [],
 ])
 
 @php
@@ -16,19 +17,13 @@
         <div class="border-b border-[#f0e7e8] p-5">
             <form action="{{ $action }}" method="GET" class="flex flex-col gap-3 xl:flex-row xl:flex-wrap xl:items-end">
                 @if ($searchFilter)
-                    <label class="min-w-0 flex-1 xl:min-w-105">
-                        <span class="mb-1.5 block text-xs font-semibold uppercase text-[#667085]">{{ $searchFilter['label'] ?? 'Pesquisar' }}</span>
-                        <span class="relative block">
-                            <x-gmdi-search-o
-                                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
-                            <input
-                                type="search"
-                                name="{{ $searchFilter['name'] ?? 'q' }}"
-                                value="{{ $searchFilter['value'] ?? '' }}"
-                                placeholder="{{ $searchFilter['placeholder'] ?? 'Pesquisar' }}"
-                                class="h-11 w-full rounded-lg border border-[#e4d8d9] bg-white pl-10 pr-3 text-sm text-[#111827] outline-none transition placeholder:text-[#98a2b3] focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]" />
-                        </span>
-                    </label>
+                    <x-material.search-input
+                        :name="$searchFilter['name'] ?? 'q'"
+                        :label="$searchFilter['label'] ?? 'Pesquisar'"
+                        :value="$searchFilter['value'] ?? ''"
+                        :placeholder="$searchFilter['placeholder'] ?? 'Pesquisar'"
+                        wrapper-class="flex-1 xl:min-w-105"
+                    />
                 @endif
 
                 <div class="grid items-end gap-3 sm:grid-cols-2 xl:flex xl:shrink-0">
@@ -137,14 +132,56 @@
                                             $actionIcon = 'gmdi-' . ($action['icon'] ?? 'visibility-o');
                                             $actionRoute = $action['route'] ?? '#';
                                             $actionTitle = $action['title'] ?? 'Ação';
-                                            $actionClass = ($action['variant'] ?? 'default') === 'danger'
+                                            $actionVariant = $action['variant']
+                                                ?? (($action['icon'] ?? null) === 'delete-o' ? 'danger' : 'default');
+                                            $actionClass = $actionVariant === 'danger'
                                                 ? 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1] hover:text-[#c2414b]'
                                                 : 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]';
+
+                                            $confirmation = $action['confirmation'] ?? ($actionVariant === 'danger' ? $deleteConfirmation : null);
+                                            $confirmation = is_array($confirmation)
+                                                ? array_merge([
+                                                    'title' => 'Confirmar exclusão',
+                                                    'message' => 'Deseja realmente excluir este registro?',
+                                                    'confirmLabel' => 'Excluir',
+                                                    'cancelLabel' => 'Cancelar',
+                                                    'variant' => 'danger',
+                                                    'method' => 'GET',
+                                                ], $confirmation)
+                                                : null;
+                                            $confirmationId = $confirmation
+                                                ? 'datatable-confirm-' . md5($actionRoute . '|' . $actionTitle . '|' . json_encode($displayRow))
+                                                : null;
+                                            $confirmationMethod = strtoupper($confirmation['method'] ?? 'GET');
+                                            $confirmationAction = $confirmation['action']
+                                                ?? ($confirmationMethod !== 'GET' ? $actionRoute : null);
+                                            $confirmationHref = $confirmation['href']
+                                                ?? ($confirmationAction ? null : $actionRoute);
                                         @endphp
 
-                                        <a href="{{ $actionRoute }}" class="{{ $actionClass }}" title="{{ $actionTitle }}">
+                                        <a
+                                            href="{{ $actionRoute }}"
+                                            class="{{ $actionClass }}"
+                                            title="{{ $actionTitle }}"
+                                            @if ($confirmationId) data-confirm-dialog-open="{{ $confirmationId }}" @endif
+                                        >
                                             <x-dynamic-component :component="$actionIcon" class="h-4 w-4" />
                                         </a>
+
+                                        @if ($confirmationId)
+                                            <x-app.confirm-modal
+                                                :id="$confirmationId"
+                                                :title="$confirmation['title']"
+                                                :message="$confirmation['message']"
+                                                :confirm-label="$confirmation['confirmLabel']"
+                                                :cancel-label="$confirmation['cancelLabel']"
+                                                :variant="$confirmation['variant']"
+                                                :icon="$confirmation['icon'] ?? null"
+                                                :action="$confirmationAction"
+                                                :method="$confirmationMethod"
+                                                :href="$confirmationHref"
+                                            />
+                                        @endif
                                     @endforeach
                                 </div>
                             </td>

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::view('/icon', 'icons.index')->name('icons.index');
+
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
@@ -816,9 +818,10 @@ Route::get('/doacoes-e-estoque', function () {
                         'title' => 'Distribuir',
                     ],
                     [
-                        'icon' => 'edit-o',
+                        'icon' => 'delete-o',
                         'route' => '#',
-                        'title' => 'Editar',
+                        'title' => 'Excluir',
+                        'variant' => 'danger',
                     ],
                 ],
             ];

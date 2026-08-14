@@ -46,6 +46,12 @@
             ]"
             :data="$materials"
             :action="route('donations.index')"
+            :delete-confirmation="[
+                'title' => 'Excluir item do estoque?',
+                'message' => 'O item será removido da listagem, mas suas movimentações permanecerão no histórico. Deseja continuar?',
+                'confirmLabel' => 'Excluir item',
+                'variant' => 'danger',
+            ]"
             :filters="[
                 'search' => [
                     'name' => 'q',
