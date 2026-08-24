@@ -15,11 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        if (User::query()->where('perfil', 'administrador')->exists()) {
+            return;
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::factory()->administrador()->create([
+            'nome' => env('ADMIN_SEED_NOME', 'Administrador'),
+            'email' => env('ADMIN_SEED_EMAIL', 'admin@anjosdopeito.org.br'),
+            'senha' => env('ADMIN_SEED_PASSWORD', 'change-me'),
         ]);
     }
 }
