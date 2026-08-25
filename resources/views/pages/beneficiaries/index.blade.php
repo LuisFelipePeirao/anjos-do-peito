@@ -7,6 +7,12 @@
 
 @section('content')
     <section class="space-y-6">
+        @if (session('status'))
+            <div class="rounded-[8px] border border-[#b8e6c8] bg-[#effcf4] px-4 py-3 text-sm font-medium text-[#23845a]">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <x-app.page-info subheading="Gestão de beneficiárias" title="Beneficiárias cadastradas"
             description="Consulte, filtre e acompanhe os cadastros das mães atendidas pela ONG." :firstButton="[
             'label' => 'Nova beneficiária',

@@ -18,6 +18,10 @@
         $cancelRoute = $isEdit
             ? route('attendances.show', $attendanceData['id'])
             : route('attendances.index');
+        $formAction = $isEdit
+            ? route('attendances.update', $attendance)
+            : route('attendances.store');
+        $selectedStatus = old('status', $attendanceData['status']);
         $unsavedChangesConfirmation = [
             'title' => 'Sair sem salvar?',
             'message' => 'As informações preenchidas nesta página não serão salvas. Deseja realmente sair?',
@@ -42,7 +46,7 @@
                 'href' => route('attendances.index'),
             ])" />
 
-        <form method="POST" action="#" class="space-y-6">
+        <form method="POST" action="{{ $formAction }}" class="space-y-6">
             @csrf
             @if ($isEdit)
                 @method('PUT')
@@ -64,47 +68,56 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
                     <label class="block">
                         <span class="{{ $labelClass }}">Data</span>
-                        <input type="date" name="date" value="{{ $attendanceData['date'] }}" class="{{ $inputClass }}" required>
+                        <input type="date" name="date" value="{{ old('date', $attendanceData['date']) }}" class="{{ $inputClass }}" required>
+                        @error('date') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Horário</span>
-                        <input type="time" name="time" value="{{ $attendanceData['time'] }}" class="{{ $inputClass }}" required>
+                        <input type="time" name="time" value="{{ old('time', $attendanceData['time']) }}" class="{{ $inputClass }}" required>
+                        @error('time') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
-                    <x-material.select
-                        name="duration"
-                        label="Duração prevista"
-                        :options="collect(['30', '45', '60', '90'])->map(fn ($duration) => [
-                            'value' => $duration,
-                            'label' => $duration.' minutos',
-                        ])->all()"
-                        :selected="$attendanceData['duration']"
-                    />
+                    <div>
+                        <x-material.select
+                            name="duration"
+                            label="Duração prevista"
+                            :options="$durations"
+                            :selected="old('duration', $attendanceData['duration'])"
+                        />
+                        @error('duration') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
 
-                    <x-material.select
-                        name="status"
-                        label="Situação"
-                        :options="['Agendado', 'Realizado', 'Retorno pendente', 'Cancelado']"
-                        :selected="$attendanceData['status']"
-                    />
+                    <div>
+                        <x-material.select
+                            name="status"
+                            label="Situação"
+                            :options="$statuses"
+                            :selected="old('status', $attendanceData['status'])"
+                        />
+                        @error('status') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
 
-                    <x-material.select
-                        name="modality"
-                        label="Modalidade"
-                        :options="['Presencial', 'Remota']"
-                        :selected="$attendanceData['modality']"
-                        wrapper-class="md:col-span-2"
-                    />
+                    <div>
+                        <x-material.select
+                            name="modality"
+                            label="Modalidade"
+                            :options="$modalities"
+                            :selected="old('modality', $attendanceData['modality'])"
+                        />
+                        @error('modality') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
 
-                    <x-material.select
-                        name="location"
-                        label="Local"
-                        :options="$locations"
-                        :selected="$attendanceData['location']"
-                        placeholder="Selecione"
-                        wrapper-class="md:col-span-2"
-                    />
+                    <div>
+                        <x-material.select
+                            name="location"
+                            label="Local"
+                            :options="$locations"
+                            :selected="old('location', $attendanceData['location'])"
+                            placeholder="Selecionar local cadastrado"
+                        />
+                        @error('location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
                 </div>
             </article>
 
@@ -122,33 +135,33 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
-                    <x-material.select
-                        name="beneficiary"
-                        label="Beneficiária"
-                        :options="$beneficiaries"
-                        :selected="$attendanceData['beneficiary']"
-                        placeholder="Selecione"
-                        required
-                    />
+                    <div>
+                        <x-material.select
+                            name="beneficiary"
+                            label="Beneficiária"
+                            :options="$beneficiaries"
+                            :selected="old('beneficiary', $attendanceData['beneficiary'])"
+                            placeholder="Selecione"
+                            required
+                        />
+                        @error('beneficiary') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
 
-                    <x-material.select
-                        name="professional"
-                        label="Profissional"
-                        :options="$professionals"
-                        :selected="$attendanceData['professional']"
-                        placeholder="Selecione"
-                        required
-                    />
-
-                    <x-material.select
-                        name="priority"
-                        label="Prioridade"
-                        :options="['Baixa', 'Média', 'Alta']"
-                        :selected="$attendanceData['priority']"
-                    />
+                    <div>
+                        <x-material.select
+                            name="professional"
+                            label="Profissional"
+                            :options="$professionals"
+                            :selected="old('professional', $attendanceData['professional'])"
+                            placeholder="Selecione"
+                            required
+                        />
+                        @error('professional') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
                 </div>
             </article>
 
+            <div data-attendance-clinical-fields @class(['space-y-6', 'hidden' => $selectedStatus === 'agendado'])>
             <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
@@ -165,27 +178,32 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2">
                     <label class="block md:col-span-2">
                         <span class="{{ $labelClass }}">Resumo</span>
-                        <input type="text" name="summary" value="{{ $attendanceData['summary'] }}" class="{{ $inputClass }}" placeholder="Ex.: Orientações sobre amamentação e pega correta">
+                        <input type="text" name="summary" value="{{ old('summary', $attendanceData['summary']) }}" class="{{ $inputClass }}" placeholder="Ex.: Orientações sobre amamentação e pega correta">
+                        @error('summary') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block md:col-span-2">
                         <span class="{{ $labelClass }}">Objetivo</span>
-                        <textarea name="objective" class="{{ $textareaClass }}" placeholder="Descreva o objetivo principal do atendimento.">{{ $attendanceData['objective'] }}</textarea>
+                        <textarea name="objective" class="{{ $textareaClass }}" placeholder="Descreva o objetivo principal do atendimento.">{{ old('objective', $attendanceData['objective']) }}</textarea>
+                        @error('objective') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Queixa principal</span>
-                        <textarea name="complaint" class="{{ $textareaClass }}" placeholder="Registre a principal demanda apresentada.">{{ $attendanceData['complaint'] }}</textarea>
+                        <textarea name="complaint" class="{{ $textareaClass }}" placeholder="Registre a principal demanda apresentada.">{{ old('complaint', $attendanceData['complaint']) }}</textarea>
+                        @error('complaint') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Avaliação</span>
-                        <textarea name="evaluation" class="{{ $textareaClass }}" placeholder="Registre observações e avaliação da equipe.">{{ $attendanceData['evaluation'] }}</textarea>
+                        <textarea name="evaluation" class="{{ $textareaClass }}" placeholder="Registre observações e avaliação da equipe.">{{ old('evaluation', $attendanceData['evaluation']) }}</textarea>
+                        @error('evaluation') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block md:col-span-2">
                         <span class="{{ $labelClass }}">Conduta</span>
-                        <textarea name="conduct" class="{{ $textareaClass }}" placeholder="Descreva orientações, decisões e cuidados combinados.">{{ $attendanceData['conduct'] }}</textarea>
+                        <textarea name="conduct" class="{{ $textareaClass }}" placeholder="Descreva orientações, decisões e cuidados combinados.">{{ old('conduct', $attendanceData['conduct']) }}</textarea>
+                        @error('conduct') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
                 </div>
             </article>
@@ -197,29 +215,21 @@
                             <x-lucide-forward class="h-5 w-5" />
                         </span>
                         <div>
-                            <h3 class="text-lg font-bold text-[#111827]">Retorno e encaminhamentos</h3>
-                            <p class="mt-1 text-sm text-[#667085]">Defina próximos passos e informações internas para acompanhamento.</p>
+                            <h3 class="text-lg font-bold text-[#111827]">Observações</h3>
+                            <p class="mt-1 text-sm text-[#667085]">Informações complementares para acompanhamento interno.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid gap-5 p-5 md:grid-cols-2">
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Data de retorno</span>
-                        <input type="date" name="return_date" value="{{ $attendanceData['return_date'] }}" class="{{ $inputClass }}">
-                    </label>
-
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Encaminhamento</span>
-                        <input type="text" name="referral" value="{{ $attendanceData['referral'] }}" class="{{ $inputClass }}" placeholder="Ex.: Retorno agendado, UBS, material educativo">
-                    </label>
-
+                <div class="grid gap-5 p-5">
                     <label class="block md:col-span-2">
                         <span class="{{ $labelClass }}">Observações internas</span>
-                        <textarea name="notes" class="{{ $textareaClass }}" placeholder="Notas para a equipe, lembretes e informações complementares.">{{ $attendanceData['notes'] }}</textarea>
+                        <textarea name="notes" class="{{ $textareaClass }}" placeholder="Notas para a equipe, lembretes e informações complementares.">{{ old('notes', $attendanceData['notes']) }}</textarea>
+                        @error('notes') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
                 </div>
             </article>
+            </div>
 
             <div class="sticky bottom-0 -mx-4 border-t border-[#eadfe0] bg-[#fbfaf9]/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8">
                 <div class="mx-auto flex max-w-6xl flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">

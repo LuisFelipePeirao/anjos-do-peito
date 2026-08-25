@@ -42,11 +42,21 @@
         </a>
 
         @if ($secondButton)
-            <a href="{{ $secondButton['link'] }}"
+            @if (isset($secondButton['dialog']))
+                <button
+                    type="button"
+                    data-dialog-open="{{ $secondButton['dialog'] }}"
+                    class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                    <x-dynamic-component :component="$secondButton['icon']" class="h-5 w-5" />
+                    {{ $secondButton['label'] }}
+                </button>
+            @else
+                <a href="{{ $secondButton['link'] }}"
                 class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
-                <x-dynamic-component :component="$secondButton['icon']" class="h-5 w-5" />
-                {{ $secondButton['label'] }}
-            </a>
+                    <x-dynamic-component :component="$secondButton['icon']" class="h-5 w-5" />
+                    {{ $secondButton['label'] }}
+                </a>
+            @endif
 
         @endif
 

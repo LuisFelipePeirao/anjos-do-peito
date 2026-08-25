@@ -6,21 +6,23 @@
 @section('page-title', 'Visão geral')
 
 @section('content')
+    @php
+        $canManageAttendances = auth()->user()?->canManageAttendances();
+        $primaryAction = $canManageAttendances
+            ? ['label' => 'Novo atendimento', 'link' => route('attendances.create'), 'icon' => 'content-paste-o']
+            : ['label' => 'Nova beneficiária', 'link' => route('beneficiaries.create'), 'icon' => 'person-add-o'];
+        $secondaryAction = $canManageAttendances
+            ? ['label' => 'Nova beneficiária', 'link' => route('beneficiaries.create'), 'icon' => 'person-add-o']
+            : null;
+    @endphp
+
     <section class="space-y-6">
 
         <x-app.page-info
             title="Visão geral da operação"
             description="Indicadores de atendimento, estoque e pontos de atenção para hoje, {{ date('d/m/Y') }}."
-            :firstButton="[
-                'label' => 'Novo atendimento',
-                'link' => route('attendances.create'),
-                'icon' => 'content-paste-o',
-            ]"
-            :secondButton="[
-                'label' => 'Nova beneficiária',
-                'link' => route('beneficiaries.create'),
-                'icon' => 'person-add-o',
-            ]"
+            :firstButton="$primaryAction"
+            :secondButton="$secondaryAction"
         />
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

@@ -122,3 +122,107 @@ document.addEventListener('keydown', (event) => {
 
     document.querySelector('[data-confirm-dialog-modal][open]')?.close();
 });
+
+document.addEventListener('click', (event) => {
+    const openButton = event.target.closest('[data-dialog-open]');
+
+    if (openButton) {
+        document.getElementById(openButton.dataset.dialogOpen)?.showModal();
+        return;
+    }
+
+    const closeButton = event.target.closest('[data-dialog-close]');
+
+    if (closeButton) {
+        closeButton.closest('dialog')?.close();
+    }
+});
+
+document.querySelectorAll('[data-dialog-modal]').forEach((dialog) => {
+    dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) {
+            dialog.close();
+        }
+    });
+});
+
+const digitsOnly = (value, length) => value.replace(/\D/g, '').slice(0, length);
+const formatCpf = (value) => digitsOnly(value, 11)
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+const formatPhone = (value) => digitsOnly(value, 11)
+    .replace(/^(\d{2})(\d)/, '($1) $2')
+    .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+const formatCep = (value) => digitsOnly(value, 8).replace(/(\d{5})(\d)/, '$1-$2');
+
+const maskFormatters = { cpf: formatCpf, phone: formatPhone, cep: formatCep };
+
+document.querySelectorAll('[data-mask]').forEach((input) => {
+    const formatter = maskFormatters[input.dataset.mask];
+
+    if (!formatter) {
+        return;
+    }
+
+    input.value = formatter(input.value);
+    input.addEventListener('input', () => {
+        input.value = formatter(input.value);
+    });
+});
+
+document.querySelectorAll('[data-cep-input]').forEach((input) => {
+    const form = input.closest('form');
+    const feedback = input.parentElement?.querySelector('[data-cep-feedback]');
+    let requestedCep = '';
+
+    input.addEventListener('blur', async () => {
+        const cep = digitsOnly(input.value, 8);
+
+        if (cep.length !== 8 || cep === requestedCep) {
+            return;
+        }
+
+        requestedCep = cep;
+        feedback.textContent = 'Consultando CEP...';
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const address = await response.json();
+
+            if (!response.ok || address.erro) {
+                feedback.textContent = 'CEP não encontrado. Preencha o endereço manualmente.';
+                return;
+            }
+
+            const setValue = (name, value) => {
+                const field = form?.querySelector(`[name="${name}"]`);
+
+                if (field && value) {
+                    field.value = value;
+                    field.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            };
+
+            setValue('logradouro', address.logradouro);
+            setValue('bairro', address.bairro);
+            setValue('cidade', address.localidade);
+            setValue('uf', address.uf);
+            feedback.textContent = 'Endereço preenchido pelo CEP.';
+        } catch {
+            feedback.textContent = 'Não foi possível consultar o CEP. Preencha o endereço manualmente.';
+        }
+    });
+});
+
+const attendanceStatusSelect = document.querySelector('[name="status"]');
+const attendanceClinicalFields = document.querySelector('[data-attendance-clinical-fields]');
+
+if (attendanceStatusSelect && attendanceClinicalFields) {
+    const syncAttendanceClinicalFields = () => {
+        attendanceClinicalFields.classList.toggle('hidden', attendanceStatusSelect.value === 'agendado');
+    };
+
+    attendanceStatusSelect.addEventListener('change', syncAttendanceClinicalFields);
+    syncAttendanceClinicalFields();
+}

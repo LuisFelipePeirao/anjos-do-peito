@@ -49,10 +49,12 @@
         confirm-label="Sair"
         variant="warning"
         icon="gmdi-logout-o"
-        :href="route('login')"
+        :action="route('logout')"
+        method="POST"
     />
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+    @stack('scripts')
 </body>
 
 </html>

@@ -10,14 +10,13 @@
         $tabs = [
             'overview' => 'Visão geral',
             'evolution' => 'Evolução',
-            'referrals' => 'Encaminhamentos',
             'history' => 'Histórico',
         ];
 
-        $statusClass = match ($attendanceData['status']) {
+        $statusClass = match ($attendanceData['status_label']) {
             'Realizado' => 'bg-[#e8f8ee] text-[#23845a]',
+            'Em atendimento' => 'bg-[#ecfdf3] text-[#23845a]',
             'Agendado' => 'bg-[#eef4ff] text-[#2f66d0]',
-            'Retorno pendente' => 'bg-[#fff7e6] text-[#b76b00]',
             'Cancelado' => 'bg-[#fff1f1] text-[#c2414b]',
             default => 'bg-[#f2f4f7] text-[#667085]',
         };
@@ -27,7 +26,7 @@
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
                 <h2 class="text-2xl font-bold tracking-normal text-[#111827] md:text-3xl">
-                    Atendimento de {{ $attendanceData['beneficiary'] }}
+                    Atendimento de {{ $attendanceData['beneficiary_name'] }}
                 </h2>
                 <p class="mt-1 text-sm text-[#667085]">
                     Registro detalhado do atendimento, orientações, retornos e histórico operacional.
@@ -39,16 +38,24 @@
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
-                    Concluir atendimento
-                </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
-                    Agendar retorno
-                </a>
+                @if ($attendance->situacao === 'agendado')
+                    <form action="{{ route('attendances.start', $attendance) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                            <x-lucide-play class="h-4 w-4" />
+                            Iniciar atendimento
+                        </button>
+                    </form>
+                @endif
                 <a href="{{ route('attendances.edit', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-pencil class="h-4 w-4" />
                     Editar
                 </a>
+                <button type="button" data-confirm-dialog-open="attendance-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1]">
+                    <x-lucide-trash-2 class="h-4 w-4" />
+                    Excluir
+                </button>
             </div>
         </div>
 
@@ -60,10 +67,10 @@
                     </div>
                     <div>
                         <div class="flex flex-wrap items-center gap-3">
-                            <h3 class="text-xl font-bold text-[#111827]">{{ $attendanceData['beneficiary'] }}</h3>
+                            <h3 class="text-xl font-bold text-[#111827]">{{ $attendanceData['beneficiary_name'] }}</h3>
                             <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClass }}">
                                 <x-lucide-circle-check class="h-3.5 w-3.5" />
-                                {{ $attendanceData['status'] }}
+                                {{ $attendanceData['status_label'] }}
                             </span>
                         </div>
                         <p class="mt-2 text-sm text-[#667085]">{{ $attendanceData['summary'] }}</p>
@@ -73,19 +80,19 @@
                 <dl class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                     <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">Data e horário</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['date'] }} às {{ $attendanceData['time'] }}</dd>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['formatted_date'] }} às {{ $attendanceData['time'] }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">Profissional</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['professional'] }}</dd>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['professional_name'] }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">Modalidade</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['modality'] }}</dd>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['modality_label'] }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">Local</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['location'] }}</dd>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['location_name'] }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">CPF</dt>
@@ -100,8 +107,8 @@
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['baby_name'] }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase text-[#667085]">Retorno</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['return_date'] }}</dd>
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">Duração</dt>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['duration_label'] }}</dd>
                     </div>
                 </dl>
             </div>
@@ -161,12 +168,6 @@
                 :data="$evolution"
                 :show-actions="false"
             />
-        @elseif ($tab === 'referrals')
-            <x-tables.datatable
-                :header="['Data', 'Tipo', 'Descrição', 'Situação']"
-                :data="$referrals"
-                :show-actions="false"
-            />
         @elseif ($tab === 'history')
             <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
@@ -199,5 +200,14 @@
                 </div>
             </article>
         @endif
+
+        <x-app.confirm-modal
+            id="attendance-delete-confirmation"
+            title="Excluir atendimento?"
+            message="As informações deste atendimento serão removidas do histórico. Deseja continuar?"
+            confirm-label="Excluir atendimento"
+            :action="route('attendances.destroy', $attendance)"
+            method="DELETE"
+        />
     </section>
 @endsection

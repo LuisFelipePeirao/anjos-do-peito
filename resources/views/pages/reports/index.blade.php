@@ -31,8 +31,8 @@
     ];
 
     $attendanceModalityChart = [
-        ['label' => 'Presencial', 'value' => '67%', 'percent' => 67, 'tone' => 'rose', 'description' => '28 atendimentos realizados no período.', 'details' => ['Retornos pendentes' => '3', 'Tempo médio' => '42 min']],
-        ['label' => 'Remota', 'value' => '33%', 'percent' => 33, 'tone' => 'blue', 'description' => '14 atendimentos realizados no período.', 'details' => ['Retornos pendentes' => '2', 'Tempo médio' => '26 min']],
+        ['label' => 'Presencial', 'value' => '67%', 'percent' => 67, 'tone' => 'rose', 'description' => '28 atendimentos realizados no período.', 'details' => ['Acompanhamentos' => '3', 'Tempo médio' => '42 min']],
+        ['label' => 'Remota', 'value' => '33%', 'percent' => 33, 'tone' => 'blue', 'description' => '14 atendimentos realizados no período.', 'details' => ['Acompanhamentos' => '2', 'Tempo médio' => '26 min']],
     ];
 
     $professionalChart = [

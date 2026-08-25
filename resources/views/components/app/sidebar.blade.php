@@ -3,15 +3,29 @@
 ])
 
 @php
+    $currentUser = auth()->user();
+
     $items = [
-        ['label' => 'Início', 'route' => 'home', 'icon' => 'gmdi-dashboard-o'],
-        ['label' => 'Beneficiárias', 'route' => 'beneficiaries.index', 'icon' => 'gmdi-people-o'],
-        ['label' => 'Atendimentos', 'route' => 'attendances.index', 'icon' => 'gmdi-content-paste-o'],
+        ['label' => 'Inicio', 'route' => 'home', 'icon' => 'gmdi-dashboard-o'],
+        ['label' => 'Beneficiarias', 'route' => 'beneficiaries.index', 'icon' => 'gmdi-people-o'],
         ['label' => 'Bombas de leite', 'route' => 'pumps.index', 'icon' => 'lucide-milk'],
-        ['label' => 'Doações e estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
-        ['label' => 'Relatórios', 'route' => 'reports.index', 'icon' => 'gmdi-bar-chart-o'],
-        ['label' => 'Usuários', 'route' => '', 'icon' => 'gmdi-account-circle-o'],
+        ['label' => 'Doacoes e estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
+        ['label' => 'Relatorios', 'route' => 'reports.index', 'icon' => 'gmdi-bar-chart-o'],
     ];
+
+    if ($currentUser?->canManageAttendances()) {
+        array_splice($items, 2, 0, [['label' => 'Atendimentos', 'route' => 'attendances.index', 'icon' => 'gmdi-content-paste-o']]);
+    }
+
+    if (auth()->user()?->isAdministrador()) {
+        $items[] = ['label' => 'Usuários', 'route' => 'users.index', 'icon' => 'gmdi-account-circle-o'];
+    }
+
+    $initials = collect(explode(' ', trim((string) $currentUser?->nome)))
+        ->filter()
+        ->take(2)
+        ->map(fn (string $part) => mb_substr($part, 0, 1))
+        ->join('');
 @endphp
 
 <aside
@@ -25,7 +39,6 @@
 
         <div class="sidebar-brand min-w-0 flex-1">
             <strong class="block truncate text-sm font-semibold text-[#111827]">Anjos do Peito</strong>
-            {{-- <span class="block truncate text-xs text-[#667085]">Sistema administrativo</span> --}}
         </div>
 
         <button
@@ -43,7 +56,7 @@
         @foreach ($items as $item)
             @php
                 $isActive = $active === $item['route'] || ($item['route'] && request()->routeIs($item['route']));
-                $href = $item['route'] ? route($item['route']) : '#';
+                $href = route($item['route']);
             @endphp
 
             <a
@@ -59,11 +72,11 @@
     <div class="border-t border-[#eadfe0] p-4">
         <div class="sidebar-user mb-3 flex items-center gap-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ef5b97] text-sm font-semibold text-white">
-                LZ
+                {{ $initials ?: 'U' }}
             </div>
             <div class="sidebar-text min-w-0">
-                <strong class="block truncate text-sm font-semibold text-[#111827]">Luzilene Zimmerman</strong>
-                <span class="block truncate text-xs text-[#667085]">Administradora</span>
+                <strong class="block truncate text-sm font-semibold text-[#111827]">{{ $currentUser?->nome ?? 'Usuario' }}</strong>
+                <span class="block truncate text-xs text-[#667085]">{{ ucfirst($currentUser?->perfil ?? '') }}</span>
             </div>
         </div>
 

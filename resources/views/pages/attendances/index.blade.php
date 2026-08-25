@@ -15,6 +15,12 @@
                 'label' => 'Novo atendimento',
                 'link' => route('attendances.create'),
                 'icon' => 'add',
+            ]"
+            :secondButton="[
+                'label' => 'Novo local',
+                'link' => '#',
+                'icon' => 'add',
+                'dialog' => 'attendance-location-create-dialog',
             ]" />
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -61,10 +67,10 @@
                         'value' => $status,
                         'options' => [
                             ['value' => 'all', 'label' => 'Todas as situações'],
-                            ['value' => 'Agendado', 'label' => 'Agendados'],
-                            ['value' => 'Realizado', 'label' => 'Realizados'],
-                            ['value' => 'Retorno pendente', 'label' => 'Retorno pendente'],
-                            ['value' => 'Cancelado', 'label' => 'Cancelados'],
+                            ['value' => 'agendado', 'label' => 'Agendados'],
+                            ['value' => 'em_atendimento', 'label' => 'Em atendimento'],
+                            ['value' => 'realizado', 'label' => 'Realizados'],
+                            ['value' => 'cancelado', 'label' => 'Cancelados'],
                         ],
                     ],
                     [
@@ -73,11 +79,17 @@
                         'value' => $modality,
                         'options' => [
                             ['value' => 'all', 'label' => 'Todas as modalidades'],
-                            ['value' => 'Presencial', 'label' => 'Presencial'],
-                            ['value' => 'Remota', 'label' => 'Remota'],
+                            ['value' => 'presencial', 'label' => 'Presencial'],
+                            ['value' => 'remota', 'label' => 'Remota'],
                         ],
                     ],
                 ],
             ]" />
+
+        @include('pages.attendances.partials.location-modal')
+
+        @if ($errors->location->any())
+            <script>document.addEventListener('DOMContentLoaded', () => document.getElementById('attendance-location-create-dialog')?.showModal());</script>
+        @endif
     </section>
 @endsection
