@@ -67,19 +67,18 @@
                         'value' => $status,
                         'options' => [
                             ['value' => 'all', 'label' => 'Todas as situações'],
-                            ['value' => 'Disponível', 'label' => 'Disponíveis'],
-                            ['value' => 'Emprestada', 'label' => 'Emprestadas'],
-                            ['value' => 'Em atraso', 'label' => 'Em atraso'],
-                            ['value' => 'Manutenção', 'label' => 'Manutenção'],
+                            ['value' => 'disponivel', 'label' => 'Disponíveis'],
+                            ['value' => 'alugada', 'label' => 'Emprestadas'],
+                            ['value' => 'overdue', 'label' => 'Em atraso'],
+                            ['value' => 'manutencao', 'label' => 'Manutenção'],
+                            ['value' => 'baixada', 'label' => 'Inativas'],
                         ],
                     ],
                     [
                         'name' => 'model',
                         'label' => 'Modelo da bomba',
                         'value' => $model,
-                        'options' => collect([['value' => 'all', 'label' => 'Todos os modelos']])
-                            ->merge(collect($models)->map(fn ($pumpModel) => ['value' => $pumpModel, 'label' => $pumpModel]))
-                            ->all(),
+                        'options' => collect([['value' => 'all', 'label' => 'Todos os modelos']])->merge($models)->all(),
                     ],
                 ],
             ]" />

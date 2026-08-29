@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\BeneficiaryController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PumpController;
+use App\Http\Controllers\PumpLoanController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/icon', 'icons.index')->name('icons.index');
@@ -59,98 +62,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/atendimentos/{attendance}', [AttendanceController::class, 'destroy'])->name('attendances.destroy');
     });
 
-    Route::get('/home', function () {
-        $kpis = [
-            [
-                'label' => 'Beneficiárias ativas',
-                'value' => '184',
-                'context' => '+12 novos cadastros em agosto',
-                'trend' => '+7,1%',
-                'trendType' => 'up',
-                'icon' => 'people-o',
-                'tone' => 'rose',
-            ],
-            [
-                'label' => 'Atendimentos no mês',
-                'value' => '42',
-                'context' => 'Meta mensal: 55 atendimentos',
-                'trend' => '+18,4%',
-                'trendType' => 'up',
-                'icon' => 'content-paste-o',
-                'tone' => 'blue',
-            ],
-            [
-                'label' => 'Bombas disponíveis',
-                'value' => '8',
-                'context' => '40% do parque operacional livre',
-                'trend' => '-2 un.',
-                'trendType' => 'down',
-                'icon' => 'inventory-2-o',
-                'tone' => 'green',
-            ],
-            [
-                'label' => 'Riscos operacionais',
-                'value' => '9',
-                'context' => '3 devoluções e 6 itens críticos',
-                'trend' => '+3',
-                'trendType' => 'down',
-                'icon' => 'report-problem-o',
-                'tone' => 'amber',
-            ],
-        ];
-
-        $monthlyAttendances = [
-            'percent' => '82%',
-            'values' => [
-                ['month' => 'Abr', 'total' => 50, 'target' => 38],
-                ['month' => 'Mar', 'total' => 26, 'target' => 38],
-                ['month' => 'Mai', 'total' => 37, 'target' => 42],
-                ['month' => 'Jun', 'total' => 34, 'target' => 45],
-                ['month' => 'Jul', 'total' => 46, 'target' => 50],
-                ['month' => 'Ago', 'total' => 42, 'target' => 55],
-            ],
-        ];
-
-        $stock = [
-            ['label' => 'Bombas', 'available' => 8, 'used' => 12, 'minimum' => 6],
-            ['label' => 'Fraldas M', 'available' => 24, 'used' => 36, 'minimum' => 30],
-            ['label' => 'Leite em pó', 'available' => 18, 'used' => 42, 'minimum' => 25],
-            ['label' => 'Lenços', 'available' => 15, 'used' => 28, 'minimum' => 20],
-        ];
-
-        $pipeline = [
-            ['label' => 'Triagem', 'value' => 23, 'percent' => 100],
-            ['label' => 'Cadastro', 'value' => 18, 'percent' => 78],
-            ['label' => 'Atendimento', 'value' => 14, 'percent' => 61],
-            ['label' => 'Acompanhamento', 'value' => 9, 'percent' => 39],
-        ];
-
-        $risks = [
-            ['title' => '3 bombas com devolução atrasada', 'description' => 'BP-004, BP-002 e BP-011 estão fora do prazo previsto.', 'tone' => 'red'],
-            ['title' => '6 itens abaixo do estoque mínimo', 'description' => 'Leite em pó, fralda M e lenço umedecido exigem reposição.', 'tone' => 'amber'],
-            ['title' => '5 beneficiárias sem retorno', 'description' => 'Casos aguardando contato da equipe há mais de 7 dias.', 'tone' => 'blue'],
-        ];
-
-        $recent = [
-            ['time' => '14:30', 'title' => 'Atendimento registrado para Maria da Silva.', 'meta' => 'Consulta de acompanhamento'],
-            ['time' => '11:20', 'title' => 'Bomba BP-015 emprestada para Ana Souza.', 'meta' => 'Previsão de devolução em 30 dias'],
-            ['time' => '09:45', 'title' => 'Entrada de 20 pacotes de fraldas no estoque.', 'meta' => 'Doação registrada pela equipe'],
-        ];
-
-        $maxAttendance = $monthlyAttendances['values'] ? max(array_column($monthlyAttendances['values'], 'total')) : 0;
-        $totalStock = array_sum(array_column($stock, 'available')) + array_sum(array_column($stock, 'used'));
-
-        return view('pages.home', compact(
-            'kpis',
-            'monthlyAttendances',
-            'stock',
-            'pipeline',
-            'risks',
-            'recent',
-            'maxAttendance',
-            'totalStock'
-        ));
-    })->name('home');
+    Route::get('/home', HomeController::class)->name('home');
 
     /* Protótipo substituído pelo BeneficiaryController.
     Route::get('/beneficiarias', function () {
@@ -532,235 +444,17 @@ Route::middleware('auth')->group(function () {
     })->name('attendances.show');
     */
 
-    Route::get('/bombas-de-leite/nova', function () {
-        return view('pages.pumps.create', [
-            'models' => ['Medela Swing', 'G-Tech Compact', 'Lillo Mamy', 'Multikids Baby'],
-            'locations' => ['Estoque central', 'Sala de higienização', 'Sala de atendimento 1', 'Sala de atendimento 2'],
-            'statuses' => ['Disponível', 'Manutenção', 'Inativa'],
-        ]);
-    })->name('pumps.create');
+    Route::get('/bombas-de-leite/emprestimos/novo', [PumpLoanController::class, 'create'])->name('pumps.loans.create');
+    Route::post('/bombas-de-leite/emprestimos', [PumpLoanController::class, 'store'])->name('pumps.loans.store');
 
-    Route::get('/bombas-de-leite/emprestimos/novo', function () {
-        return view('pages.pumps.loans.create', [
-            'availablePumps' => [
-                ['code' => 'BP-001', 'model' => 'Medela Swing'],
-                ['code' => 'BP-006', 'model' => 'Multikids Baby'],
-                ['code' => 'BP-008', 'model' => 'Medela Swing'],
-            ],
-            'beneficiaries' => ['Maria da Silva', 'Ana Souza', 'Juliana Martins', 'Patrícia Lima', 'Renata Alves'],
-            'responsibles' => ['Mariana Fernandes', 'Fernanda Souza', 'Camila Rocha'],
-            'locations' => ['Estoque central', 'Sala de atendimento 1', 'Sala de atendimento 2'],
-        ]);
-    })->name('pumps.loans.create');
-
-    Route::get('/bombas-de-leite', function () {
-        $kpis = [
-            [
-                'label' => 'Bombas cadastradas',
-                'value' => '20',
-                'context' => 'Equipamentos registrados no sistema',
-                'trend' => '+2',
-                'trendType' => 'up',
-                'icon' => 'coffee-maker-o',
-                'tone' => 'rose',
-            ],
-            [
-                'label' => 'Disponíveis',
-                'value' => '8',
-                'context' => 'Prontas para novo empréstimo',
-                'trend' => null,
-                'trendType' => 'up',
-                'icon' => 'check',
-                'tone' => 'green',
-            ],
-            [
-                'label' => 'Emprestadas',
-                'value' => '10',
-                'context' => 'Em uso por beneficiárias',
-                'trend' => '+3',
-                'trendType' => 'up',
-                'icon' => 'trending-up',
-                'tone' => 'blue',
-            ],
-            [
-                'label' => 'Devoluções atrasadas',
-                'value' => '3',
-                'context' => 'Exigem contato da equipe',
-                'trend' => '+1',
-                'trendType' => 'down',
-                'icon' => 'report-problem-o',
-                'tone' => 'amber',
-            ],
-        ];
-
-        $pumps = [
-            ['code' => 'BP-001', 'model' => 'Medela Swing', 'beneficiary' => '-', 'withdrawn_at' => '-', 'expected_return' => '-', 'status' => 'Disponível'],
-            ['code' => 'BP-002', 'model' => 'G-Tech Compact', 'beneficiary' => 'Ana Souza', 'withdrawn_at' => '18/07/2026', 'expected_return' => '01/08/2026', 'status' => 'Em atraso'],
-            ['code' => 'BP-003', 'model' => 'Lillo Mamy', 'beneficiary' => '-', 'withdrawn_at' => '-', 'expected_return' => '-', 'status' => 'Manutenção'],
-            ['code' => 'BP-004', 'model' => 'Medela Swing', 'beneficiary' => 'Maria da Silva', 'withdrawn_at' => '22/07/2026', 'expected_return' => '05/08/2026', 'status' => 'Em atraso'],
-            ['code' => 'BP-005', 'model' => 'G-Tech Compact', 'beneficiary' => 'Juliana Martins', 'withdrawn_at' => '01/08/2026', 'expected_return' => '31/08/2026', 'status' => 'Emprestada'],
-            ['code' => 'BP-006', 'model' => 'Multikids Baby', 'beneficiary' => '-', 'withdrawn_at' => '-', 'expected_return' => '-', 'status' => 'Disponível'],
-            ['code' => 'BP-007', 'model' => 'Lillo Mamy', 'beneficiary' => 'Patrícia Lima', 'withdrawn_at' => '30/07/2026', 'expected_return' => '29/08/2026', 'status' => 'Emprestada'],
-            ['code' => 'BP-008', 'model' => 'Medela Swing', 'beneficiary' => '-', 'withdrawn_at' => '-', 'expected_return' => '-', 'status' => 'Disponível'],
-        ];
-
-        $stock = [
-            ['label' => 'Disponíveis', 'available' => 8, 'used' => 0, 'minimum' => 4],
-            ['label' => 'Emprestadas', 'available' => 0, 'used' => 10, 'minimum' => 0],
-            ['label' => 'Manutenção', 'available' => 0, 'used' => 2, 'minimum' => 0],
-        ];
-
-        $alerts = [
-            ['title' => '3 bombas com devolução atrasada', 'description' => 'BP-002, BP-004 e BP-011 passaram da data prevista de retorno.', 'tone' => 'red'],
-            ['title' => '2 bombas em manutenção', 'description' => 'BP-003 e BP-014 aguardam revisão antes de novo empréstimo.', 'tone' => 'amber'],
-            ['title' => '8 bombas disponíveis', 'description' => 'Há equipamentos suficientes para os novos atendimentos da semana.', 'tone' => 'blue'],
-        ];
-
-        $recent = [
-            ['time' => '15:20', 'title' => 'BP-006 marcada como disponível.', 'meta' => 'Higienização concluída por Mariana Fernandes'],
-            ['time' => '11:40', 'title' => 'BP-005 emprestada para Juliana Martins.', 'meta' => 'Devolução prevista para 31/08/2026'],
-            ['time' => '09:10', 'title' => 'Equipe registrou atraso da BP-004.', 'meta' => 'Contato com beneficiária pendente'],
-        ];
-
-        $search = trim((string) request('q', ''));
-        $status = request('status', 'all');
-        $model = request('model', 'all');
-
-        $filteredPumps = collect($pumps)
-            ->when($status !== 'all', fn ($items) => $items->where('status', $status))
-            ->when($model !== 'all', fn ($items) => $items->where('model', $model))
-            ->when($search !== '', function ($items) use ($search) {
-                $lowerSearch = mb_strtolower($search);
-
-                return $items->filter(function ($pump) use ($lowerSearch) {
-                    return str_contains(mb_strtolower($pump['code']), $lowerSearch)
-                        || str_contains(mb_strtolower($pump['model']), $lowerSearch)
-                        || str_contains(mb_strtolower($pump['beneficiary']), $lowerSearch);
-                });
-            })
-            ->map(function ($pump) {
-                $pump['_actions'] = [
-                    'items' => [
-                        [
-                            'icon' => 'visibility-o',
-                            'route' => route('pumps.show', $pump['code']),
-                            'title' => 'Visualizar',
-                        ],
-                        [
-                            'icon' => 'delete-o',
-                            'route' => '#',
-                            'title' => 'Excluir',
-                            'variant' => 'danger',
-                        ],
-                    ],
-                ];
-
-                return $pump;
-            })
-            ->values()
-            ->all();
-
-        $totalStock = array_sum(array_column($stock, 'available')) + array_sum(array_column($stock, 'used'));
-        $models = collect($pumps)->pluck('model')->unique()->values()->all();
-
-        return view('pages.pumps.index', [
-            'pumps' => $filteredPumps,
-            'kpis' => $kpis,
-            'stock' => $stock,
-            'totalStock' => $totalStock,
-            'alerts' => $alerts,
-            'recent' => $recent,
-            'search' => $search,
-            'status' => $status,
-            'model' => $model,
-            'models' => $models,
-        ]);
-    })->name('pumps.index');
-
-    Route::get('/bombas-de-leite/{pump}', function (string $pump) {
-        $isAvailable = in_array($pump, ['BP-001', 'BP-006', 'BP-008'], true);
-        $isRental = $pump === 'BP-005';
-
-        $pumpData = [
-            'code' => $pump,
-            'model' => match ($pump) {
-                'BP-002', 'BP-005' => 'G-Tech Compact',
-                'BP-003', 'BP-007' => 'Lillo Mamy',
-                'BP-006' => 'Multikids Baby',
-                default => 'Medela Swing',
-            },
-            'serial_number' => 'MDL-2026-'.str_pad(preg_replace('/\D/', '', $pump), 3, '0', STR_PAD_LEFT),
-            'status' => $isAvailable ? 'Disponível' : ($pump === 'BP-003' ? 'Manutenção' : ($pump === 'BP-004' ? 'Em atraso' : 'Emprestada')),
-            'location' => $isAvailable ? 'Estoque central' : 'Com beneficiária',
-            'kit_status' => 'Completo',
-            'last_sanitized_at' => '09/08/2026',
-            'next_maintenance_at' => '15/09/2026',
-            'registered_at' => '12/05/2026',
-            'origin' => 'Doação',
-        ];
-
-        $currentContract = $isAvailable ? null : [
-            'type' => $isRental ? 'Aluguel' : 'Empréstimo',
-            'beneficiary' => $isRental ? 'Juliana Martins' : 'Maria da Silva',
-            'phone' => $isRental ? '(11) 96543-2109' : '(47) 99999-1234',
-            'withdrawn_at' => $isRental ? '01/08/2026' : '22/07/2026',
-            'expires_at' => $isRental ? '31/08/2026' : '05/08/2026',
-            'next_renewal_at' => $isRental ? '01/09/2026' : '20/08/2026',
-            'monthly_fee' => $isRental ? 'R$ 100,00' : 'Sem custo',
-            'billing_due_day' => $isRental ? 'Todo dia 10' : '-',
-            'responsible' => 'Mariana Fernandes',
-            'term_status' => 'Assinado',
-            'notes' => $isRental
-                ? 'Aluguel social com mensalidade fixa e renovação mensal.'
-                : 'Empréstimo gratuito para suporte temporário à amamentação.',
-        ];
-
-        $kpis = [
-            ['label' => 'Situação atual', 'value' => $pumpData['status'], 'context' => $isAvailable ? 'Pronta para nova saída' : 'Contrato ativo no momento', 'trend' => null, 'trendType' => 'up', 'icon' => 'check', 'tone' => $isAvailable ? 'green' : 'blue'],
-            ['label' => 'Expiração', 'value' => $currentContract['expires_at'] ?? '-', 'context' => $isAvailable ? 'Sem contrato ativo' : 'Data prevista de devolução', 'trend' => null, 'trendType' => 'down', 'icon' => 'calendar-month-o', 'tone' => $isAvailable ? 'green' : 'amber'],
-            ['label' => 'Próxima renovação', 'value' => $currentContract['next_renewal_at'] ?? '-', 'context' => $isAvailable ? 'Não aplicável' : 'Renovação do contrato atual', 'trend' => null, 'trendType' => 'up', 'icon' => 'autorenew', 'tone' => 'rose'],
-            ['label' => 'Mensalidade', 'value' => $currentContract['monthly_fee'] ?? '-', 'context' => $isRental ? 'Aluguel ativo' : 'Sem cobrança recorrente', 'trend' => null, 'trendType' => 'up', 'icon' => 'receipt', 'tone' => $isRental ? 'blue' : 'green'],
-        ];
-
-        $loanHistory = [
-            ['period' => '01/08/2026 - 31/08/2026', 'type' => 'Aluguel', 'beneficiary' => 'Juliana Martins', 'responsible' => 'Mariana Fernandes', 'status' => $pump === 'BP-005' ? 'Emprestada' : 'Realizado'],
-            ['period' => '22/07/2026 - 05/08/2026', 'type' => 'Empréstimo', 'beneficiary' => 'Maria da Silva', 'responsible' => 'Camila Rocha', 'status' => $pump === 'BP-004' ? 'Em atraso' : 'Realizado'],
-            ['period' => '12/06/2026 - 12/07/2026', 'type' => 'Empréstimo', 'beneficiary' => 'Ana Souza', 'responsible' => 'Fernanda Souza', 'status' => 'Realizado'],
-        ];
-
-        $payments = $isRental ? [
-            ['date' => '10/08/2026 09:40', 'reference' => 'Mensalidade agosto', 'method' => 'Pix', 'value' => 'R$ 100,00', 'status' => 'Pago'],
-            ['date' => '01/08/2026 14:12', 'reference' => 'Taxa de retirada', 'method' => 'Dinheiro', 'value' => 'R$ 20,00', 'status' => 'Pago'],
-            ['date' => '10/09/2026 00:00', 'reference' => 'Mensalidade setembro', 'method' => 'Pix', 'value' => 'R$ 100,00', 'status' => 'Pendente'],
-        ] : [];
-
-        $maintenanceHistory = [
-            ['date' => '09/08/2026', 'type' => 'Higienização', 'description' => 'Higienização completa do kit e conferência de acessórios.', 'responsible' => 'Mariana Fernandes', 'status' => 'Realizado'],
-            ['date' => '15/07/2026', 'type' => 'Revisão preventiva', 'description' => 'Teste de sucção e inspeção da fonte.', 'responsible' => 'Camila Rocha', 'status' => 'Realizado'],
-            ['date' => '15/09/2026', 'type' => 'Próxima revisão', 'description' => 'Revisão preventiva agendada.', 'responsible' => 'Equipe técnica', 'status' => 'Agendado'],
-        ];
-
-        $history = [
-            ['date' => '10/08/2026', 'type' => 'Pagamento registrado', 'description' => 'Mensalidade de agosto registrada por Pix.', 'responsible' => 'Mariana Fernandes', 'icon' => 'receipt'],
-            ['date' => '09/08/2026', 'type' => 'Higienização realizada', 'description' => 'Kit conferido e marcado como completo.', 'responsible' => 'Mariana Fernandes', 'icon' => 'sparkles'],
-            ['date' => '01/08/2026', 'type' => 'Saída registrada', 'description' => 'Bomba entregue para uso da beneficiária.', 'responsible' => 'Mariana Fernandes', 'icon' => 'arrow-up-right'],
-            ['date' => '12/05/2026', 'type' => 'Cadastro da bomba', 'description' => 'Equipamento cadastrado no sistema da ONG.', 'responsible' => 'Luzilene Zimmerman', 'icon' => 'milk'],
-        ];
-
-        $tab = request('tab', 'overview');
-
-        return view('pages.pumps.show', compact(
-            'pump',
-            'pumpData',
-            'currentContract',
-            'kpis',
-            'loanHistory',
-            'payments',
-            'maintenanceHistory',
-            'history',
-            'tab'
-        ));
-    })->name('pumps.show');
+    Route::get('/bombas-de-leite', [PumpController::class, 'index'])->name('pumps.index');
+    Route::get('/bombas-de-leite/nova', [PumpController::class, 'create'])->name('pumps.create');
+    Route::post('/bombas-de-leite', [PumpController::class, 'store'])->name('pumps.store');
+    Route::get('/bombas-de-leite/{pump}', [PumpController::class, 'show'])->name('pumps.show');
+    Route::get('/bombas-de-leite/{pump}/editar', [PumpController::class, 'edit'])->name('pumps.edit');
+    Route::put('/bombas-de-leite/{pump}', [PumpController::class, 'update'])->name('pumps.update');
+    Route::patch('/bombas-de-leite/{pump}/renovar-emprestimo', [PumpController::class, 'renewLoan'])->name('pumps.loans.renew');
+    Route::delete('/bombas-de-leite/{pump}', [PumpController::class, 'destroy'])->name('pumps.destroy');
 
     Route::get('/doacoes-e-estoque', function () {
         $kpis = [

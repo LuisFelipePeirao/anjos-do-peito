@@ -44,10 +44,14 @@
                     <x-lucide-wrench class="h-4 w-4" />
                     Registrar manutenção
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="{{ route('pumps.edit', $pump) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-pencil class="h-4 w-4" />
                     Editar
                 </a>
+                <button type="button" data-confirm-dialog-open="pump-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1]">
+                    <x-lucide-trash-2 class="h-4 w-4" />
+                    Excluir
+                </button>
             </div>
         </div>
 
@@ -96,12 +100,14 @@
                         <dt class="text-xs font-semibold uppercase text-[#667085]">Renovação em</dt>
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['next_renewal_at'] ?? '-' }}</dd>
                     </div>
-                    <div class="sm:col-span-2">
-                        <a href="{{ route('pumps.loans.create') }}" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
-                            <x-lucide-refresh-cw class="h-4 w-4" />
-                            Renovar empréstimo
-                        </a>
-                    </div>
+                    @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
+                        <div class="sm:col-span-2">
+                            <button type="button" data-dialog-open="pump-renewal-modal" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                                <x-lucide-refresh-cw class="h-4 w-4" />
+                                Renovar empréstimo
+                            </button>
+                        </div>
+                    @endif
                 </dl>
             </div>
         </article>
@@ -187,6 +193,10 @@
                                     <dt class="text-xs font-semibold uppercase text-[#667085]">Próxima revisão</dt>
                                     <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $pumpData['next_maintenance_at'] }}</dd>
                                 </div>
+                                <div class="sm:col-span-2">
+                                    <dt class="text-xs font-semibold uppercase text-[#667085]">Acessórios</dt>
+                                    <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $pumpData['accessories'] }}</dd>
+                                </div>
                             </dl>
                         </div>
                     </div>
@@ -251,6 +261,72 @@
                     @endforeach
                 </div>
             </article>
+        @endif
+
+        <x-app.confirm-modal
+            id="pump-delete-confirmation"
+            title="Excluir bomba de leite?"
+            message="Bombas com empréstimos ou manutenções vinculadas serão inativadas para preservar o histórico."
+            confirm-label="Excluir bomba"
+            cancel-label="Cancelar"
+            variant="danger"
+            :action="route('pumps.destroy', $pump)"
+            method="DELETE"
+        />
+
+        @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
+            <dialog
+                id="pump-renewal-modal"
+                aria-labelledby="pump-renewal-modal-title"
+                data-dialog-modal
+                @error('expires_at') data-dialog-auto-open @enderror
+                class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45 backdrop:backdrop-blur-[2px]"
+            >
+                <form method="POST" action="{{ route('pumps.loans.renew', $pump) }}" class="p-5 sm:p-6">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="flex items-start gap-4">
+                        <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full {{ ($currentContract['is_overdue'] ?? false) ? 'bg-[#fff7e6] text-[#b76b00]' : 'bg-[#eef4ff] text-[#2f66d0]' }}">
+                            @if ($currentContract['is_overdue'] ?? false)
+                                <x-gmdi-warning-amber-o class="h-5 w-5" />
+                            @else
+                                <x-lucide-refresh-cw class="h-5 w-5" />
+                            @endif
+                        </span>
+
+                        <div class="min-w-0 flex-1 pt-0.5">
+                            <h2 id="pump-renewal-modal-title" class="text-base font-semibold text-[#111827]">Renovar empréstimo</h2>
+                            <p class="mt-1.5 text-sm leading-6 text-[#667085]">
+                                @if ($currentContract['is_overdue'] ?? false)
+                                    Este empréstimo está atrasado desde {{ $currentContract['expires_at'] }}. Confirme se deseja renovar mesmo assim.
+                                @else
+                                    Informe a nova data de expiração do empréstimo atual.
+                                @endif
+                            </p>
+                        </div>
+
+                        <button type="button" data-dialog-close class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#98a2b3] transition hover:cursor-pointer hover:bg-[#f7edef] hover:text-[#667085] focus:outline-none focus:ring-3 focus:ring-[#fdecef]" aria-label="Fechar">
+                            <x-gmdi-close-o class="h-5 w-5" />
+                        </button>
+                    </div>
+
+                    <label class="mt-6 block">
+                        <span class="text-sm font-semibold text-[#344054]">Nova expiração</span>
+                        <input type="date" name="expires_at" value="{{ old('expires_at', $currentContract['renewal_min_date']) }}" min="{{ $currentContract['renewal_min_date'] }}" class="mt-2 h-11 w-full rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15" required>
+                        @error('expires_at') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </label>
+
+                    <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                        <button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] transition hover:cursor-pointer hover:bg-[#fbfaf9] focus:outline-none focus:ring-3 focus:ring-[#fdecef]">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white transition hover:cursor-pointer hover:bg-[#a94f60] focus:outline-none focus:ring-3 focus:ring-[#fdecef]">
+                            Renovar empréstimo
+                        </button>
+                    </div>
+                </form>
+            </dialog>
         @endif
     </section>
 @endsection

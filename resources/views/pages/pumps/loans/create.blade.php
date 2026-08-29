@@ -18,13 +18,9 @@
             subheading="Movimentação de bombas"
             title="Registrar saída de bomba"
             description="Escolha se a bomba será emprestada sem custo ou alugada com cobrança mensal."
-            :firstButton="[
-                'label' => 'Voltar para lista',
-                'link' => route('pumps.index'),
-                'icon' => 'arrow-left',
-            ]" />
+            :firstButton="['label' => 'Voltar para lista', 'link' => route('pumps.index'), 'icon' => 'arrow-left']" />
 
-        <form method="POST" action="#" class="space-y-6">
+        <form method="POST" action="{{ route('pumps.loans.store') }}" class="space-y-6">
             @csrf
 
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
@@ -43,7 +39,7 @@
                 <div class="grid gap-4 p-5 md:grid-cols-2">
                     <label class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
                         <span class="flex items-start gap-3">
-                            <input type="radio" name="contract_type" value="emprestimo" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type checked>
+                            <input type="radio" name="contract_type" value="emprestimo" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type @checked(old('contract_type', 'emprestimo') === 'emprestimo')>
                             <span>
                                 <span class="block text-base font-bold text-[#111827]">Empréstimo</span>
                                 <span class="mt-1 block text-sm leading-6 text-[#667085]">Saída sem cobrança mensal, usada quando a ONG apenas empresta a bomba para a beneficiária.</span>
@@ -54,7 +50,7 @@
 
                     <label class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
                         <span class="flex items-start gap-3">
-                            <input type="radio" name="contract_type" value="aluguel" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type>
+                            <input type="radio" name="contract_type" value="aluguel" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type @checked(old('contract_type') === 'aluguel')>
                             <span>
                                 <span class="block text-base font-bold text-[#111827]">Aluguel</span>
                                 <span class="mt-1 block text-sm leading-6 text-[#667085]">Saída com mensalidade definida, vencimento recorrente e controle de pagamento.</span>
@@ -63,6 +59,7 @@
                         <span class="mt-4 inline-flex w-fit rounded-full bg-[#eef4ff] px-2.5 py-1 text-xs font-semibold text-[#2f66d0]">Com mensalidade</span>
                     </label>
                 </div>
+                @error('contract_type') <p class="px-5 pb-5 text-xs text-[#c2414b]">{{ $message }}</p> @enderror
             </article>
 
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
@@ -79,25 +76,22 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
-                    <x-material.select
-                        name="pump"
-                        label="Bomba disponível"
-                        :options="collect($availablePumps)->map(fn ($pump) => [
-                            'value' => $pump['code'],
-                            'label' => $pump['code'].' - '.$pump['model'],
-                        ])->all()"
-                        placeholder="Selecione"
-                        required
-                    />
+                    <div>
+                        <x-material.select
+                            name="pump"
+                            label="Bomba disponível"
+                            :options="collect($availablePumps)->map(fn ($pump) => ['value' => $pump['id'], 'label' => $pump['code'].' - '.$pump['model']])->all()"
+                            :selected="old('pump')"
+                            placeholder="Selecione"
+                            required
+                        />
+                        @error('pump') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
 
-                    <x-material.select
-                        name="beneficiary"
-                        label="Beneficiária"
-                        :options="$beneficiaries"
-                        placeholder="Selecione"
-                        required
-                    />
-
+                    <div>
+                        <x-material.select name="beneficiary" label="Beneficiária" :options="$beneficiaries" :selected="old('beneficiary')" placeholder="Selecione" required />
+                        @error('beneficiary') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
                 </div>
             </article>
 
@@ -117,21 +111,20 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
                     <label class="block">
                         <span class="{{ $labelClass }}">Data de retirada</span>
-                        <input type="date" name="withdrawn_at" class="{{ $inputClass }}" required>
+                        <input type="date" name="withdrawn_at" value="{{ old('withdrawn_at', now()->toDateString()) }}" class="{{ $inputClass }}" required>
+                        @error('withdrawn_at') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Devolução prevista</span>
-                        <input type="date" name="expected_return" class="{{ $inputClass }}" required>
+                        <input type="date" name="expected_return" value="{{ old('expected_return', now()->addDays(30)->toDateString()) }}" class="{{ $inputClass }}" required>
+                        @error('expected_return') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
-                    <x-material.select
-                        name="renewal"
-                        label="Renovação"
-                        :options="['Sem renovação automática', 'A cada 30 dias', 'A cada 60 dias']"
-                        selected="Sem renovação automática"
-                    />
-
+                    <div>
+                        <x-material.select name="renewal" label="Renovação" :options="$renewals" :selected="old('renewal', 'none')" />
+                        @error('renewal') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
                 </div>
             </article>
 
@@ -151,36 +144,35 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
                     <label class="block">
                         <span class="{{ $labelClass }}">Mensalidade</span>
-                        <input type="text" name="monthly_fee" class="{{ $inputClass }}" placeholder="Ex.: R$ 100,00" inputmode="decimal" data-pump-billing-field disabled>
+                        <input type="text" name="monthly_fee" value="{{ old('monthly_fee') }}" class="{{ $inputClass }}" placeholder="Ex.: R$ 100,00" inputmode="decimal" data-pump-billing-field disabled>
+                        @error('monthly_fee') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Dia de vencimento</span>
-                        <input type="number" name="due_day" class="{{ $inputClass }}" placeholder="Ex.: 10" min="1" max="31" data-pump-billing-field disabled>
+                        <input type="number" name="due_day" value="{{ old('due_day') }}" class="{{ $inputClass }}" placeholder="Ex.: 10" min="1" max="31" data-pump-billing-field disabled>
+                        @error('due_day') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
-                    <x-material.select
-                        name="billing_method"
-                        label="Forma de cobrança"
-                        :options="['Pix', 'Dinheiro', 'Boleto']"
-                        placeholder="Selecione"
-                        data-pump-billing-field
-                        disabled
-                    />
+                    <div>
+                        <x-material.select name="billing_method" label="Forma de cobrança" :options="$billingMethods" :selected="old('billing_method')" placeholder="Selecione" data-pump-billing-field disabled />
+                        @error('billing_method') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Primeira cobrança</span>
-                        <input type="date" name="first_billing_at" class="{{ $inputClass }}" data-pump-billing-field disabled>
+                        <input type="date" name="first_billing_at" value="{{ old('first_billing_at') }}" class="{{ $inputClass }}" data-pump-billing-field disabled>
+                        @error('first_billing_at') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block md:col-span-2 xl:col-span-4">
                         <span class="{{ $labelClass }}">Observações financeiras</span>
-                        <textarea name="billing_notes" class="{{ $textareaClass }}" placeholder="Registre combinações de pagamento, isenção parcial, atraso negociado ou orientação administrativa." data-pump-billing-field disabled></textarea>
+                        <textarea name="billing_notes" class="{{ $textareaClass }}" placeholder="Registre combinações de pagamento, isenção parcial, atraso negociado ou orientação administrativa." data-pump-billing-field disabled>{{ old('billing_notes') }}</textarea>
                         <span class="{{ $hintClass }}">Para remover o custo, selecione a opção "Empréstimo" no início do formulário.</span>
+                        @error('billing_notes') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
                 </div>
             </article>
-            
 
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
@@ -196,16 +188,15 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2">
-                    <x-material.select
-                        name="term_signed"
-                        label="Gerar termo para assinatura?"
-                        :options="['Sim', 'Não']"
-                        selected="Sim"
-                    />
+                    <div>
+                        <x-material.select name="term_signed" label="Gerar termo para assinatura?" :options="[1 => 'Sim', 0 => 'Não']" :selected="old('term_signed', 1)" />
+                        @error('term_signed') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    </div>
 
                     <label class="block md:col-span-2">
                         <span class="{{ $labelClass }}">Observações do contrato</span>
-                        <textarea name="notes" class="{{ $textareaClass }}" placeholder="Registre cuidados combinados, restrições, contatos alternativos ou orientações para acompanhamento."></textarea>
+                        <textarea name="notes" class="{{ $textareaClass }}" placeholder="Registre cuidados combinados, restrições, contatos alternativos ou orientações para acompanhamento.">{{ old('notes') }}</textarea>
+                        @error('notes') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </label>
                 </div>
             </article>

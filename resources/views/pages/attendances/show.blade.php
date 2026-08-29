@@ -34,7 +34,7 @@
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-                <a href="{{ route('attendances.index') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="{{ route('attendances.index') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
@@ -42,31 +42,31 @@
                     <form action="{{ route('attendances.start', $attendance) }}" method="POST">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                        <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                             <x-lucide-play class="h-4 w-4" />
                             Continuar atendimento
                         </button>
                     </form>
                 @elseif ($attendance->situacao === 'em_atendimento')
-                    <a href="{{ route('attendances.continue', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                    <a href="{{ route('attendances.continue', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                         <x-lucide-play class="h-4 w-4" />
                         Continuar atendimento
                     </a>
                 @endif
                 @if ($canEdit && $attendance->situacao !== 'em_atendimento')
-                    <a href="{{ route('attendances.edit', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                    <a href="{{ route('attendances.edit', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                         <x-lucide-pencil class="h-4 w-4" />
                         Editar
                     </a>
                 @endif
-                <button type="button" data-confirm-dialog-open="attendance-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1]">
+                <button type="button" data-confirm-dialog-open="attendance-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1]">
                     <x-lucide-trash-2 class="h-4 w-4" />
                     Excluir
                 </button>
             </div>
         </div>
 
-        <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+        <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
             <div class="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]">
                 <div class="flex items-start gap-4">
                     <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#fdecef] text-xl font-bold text-[#8f4050]">
@@ -149,7 +149,7 @@
             </div>
 
             <div class="grid gap-4 lg:grid-cols-2">
-                <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+                <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                     <div class="flex items-start gap-3">
                         <x-lucide-target class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
                         <div>
@@ -159,7 +159,7 @@
                     </div>
                 </article>
 
-                <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+                <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                     <div class="flex items-start gap-3">
                         <x-lucide-clipboard-check class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
                         <div>
@@ -176,7 +176,7 @@
                 :show-actions="false"
             />
         @elseif ($tab === 'history')
-            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+            <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <h3 class="text-lg font-bold text-[#111827]">Histórico do atendimento</h3>
                     <p class="mt-1 text-sm text-[#667085]">Movimentações e registros relacionados a este atendimento.</p>
@@ -185,7 +185,7 @@
                 <div class="space-y-5 p-5">
                     @foreach ($history as $item)
                         @php
-                            $icon = 'lucide-' . $item['icon'];
+                            $icon = 'gmdi-' . $item['icon'];
                         @endphp
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">

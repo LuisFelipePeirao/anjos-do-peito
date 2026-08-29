@@ -20,7 +20,7 @@
                     @endif
                 </div>
                 <div class="pb-1">
-                    <p class="text-xs font-semibold text-[#667085]">Hoje às {{ $activity['time'] }}</p>
+                    <p class="text-xs font-semibold text-[#667085]">{{ $activity['date'] ?? 'Hoje' }} às {{ $activity['time'] }}</p>
                     <p class="mt-1 text-sm font-bold text-[#111827]">{{ $activity['title'] }}</p>
                     <p class="mt-1 text-sm text-[#667085]">{{ $activity['meta'] }}</p>
                 </div>

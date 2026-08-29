@@ -146,6 +146,12 @@ document.querySelectorAll('[data-dialog-modal]').forEach((dialog) => {
     });
 });
 
+document.querySelectorAll('[data-dialog-auto-open]').forEach((dialog) => {
+    if (dialog instanceof HTMLDialogElement) {
+        dialog.showModal();
+    }
+});
+
 const digitsOnly = (value, length) => value.replace(/\D/g, '').slice(0, length);
 const formatCpf = (value) => digitsOnly(value, 11)
     .replace(/(\d{3})(\d)/, '$1.$2')
