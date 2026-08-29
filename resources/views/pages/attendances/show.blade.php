@@ -15,7 +15,7 @@
 
         $statusClass = match ($attendanceData['status_label']) {
             'Realizado' => 'bg-[#e8f8ee] text-[#23845a]',
-            'Em atendimento' => 'bg-[#ecfdf3] text-[#23845a]',
+            'Em andamento' => 'bg-[#ecfdf3] text-[#23845a]',
             'Agendado' => 'bg-[#eef4ff] text-[#2f66d0]',
             'Cancelado' => 'bg-[#fff1f1] text-[#c2414b]',
             default => 'bg-[#f2f4f7] text-[#667085]',
@@ -44,14 +44,21 @@
                         @method('PATCH')
                         <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                             <x-lucide-play class="h-4 w-4" />
-                            Iniciar atendimento
+                            Continuar atendimento
                         </button>
                     </form>
+                @elseif ($attendance->situacao === 'em_atendimento')
+                    <a href="{{ route('attendances.continue', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                        <x-lucide-play class="h-4 w-4" />
+                        Continuar atendimento
+                    </a>
                 @endif
-                <a href="{{ route('attendances.edit', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
-                    <x-lucide-pencil class="h-4 w-4" />
-                    Editar
-                </a>
+                @if ($canEdit && $attendance->situacao !== 'em_atendimento')
+                    <a href="{{ route('attendances.edit', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                        <x-lucide-pencil class="h-4 w-4" />
+                        Editar
+                    </a>
+                @endif
                 <button type="button" data-confirm-dialog-open="attendance-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1]">
                     <x-lucide-trash-2 class="h-4 w-4" />
                     Excluir
@@ -103,8 +110,8 @@
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['phone'] }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase text-[#667085]">Nome do bebê</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['baby_name'] }}</dd>
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">Nome da criança</dt>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['child_name'] }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">Duração</dt>

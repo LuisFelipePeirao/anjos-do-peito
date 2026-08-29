@@ -68,7 +68,7 @@
                         'options' => [
                             ['value' => 'all', 'label' => 'Todas as situações'],
                             ['value' => 'agendado', 'label' => 'Agendados'],
-                            ['value' => 'em_atendimento', 'label' => 'Em atendimento'],
+                            ['value' => 'em_atendimento', 'label' => 'Em andamento'],
                             ['value' => 'realizado', 'label' => 'Realizados'],
                             ['value' => 'cancelado', 'label' => 'Cancelados'],
                         ],

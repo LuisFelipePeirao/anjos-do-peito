@@ -16,7 +16,9 @@ class Atendimento extends Model
         'modalidade',
         'id_local',
         'situacao',
+        'rascunho',
         'id_beneficiaria',
+        'id_crianca',
         'id_usuario',
     ];
 
@@ -24,6 +26,7 @@ class Atendimento extends Model
     {
         return [
             'data_hora' => 'datetime',
+            'rascunho' => 'boolean',
         ];
     }
 
@@ -40,6 +43,11 @@ class Atendimento extends Model
     public function usuario(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id_usuario');
+    }
+
+    public function crianca(): BelongsTo
+    {
+        return $this->belongsTo(Crianca::class, 'id_crianca');
     }
 
     public function detalhe(): HasOne

@@ -49,10 +49,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/atendimentos/novo', [AttendanceController::class, 'create'])->name('attendances.create');
         Route::post('/atendimentos', [AttendanceController::class, 'store'])->name('attendances.store');
         Route::post('/atendimentos/locais', [AttendanceController::class, 'storeLocation'])->name('attendances.locations.store');
+        Route::get('/atendimentos/beneficiarias/{beneficiaria}/criancas', [AttendanceController::class, 'children'])->name('attendances.children.index');
         Route::get('/atendimentos/{attendance}', [AttendanceController::class, 'show'])->name('attendances.show');
         Route::get('/atendimentos/{attendance}/editar', [AttendanceController::class, 'edit'])->name('attendances.edit');
         Route::put('/atendimentos/{attendance}', [AttendanceController::class, 'update'])->name('attendances.update');
         Route::patch('/atendimentos/{attendance}/iniciar', [AttendanceController::class, 'start'])->name('attendances.start');
+        Route::get('/atendimentos/{attendance}/continuar', [AttendanceController::class, 'continue'])->name('attendances.continue');
+        Route::put('/atendimentos/{attendance}/continuar', [AttendanceController::class, 'saveContinuation'])->name('attendances.continue.save');
         Route::delete('/atendimentos/{attendance}', [AttendanceController::class, 'destroy'])->name('attendances.destroy');
     });
 
@@ -332,7 +335,7 @@ Route::middleware('auth')->group(function () {
                 'tone' => 'blue',
             ],
             [
-                'label' => 'Em atendimento',
+                'label' => 'Em andamento',
                 'value' => '5',
                 'context' => 'Casos aguardando novo contato',
                 'trend' => '+2',
@@ -354,7 +357,7 @@ Route::middleware('auth')->group(function () {
         $attendances = [
             ['date' => '10/08/2026', 'time' => '14:30', 'beneficiary' => 'Maria da Silva', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Agendado'],
             ['date' => '10/08/2026', 'time' => '09:15', 'beneficiary' => 'Ana Souza', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Realizado'],
-            ['date' => '09/08/2026', 'time' => '16:00', 'beneficiary' => 'Juliana Martins', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Em atendimento'],
+            ['date' => '09/08/2026', 'time' => '16:00', 'beneficiary' => 'Juliana Martins', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Em andamento'],
             ['date' => '08/08/2026', 'time' => '13:40', 'beneficiary' => 'Patrícia Lima', 'professional' => 'Mariana Fernandes', 'modality' => 'Presencial', 'status' => 'Realizado'],
             ['date' => '07/08/2026', 'time' => '10:20', 'beneficiary' => 'Camila Rocha', 'professional' => 'Camila Rocha', 'modality' => 'Remota', 'status' => 'Cancelado'],
             ['date' => '06/08/2026', 'time' => '15:10', 'beneficiary' => 'Renata Alves', 'professional' => 'Fernanda Souza', 'modality' => 'Presencial', 'status' => 'Realizado'],
@@ -972,7 +975,7 @@ Route::middleware('auth')->group(function () {
             ['label' => 'Triagem', 'value' => 23, 'percent' => 100],
             ['label' => 'Agendado', 'value' => 12, 'percent' => 52],
             ['label' => 'Realizado', 'value' => 42, 'percent' => 82],
-            ['label' => 'Em atendimento', 'value' => 5, 'percent' => 22],
+            ['label' => 'Em andamento', 'value' => 5, 'percent' => 22],
         ];
 
         $pumpMetrics = [
