@@ -6,11 +6,11 @@
     $currentUser = auth()->user();
 
     $items = [
-        ['label' => 'Inicio', 'route' => 'home', 'icon' => 'gmdi-dashboard-o'],
-        ['label' => 'Beneficiarias', 'route' => 'beneficiaries.index', 'icon' => 'gmdi-people-o'],
+        ['label' => 'Início', 'route' => 'home', 'icon' => 'gmdi-dashboard-o'],
+        ['label' => 'Beneficiárias', 'route' => 'beneficiaries.index', 'icon' => 'gmdi-people-o'],
         ['label' => 'Bombas de leite', 'route' => 'pumps.index', 'icon' => 'lucide-milk'],
-        ['label' => 'Doacoes e estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
-        ['label' => 'Relatorios', 'route' => 'reports.index', 'icon' => 'gmdi-bar-chart-o'],
+        ['label' => 'Doações e estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
+        ['label' => 'Relatórios', 'route' => 'reports.index', 'icon' => 'gmdi-bar-chart-o'],
     ];
 
     if ($currentUser?->canManageAttendances()) {

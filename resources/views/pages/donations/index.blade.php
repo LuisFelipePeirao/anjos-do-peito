@@ -13,12 +13,12 @@
             description="Acompanhe entradas, distribuições, saldo por categoria e itens que precisam de reposição."
             :firstButton="[
                 'label' => 'Registrar doação',
-                'link' => '#registrar-doacao',
+                'link' => route('donations.create'),
                 'icon' => 'add',
             ]"
             :secondButton="[
                 'label' => 'Registrar distribuição',
-                'link' => '#registrar-distribuicao',
+                'link' => route('donations.distributions.create'),
                 'icon' => 'volunteer-activism-o',
             ]" />
 
@@ -76,7 +76,7 @@
                         'label' => 'Categoria',
                         'value' => $category,
                         'options' => collect([['value' => 'all', 'label' => 'Todas as categorias']])
-                            ->merge(collect($categories)->map(fn ($stockCategory) => ['value' => $stockCategory, 'label' => $stockCategory]))
+                            ->merge($categories->map(fn ($stockCategory) => ['value' => $stockCategory->id, 'label' => $stockCategory->nome]))
                             ->all(),
                     ],
                 ],

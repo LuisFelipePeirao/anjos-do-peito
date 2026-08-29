@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $table = 'usuarios';
 
     const CREATED_AT = 'created_at';
+
     const UPDATED_AT = 'updated_at';
 
     public function getAuthPassword(): string
@@ -41,6 +42,21 @@ class User extends Authenticatable
     public function atendimentosComoProfissional(): HasMany
     {
         return $this->hasMany(Atendimento::class, 'id_usuario');
+    }
+
+    public function doacoes(): HasMany
+    {
+        return $this->hasMany(Doacao::class, 'id_usuario');
+    }
+
+    public function distribuicoes(): HasMany
+    {
+        return $this->hasMany(Distribuicao::class, 'id_usuario');
+    }
+
+    public function estoqueMovimentacoes(): HasMany
+    {
+        return $this->hasMany(EstoqueMovimentacao::class, 'id_usuario');
     }
 
     /**

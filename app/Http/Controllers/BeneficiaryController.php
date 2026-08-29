@@ -20,8 +20,8 @@ class BeneficiaryController extends Controller
         $status = $request->string('status', 'active')->toString();
 
         $query = Beneficiaria::query()
-            ->when($status === 'active', fn ($query) => $query->where('situacao', 'ativo'))
-            ->when($status === 'inactive', fn ($query) => $query->where('situacao', 'inativo'))
+            ->when($status === 'active', fn($query) => $query->where('situacao', 'ativo'))
+            ->when($status === 'inactive', fn($query) => $query->where('situacao', 'inativo'))
             ->when($search !== '', function ($query) use ($search) {
                 $cpf = preg_replace('/\D/', '', $search);
 
@@ -36,7 +36,7 @@ class BeneficiaryController extends Controller
             ->orderBy('nome');
 
         return view('pages.beneficiaries.index', [
-            'beneficiaries' => $query->get()->map(fn (Beneficiaria $beneficiaria) => [
+            'beneficiaries' => $query->get()->map(fn(Beneficiaria $beneficiaria) => [
                 'nome' => $beneficiaria->nome,
                 'cpf' => $this->formatCpf($beneficiaria->cpf),
                 'email' => $beneficiaria->email,
@@ -47,6 +47,7 @@ class BeneficiaryController extends Controller
                     'items' => [
                         ['icon' => 'visibility-o', 'route' => route('beneficiaries.show', $beneficiaria), 'title' => 'Visualizar beneficiária'],
                         ['icon' => 'edit-o', 'route' => route('beneficiaries.edit', $beneficiaria), 'title' => 'Editar beneficiária'],
+                        ['icon' => 'delete-o', 'route' => route('beneficiaries.deactivate', $beneficiaria), 'title' => 'Inativar beneficiária']
                     ],
                 ],
             ]),
@@ -160,11 +161,11 @@ class BeneficiaryController extends Controller
         ]);
 
         $addressStarted = collect(['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'numero', 'complemento'])
-            ->contains(fn (string $field) => filled($request->input($field)));
+            ->contains(fn(string $field) => filled($request->input($field)));
 
         $data = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'cpf' => ['required', 'string', 'regex:/^\d{11}$/', fn (string $attribute, string $value, $fail) => $this->isValidCpf($value) ?: $fail('Informe um CPF válido.'), Rule::unique('beneficiarias', 'cpf')->ignore($beneficiaria?->id)],
+            'cpf' => ['required', 'string', 'regex:/^\d{11}$/', fn(string $attribute, string $value, $fail) => $this->isValidCpf($value) ?: $fail('Informe um CPF válido.'), Rule::unique('beneficiarias', 'cpf')->ignore($beneficiaria?->id)],
             'email' => ['required', 'email', 'max:255'],
             'telefone' => ['required', 'string', 'max:30'],
             'telefone_alternativo' => ['nullable', 'string', 'max:30'],
@@ -193,7 +194,7 @@ class BeneficiaryController extends Controller
     private function persistAddress(array $data, ?Endereco $address = null): ?int
     {
         $addressFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'numero', 'complemento'];
-        $hasAddress = collect($addressFields)->contains(fn (string $field) => filled($data[$field] ?? null));
+        $hasAddress = collect($addressFields)->contains(fn(string $field) => filled($data[$field] ?? null));
 
         if (! $hasAddress) {
             return null;
@@ -243,7 +244,7 @@ class BeneficiaryController extends Controller
 
     private function states(): array
     {
-        return collect(['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'])->mapWithKeys(fn (string $state) => [$state => $state])->all();
+        return collect(['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'])->mapWithKeys(fn(string $state) => [$state => $state])->all();
     }
 
     private function sexOptions(): array

@@ -34,12 +34,22 @@
     </div>
 
     <div class="flex flex-col gap-3 sm:flex-row">
-        <a href="{{ $firstButton['link'] }}"
-            @if ($confirmation && $confirmationId) data-confirm-dialog-open="{{ $confirmationId }}" @endif
-            class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
-            <x-dynamic-component :component="$firstButton['icon']" class="h-4 w-4" />
-            {{ $firstButton['label'] }}
-        </a>
+        @if (isset($firstButton['dialog']))
+            <button
+                type="button"
+                data-dialog-open="{{ $firstButton['dialog'] }}"
+                class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+                <x-dynamic-component :component="$firstButton['icon']" class="h-4 w-4" />
+                {{ $firstButton['label'] }}
+            </button>
+        @else
+            <a href="{{ $firstButton['link'] }}"
+                @if ($confirmation && $confirmationId) data-confirm-dialog-open="{{ $confirmationId }}" @endif
+                class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+                <x-dynamic-component :component="$firstButton['icon']" class="h-4 w-4" />
+                {{ $firstButton['label'] }}
+            </a>
+        @endif
 
         @if ($secondButton)
             @if (isset($secondButton['dialog']))

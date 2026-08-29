@@ -34,17 +34,17 @@
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                <a href="{{ route('donations.distributions.create', ['material' => $material->id]) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                     <x-lucide-hand-heart class="h-4 w-4" />
                     Registrar distribuição
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="{{ route('donations.create') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-gift class="h-4 w-4" />
                     Registrar entrada
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="{{ route('donations.materials.create') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-pencil class="h-4 w-4" />
-                    Editar
+                    Novo item
                 </a>
             </div>
         </div>
@@ -92,7 +92,7 @@
             <div class="flex gap-6 overflow-x-auto">
                 @foreach ($tabs as $key => $label)
                     <a
-                        href="{{ route('donations.show', ['item' => $item, 'tab' => $key]) }}"
+                        href="{{ route('donations.show', ['material' => $item, 'tab' => $key]) }}"
                         class="shrink-0 border-b-2 px-1 py-4 text-sm font-medium transition {{ $tab === $key ? 'border-[#bf5d6f] text-[#bf5d6f]' : 'border-transparent text-[#4b5563] hover:text-[#bf5d6f]' }}">
                         {{ $label }}
                     </a>

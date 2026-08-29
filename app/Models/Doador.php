@@ -17,4 +17,9 @@ class Doador extends Model
     {
         return $this->hasMany(BombaLeite::class, 'id_doador');
     }
+
+    public function doacoes(): HasMany
+    {
+        return $this->hasMany(Doacao::class, 'id_doador');
+    }
 }

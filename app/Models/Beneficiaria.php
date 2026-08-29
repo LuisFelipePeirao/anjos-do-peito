@@ -11,7 +11,7 @@ class Beneficiaria extends Model
     protected $table = 'beneficiarias';
 
     protected $fillable = [
-        'nome', 'cpf', 'email', 'telefone', 'telefone_alternativo', 'situacao', 'id_endereco', 'origem_cadastro',
+        'nome', 'cpf', 'email', 'telefone', 'telefone_alternativo', 'data_nascimento', 'situacao', 'id_endereco', 'origem_cadastro', 'observacao',
     ];
 
     public function endereco(): BelongsTo
@@ -27,5 +27,10 @@ class Beneficiaria extends Model
     public function atendimentos(): HasMany
     {
         return $this->hasMany(Atendimento::class, 'id_beneficiaria');
+    }
+
+    public function distribuicoes(): HasMany
+    {
+        return $this->hasMany(Distribuicao::class, 'id_beneficiaria');
     }
 }
