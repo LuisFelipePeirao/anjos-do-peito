@@ -1,4 +1,9 @@
 @import 'tailwindcss';
+/* @import "flowbite/src/themes/default"; */
+
+/* @plugin "flowbite/plugin";
+@source "../../node_modules/flowbite"; */
+
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,4 +11,133 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.auth-input,
+.auth-input:focus,
+.auth-input:focus-visible {
+    border-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.app-shell {
+    --sidebar-width: 16rem;
+}
+
+.app-shell[data-sidebar-collapsed='true'] {
+    --sidebar-width: 5.25rem;
+}
+
+.app-sidebar {
+    width: var(--sidebar-width);
+}
+
+.app-main {
+    margin-left: 0;
+}
+
+.sidebar-text,
+.sidebar-brand {
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 180ms ease, width 180ms ease;
+    white-space: nowrap;
+}
+
+.sidebar-link.is-active {
+    background: #fae8ec;
+    color: #9f4053;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-text,
+.app-shell[data-sidebar-collapsed='true'] .sidebar-brand {
+    width: 0;
+    opacity: 0;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-link {
+    justify-content: center;
+    gap: 0;
+    width: 3.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-user {
+    justify-content: center;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .app-sidebar > div:first-child {
+    justify-content: center;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-brand {
+    flex: 0 0 0;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-collapse-button {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-logo {
+    display: none;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-collapse-icon-open {
+    display: none;
+}
+
+.app-shell[data-sidebar-collapsed='true'] .sidebar-collapse-icon-closed {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .app-main {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+@media (max-width: 767px) {
+    .app-sidebar {
+        width: 16rem;
+        transform: translateX(-100%);
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-text,
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-brand {
+        width: auto;
+        opacity: 1;
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-brand {
+        flex: 1 1 0%;
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-logo {
+        display: flex;
+    }
+
+    .app-shell[data-sidebar-collapsed='true'] .sidebar-link {
+        justify-content: flex-start;
+        gap: 0.75rem;
+        width: auto;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .app-shell[data-mobile-sidebar-open='true'] .app-sidebar {
+        transform: translateX(0);
+    }
+
+    .app-shell[data-mobile-sidebar-open='true'] [data-sidebar-overlay] {
+        display: block;
+    }
 }

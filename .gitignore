@@ -21,7 +21,9 @@
 /storage/*.key
 /storage/pail
 /vendor
+/.worktrees
 _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/.superpowers
