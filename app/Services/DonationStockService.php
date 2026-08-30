@@ -62,7 +62,7 @@ class DonationStockService
                 'unit' => $material->unidade_medida,
             ],
             'kpis' => [
-                ['label' => 'Quantidade atual', 'value' => $this->quantity($balance, $material->unidade_medida), 'context' => 'Disponível para distribuição', 'trend' => null, 'trendType' => 'up', 'icon' => 'inventory-2-o', 'tone' => 'rose'],
+                ['label' => 'Quantidade atual', 'value' => $this->quantity($balance, $material->unidade_medida), 'context' => 'Disponível para movimentação', 'trend' => null, 'trendType' => 'up', 'icon' => 'inventory-2-o', 'tone' => 'rose'],
                 ['label' => 'Estoque mínimo', 'value' => $this->quantity($material->estoque_minimo, $material->unidade_medida), 'context' => 'Limite operacional recomendado', 'trend' => null, 'trendType' => 'down', 'icon' => 'report-problem-o', 'tone' => $status === 'Normal' ? 'blue' : 'amber'],
                 ['label' => 'Demanda mensal', 'value' => $this->quantity($this->monthlyDemand($material), $material->unidade_medida), 'context' => 'Saídas dos últimos 30 dias', 'trend' => null, 'trendType' => 'up', 'icon' => 'volunteer-activism-o', 'tone' => 'green'],
                 ['label' => 'Situação', 'value' => $status, 'context' => $this->lastMovementText($material), 'trend' => null, 'trendType' => $status === 'Normal' ? 'up' : 'down', 'icon' => 'check', 'tone' => $status === 'Crítico' ? 'amber' : 'blue'],
@@ -220,7 +220,7 @@ class DonationStockService
                 'view' => route('donations.show', $material['id']),
                 'items' => [
                     ['icon' => 'visibility-o', 'route' => route('donations.show', $material['id']), 'title' => 'Visualizar material'],
-                    ['icon' => 'volunteer-activism-o', 'route' => route('donations.distributions.create', ['material' => $material['id']]), 'title' => 'Distribuir'],
+                    ['icon' => 'swap-horiz-o', 'route' => route('movements.create', ['tipo' => 'saida', 'material' => $material['id']]), 'title' => 'Registrar movimentação'],
                 ],
             ],
         ];
@@ -232,7 +232,7 @@ class DonationStockService
         $monthStart = now()->startOfMonth();
 
         return [
-            ['label' => 'Itens em estoque', 'value' => $balances->sum('balance'), 'context' => 'Unidades disponíveis para distribuição', 'trend' => null, 'trendType' => 'up', 'icon' => 'inventory-2-o', 'tone' => 'rose'],
+            ['label' => 'Itens em estoque', 'value' => $balances->sum('balance'), 'context' => 'Unidades disponíveis para movimentação', 'trend' => null, 'trendType' => 'up', 'icon' => 'inventory-2-o', 'tone' => 'rose'],
             ['label' => 'Doações no mês', 'value' => Doacao::where('situacao', 'recebida')->where('data_doacao', '>=', $monthStart)->count(), 'context' => 'Entradas registradas no mês', 'trend' => null, 'trendType' => 'up', 'icon' => 'card-giftcard-o', 'tone' => 'green'],
             ['label' => 'Distribuições', 'value' => Distribuicao::where('situacao', 'entregue')->where('data_hora', '>=', $monthStart)->count(), 'context' => 'Entregas realizadas no mês', 'trend' => null, 'trendType' => 'up', 'icon' => 'volunteer-activism-o', 'tone' => 'blue'],
             ['label' => 'Itens críticos', 'value' => $balances->where('status', 'Crítico')->count(), 'context' => 'Abaixo de metade do mínimo', 'trend' => null, 'trendType' => 'down', 'icon' => 'report-problem-o', 'tone' => 'amber'],

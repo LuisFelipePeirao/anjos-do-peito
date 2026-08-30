@@ -9,7 +9,8 @@
         ['label' => 'Início', 'route' => 'home', 'icon' => 'gmdi-dashboard-o'],
         ['label' => 'Beneficiárias', 'route' => 'beneficiaries.index', 'icon' => 'gmdi-people-o'],
         ['label' => 'Bombas de leite', 'route' => 'pumps.index', 'icon' => 'lucide-milk'],
-        ['label' => 'Doações e estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
+        ['label' => 'Itens de estoque', 'route' => 'donations.index', 'icon' => 'gmdi-inventory-2-o'],
+        ['label' => 'Movimentações', 'route' => 'movements.index', 'icon' => 'gmdi-swap-horiz-o'],
         ['label' => 'Relatórios', 'route' => 'reports.index', 'icon' => 'gmdi-bar-chart-o'],
     ];
 

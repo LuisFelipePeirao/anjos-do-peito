@@ -97,7 +97,7 @@
                         'all' => 'Todas as seções',
                         'pumps' => 'Bombas de leite',
                         'attendances' => 'Atendimentos',
-                        'stock' => 'Doações e estoque',
+                        'stock' => 'Itens de estoque',
                     ]"
                 />
 
@@ -223,7 +223,7 @@
         @if ($section === 'all' || $section === 'stock')
             <section class="space-y-4">
                 <div>
-                    <h3 class="text-xl font-bold text-[#111827]">Doações e estoque</h3>
+                    <h3 class="text-xl font-bold text-[#111827]">Itens de estoque</h3>
                     <p class="mt-1 text-sm text-[#667085]">Leitura de cobertura, necessidade futura e origem das doações.</p>
                 </div>
 

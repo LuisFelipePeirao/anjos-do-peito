@@ -54,21 +54,25 @@ class DonationStockController extends Controller
     {
         $this->authorizeManagement();
 
-        return redirect()->route('donations.create');
+        return redirect()->route('movements.create', ['tipo' => 'entrada']);
     }
 
     public function storeDonor(StoreDonorRequest $request): RedirectResponse
     {
         $this->stock->createDonor($request->validated());
 
-        return redirect()->route('donations.create')->with('status', 'Doador criado com sucesso.');
+        return back(fallback: route('movements.create', ['tipo' => 'entrada']))->with('status', 'Doador criado com sucesso.');
     }
 
     public function createDonation(): View
     {
         $this->authorizeManagement();
 
-        return view('pages.donations.create', $this->stock->formOptions());
+        return view('pages.donations.distributions.create', [
+            ...$this->stock->formOptions(),
+            'movementType' => 'entrada',
+            'selectedMaterial' => null,
+        ]);
     }
 
     public function storeDonation(StoreDonationRequest $request): RedirectResponse
@@ -84,6 +88,7 @@ class DonationStockController extends Controller
 
         return view('pages.donations.distributions.create', [
             ...$this->stock->formOptions(),
+            'movementType' => 'saida',
             'selectedMaterial' => $request->integer('material') ?: null,
         ]);
     }

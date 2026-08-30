@@ -2,7 +2,7 @@
 
 @section('title', 'Novo item de estoque')
 @section('active-menu', 'donations.index')
-@section('breadcrumb', 'Doações e estoque')
+@section('breadcrumb', 'Itens de estoque')
 @section('page-title', 'Novo item de estoque')
 
 @section('content')

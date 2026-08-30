@@ -1,25 +1,25 @@
 @extends('layouts.main-pages')
 
-@section('title', 'Doações e estoque')
+@section('title', 'Itens de estoque')
 @section('active-menu', 'donations.index')
-@section('breadcrumb', 'Doações e estoque')
-@section('page-title', 'Gestão de doações e estoque')
+@section('breadcrumb', 'Itens de estoque')
+@section('page-title', 'Itens de estoque')
 
 @section('content')
     <section class="space-y-6">
         <x-app.page-info
-            subheading="Gestão de estoque"
-            title="Doações e estoque"
-            description="Acompanhe entradas, distribuições, saldo por categoria e itens que precisam de reposição."
+            subheading="Estoque"
+            title="Itens de estoque"
+            description="Acompanhe saldo por material, categoria, situação e última movimentação."
             :firstButton="[
-                'label' => 'Registrar doação',
-                'link' => route('donations.create'),
+                'label' => 'Registrar movimentação',
+                'link' => route('movements.create'),
                 'icon' => 'add',
             ]"
             :secondButton="[
-                'label' => 'Registrar distribuição',
-                'link' => route('donations.distributions.create'),
-                'icon' => 'volunteer-activism-o',
+                'label' => 'Novo item',
+                'link' => route('donations.materials.create'),
+                'icon' => 'inventory-2-o',
             ]" />
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

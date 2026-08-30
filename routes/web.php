@@ -10,6 +10,7 @@ use App\Http\Controllers\DonationStockController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PumpController;
 use App\Http\Controllers\PumpLoanController;
+use App\Http\Controllers\StockMovementController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/icon', 'icons.index')->name('icons.index');
@@ -87,6 +88,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/doacoes-e-estoque/distribuicoes/nova', [DonationStockController::class, 'createDistribution'])->name('donations.distributions.create');
     Route::post('/doacoes-e-estoque/distribuicoes', [DonationStockController::class, 'storeDistribution'])->name('donations.distributions.store');
     Route::get('/doacoes-e-estoque/{material}', [DonationStockController::class, 'show'])->name('donations.show');
+
+    Route::get('/movimentacoes', [StockMovementController::class, 'index'])->name('movements.index');
+    Route::get('/movimentacoes/nova', [StockMovementController::class, 'create'])->name('movements.create');
+    Route::post('/movimentacoes', [StockMovementController::class, 'store'])->name('movements.store');
+    Route::get('/movimentacoes/{movement}', [StockMovementController::class, 'show'])->name('movements.show');
+
     Route::get('/relatorios', function () {
         $startDate = request('start_date', now()->startOfMonth()->toDateString());
         $endDate = request('end_date', now()->endOfMonth()->toDateString());

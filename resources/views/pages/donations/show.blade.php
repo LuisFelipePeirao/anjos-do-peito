@@ -2,7 +2,7 @@
 
 @section('title', $stockItem['description'])
 @section('active-menu', 'donations.index')
-@section('breadcrumb', 'Doações e estoque')
+@section('breadcrumb', 'Itens de estoque')
 @section('page-title', $stockItem['description'])
 
 @section('content')
@@ -26,7 +26,7 @@
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
                 <h2 class="text-2xl font-bold tracking-normal text-[#111827] md:text-3xl">{{ $stockItem['description'] }}</h2>
-                <p class="mt-1 text-sm text-[#667085]">Detalhes do material, saldo atual, necessidade e histórico de distribuição.</p>
+                <p class="mt-1 text-sm text-[#667085]">Detalhes do material, saldo atual, necessidade e histórico de movimentações.</p>
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
@@ -34,11 +34,11 @@
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
-                <a href="{{ route('donations.distributions.create', ['material' => $material->id]) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
-                    <x-lucide-hand-heart class="h-4 w-4" />
-                    Registrar distribuição
+                <a href="{{ route('movements.create', ['tipo' => 'saida', 'material' => $material->id]) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                    <x-gmdi-swap-horiz-o class="h-4 w-4" />
+                    Registrar movimentação
                 </a>
-                <a href="{{ route('donations.create') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                <a href="{{ route('movements.create', ['tipo' => 'entrada']) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-gift class="h-4 w-4" />
                     Registrar entrada
                 </a>
@@ -63,7 +63,7 @@
                                 {{ $stockItem['status'] }}
                             </span>
                         </div>
-                        <p class="mt-2 text-sm text-[#667085]">Material da categoria {{ $stockItem['category'] }} usado nas distribuições às beneficiárias.</p>
+                        <p class="mt-2 text-sm text-[#667085]">Material da categoria {{ $stockItem['category'] }} usado nas movimentações de estoque.</p>
                     </div>
                 </div>
 
@@ -119,9 +119,9 @@
                 <div class="flex items-start gap-3">
                     <x-gmdi-report-problem-o class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
                     <div>
-                        <h3 class="text-lg font-bold text-[#111827]">Prioridade de distribuição</h3>
+                        <h3 class="text-lg font-bold text-[#111827]">Prioridade de movimentação</h3>
                         <p class="mt-2 text-sm leading-6 text-[#667085]">
-                            Situação atual: {{ $stockItem['status'] }}. Use a quantidade, demanda mensal e estoque mínimo para priorizar novas doações e distribuições.
+                            Situação atual: {{ $stockItem['status'] }}. Use a quantidade, demanda mensal e estoque mínimo para priorizar novas entradas e saídas.
                         </p>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <h3 class="text-lg font-bold text-[#111827]">Histórico do material</h3>
-                    <p class="mt-1 text-sm text-[#667085]">Eventos relevantes de estoque e distribuição.</p>
+                    <p class="mt-1 text-sm text-[#667085]">Eventos relevantes de estoque e movimentações.</p>
                 </div>
 
                 <div class="space-y-5 p-5">

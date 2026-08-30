@@ -71,17 +71,37 @@ it('uses database records on donations and stock pages', function () {
         ->assertSee('Sem movimentação');
 });
 
+it('shows stock items as a separate stock item surface', function () {
+    $user = User::factory()->atendente()->create();
+    $material = stockMaterial();
+
+    $this->actingAs($user)
+        ->get(route('donations.index'))
+        ->assertOk()
+        ->assertSee('Itens de estoque')
+        ->assertSee('Registrar movimentação')
+        ->assertSee('Novo item')
+        ->assertSee('Fralda tamanho P')
+        ->assertDontSee('Gestão de doações e estoque');
+
+    $this->actingAs($user)
+        ->get(route('donations.show', $material))
+        ->assertOk()
+        ->assertSee('Movimentações')
+        ->assertSee('Registrar movimentação');
+});
+
 it('creates materials donors and donations through layered requests and service', function () {
     $user = User::factory()->administrador()->create();
     $category = stockCategory(['nome' => 'Higiene']);
     $donor = stockDonor();
 
     $this->actingAs($user)->get(route('donations.materials.create'))->assertOk()->assertSee('Novo item de estoque');
-    $this->actingAs($user)->get(route('donations.donors.create'))->assertRedirect(route('donations.create'));
+    $this->actingAs($user)->get(route('donations.donors.create'))->assertRedirect(route('movements.create', ['tipo' => 'entrada']));
     $this->actingAs($user)
         ->get(route('donations.create'))
         ->assertOk()
-        ->assertSee('Registrar doação')
+        ->assertSee('Registrar entrada')
         ->assertSee('donation-donor-create-dialog', false)
         ->assertSee('Cadastrar doador');
 
@@ -139,7 +159,7 @@ it('creates distributions and prevents stock from going negative', function () {
     $this->actingAs($user)
         ->get(route('donations.distributions.create'))
         ->assertOk()
-        ->assertSee('Registrar distribuição')
+        ->assertSee('Registrar saída')
         ->assertSee('Quantidade disponível')
         ->assertSee('data-add-distribution-item', false)
         ->assertDontSee('Até três');
