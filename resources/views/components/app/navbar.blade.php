@@ -3,6 +3,15 @@
     'title' => 'Visão geral',
 ])
 
+@php
+    $currentUser = auth()->user();
+    $initials = collect(explode(' ', trim((string) $currentUser?->nome)))
+        ->filter()
+        ->take(2)
+        ->map(fn (string $part) => mb_substr($part, 0, 1))
+        ->join('');
+@endphp
+
 <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#eadfe0] bg-white/95 px-4 backdrop-blur md:px-6">
     <div class="flex min-w-0 items-center gap-3">
         <button
@@ -22,12 +31,12 @@
 
     <div class="flex items-center gap-3">
         <div class="hidden text-right sm:block">
-            <strong class="block text-sm font-semibold text-[#1f2937]">Luzilene Zimmerman</strong>
-            <span class="block text-xs text-[#667085]">Administradora</span>
+            <strong class="block text-sm font-semibold text-[#1f2937]">{{ $currentUser?->nome ?? 'Usuário' }}</strong>
+            <span class="block text-xs text-[#667085]">{{ ucfirst($currentUser?->perfil ?? '') }}</span>
         </div>
 
         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#ef5b97] text-sm font-semibold text-white">
-            LZ
+            {{ $initials ?: 'U' }}
         </div>
     </div>
 </header>

@@ -3,88 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Users\StoreUserRequest;
+use App\Http\Requests\Users\UpdateUserRequest;
+use App\Http\Requests\Users\UserFilterRequest;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(Request $request): View
+    public function __construct(private readonly UserService $users)
     {
-        $search = $request->string('q')->trim()->toString();
-        $status = $request->string('status', 'all')->toString();
-        $profile = $request->string('profile', 'all')->toString();
+    }
 
-        $usersQuery = User::query()
-            ->withTrashed()
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($query) use ($search) {
-                    $query
-                        ->where('nome', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
-            })
-            ->when($status === 'active', fn ($query) => $query->whereNull('deleted_at'))
-            ->when($status === 'inactive', fn ($query) => $query->whereNotNull('deleted_at'))
-            ->when(in_array($profile, $this->profiles(), true), fn ($query) => $query->where('perfil', $profile))
-            ->orderBy('nome');
-
-        return view('pages.users.index', [
-            'users' => $usersQuery->get()->map(fn (User $user) => [
-                'nome' => $user->nome,
-                'email' => $user->email,
-                'perfil' => ucfirst($user->perfil),
-                'status' => $user->trashed() ? 'Inativa' : 'Ativa',
-                '_actions' => [
-                    'items' => $user->trashed() ? [] : [
-                        [
-                            'icon' => 'edit-o',
-                            'route' => route('users.edit', $user),
-                            'title' => 'Editar usuário',
-                        ],
-                        [
-                            'icon' => 'delete-o',
-                            'route' => route('users.destroy', $user),
-                            'title' => 'Inativar usuário',
-                            'variant' => 'danger',
-                            'confirmation' => [
-                                'title' => 'Inativar usuário?',
-                                'message' => 'O usuário deixará de acessar o sistema, mas o histórico será preservado. Deseja continuar?',
-                                'confirmLabel' => 'Inativar usuário',
-                                'variant' => 'danger',
-                                'method' => 'DELETE',
-                            ],
-                        ],
-                    ],
-                ],
-            ]),
-            'search' => $search,
-            'status' => $status,
-            'profile' => $profile,
-            'profiles' => $this->profiles(),
-        ]);
+    public function index(UserFilterRequest $request): View
+    {
+        return view('pages.users.index', $this->users->indexData($request->filters()));
     }
 
     public function create(): View
     {
         return view('pages.users.create', [
-            'profiles' => $this->profiles(),
+            'profiles' => $this->users->profiles(),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreUserRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('usuarios', 'email')->whereNull('deleted_at')],
-            'senha' => ['required', 'confirmed', Password::defaults()],
-            'perfil' => ['required', Rule::in($this->profiles())],
-        ]);
-
-        User::query()->create($data);
+        $this->users->create($request->validated());
 
         return redirect()->route('users.index')->with('status', 'Usuário criado com sucesso.');
     }
@@ -93,41 +40,21 @@ class UserController extends Controller
     {
         return view('pages.users.edit', [
             'user' => $usuario,
-            'profiles' => $this->profiles(),
+            'profiles' => $this->users->profiles(),
         ]);
     }
 
-    public function update(Request $request, User $usuario): RedirectResponse
+    public function update(UpdateUserRequest $request, User $usuario): RedirectResponse
     {
-        $data = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('usuarios', 'email')->ignore($usuario->id)->whereNull('deleted_at')],
-            'senha' => ['nullable', 'confirmed', Password::defaults()],
-            'perfil' => ['required', Rule::in($this->profiles())],
-        ]);
-
-        if (! filled($data['senha'] ?? null)) {
-            unset($data['senha']);
-        }
-
-        $usuario->update($data);
+        $this->users->update($usuario, $request->validated());
 
         return redirect()->route('users.index')->with('status', 'Usuário atualizado com sucesso.');
     }
 
     public function destroy(User $usuario): RedirectResponse
     {
-        if ($usuario->isAdministrador() && User::query()->where('perfil', 'administrador')->count() === 1) {
-            return back()->withErrors(['usuario' => 'Não é permitido inativar o único administrador ativo.']);
-        }
-
-        $usuario->delete();
+        $this->users->deactivate($usuario);
 
         return redirect()->route('users.index')->with('status', 'Usuario inativado com sucesso.');
-    }
-
-    private function profiles(): array
-    {
-        return ['administrador', 'atendente', 'enfermeira'];
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDistributionRequest;
-use App\Http\Requests\StoreDonationRequest;
-use App\Http\Requests\StoreDonorRequest;
-use App\Http\Requests\StoreMaterialRequest;
+use App\Http\Requests\Donations\StoreDistributionRequest;
+use App\Http\Requests\Donations\StoreDonationRequest;
+use App\Http\Requests\Donations\StoreDonorRequest;
+use App\Http\Requests\Donations\StoreMaterialRequest;
 use App\Models\Material;
 use App\Services\DonationStockService;
 use Illuminate\Http\RedirectResponse;

@@ -10,6 +10,7 @@ use App\Http\Controllers\DonationStockController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PumpController;
 use App\Http\Controllers\PumpLoanController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StockMovementController;
 use Illuminate\Support\Facades\Route;
 
@@ -94,85 +95,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/movimentacoes', [StockMovementController::class, 'store'])->name('movements.store');
     Route::get('/movimentacoes/{movement}', [StockMovementController::class, 'show'])->name('movements.show');
 
-    Route::get('/relatorios', function () {
-        $startDate = request('start_date', now()->startOfMonth()->toDateString());
-        $endDate = request('end_date', now()->endOfMonth()->toDateString());
-        $section = request('section', 'all');
-        $location = request('location', 'all');
-
-        $summaryKpis = [
-            ['label' => 'Atendimentos realizados', 'value' => '42', 'context' => 'No período selecionado', 'trend' => '+18,4%', 'trendType' => 'up', 'icon' => 'content-paste-o', 'tone' => 'rose'],
-            ['label' => 'Bombas em uso', 'value' => '10', 'context' => '8 empréstimos e 2 aluguéis', 'trend' => '+3', 'trendType' => 'up', 'icon' => 'milk', 'tone' => 'blue'],
-            ['label' => 'Distribuições registradas', 'value' => '27', 'context' => 'Materiais entregues às beneficiárias', 'trend' => '+12%', 'trendType' => 'up', 'icon' => 'volunteer-activism-o', 'tone' => 'green'],
-            ['label' => 'Alertas críticos', 'value' => '7', 'context' => 'Estoque, devoluções e pendências operacionais', 'trend' => '+2', 'trendType' => 'down', 'icon' => 'report-problem-o', 'tone' => 'amber'],
-        ];
-
-        $attendanceChart = [
-            'percent' => '82%',
-            'values' => [
-                ['month' => 'Abr', 'total' => 50, 'target' => 38],
-                ['month' => 'Mai', 'total' => 37, 'target' => 42],
-                ['month' => 'Jun', 'total' => 34, 'target' => 45],
-                ['month' => 'Jul', 'total' => 46, 'target' => 50],
-                ['month' => 'Ago', 'total' => 42, 'target' => 55],
-            ],
-        ];
-
-        $attendancePipeline = [
-            ['label' => 'Triagem', 'value' => 23, 'percent' => 100],
-            ['label' => 'Agendado', 'value' => 12, 'percent' => 52],
-            ['label' => 'Realizado', 'value' => 42, 'percent' => 82],
-            ['label' => 'Em andamento', 'value' => 5, 'percent' => 22],
-        ];
-
-        $pumpMetrics = [
-            ['label' => 'Disponíveis', 'value' => 8, 'percent' => 40],
-            ['label' => 'Empréstimos ativos', 'value' => 8, 'percent' => 40],
-            ['label' => 'Aluguéis ativos', 'value' => 2, 'percent' => 10],
-            ['label' => 'Manutenção', 'value' => 2, 'percent' => 10],
-        ];
-
-        $pumpContracts = [
-            ['type' => 'Empréstimo', 'active' => '8', 'overdue' => '3', 'renewals' => '4', 'revenue' => 'Sem cobrança', 'status' => 'Pendente'],
-            ['type' => 'Aluguel', 'active' => '2', 'overdue' => '0', 'renewals' => '2', 'revenue' => 'R$ 220,00', 'status' => 'Normal'],
-        ];
-
-        $stock = [
-            ['label' => 'Fraldas', 'available' => 78, 'used' => 52, 'minimum' => 50],
-            ['label' => 'Higiene', 'available' => 41, 'used' => 39, 'minimum' => 45],
-            ['label' => 'Alimentação', 'available' => 32, 'used' => 68, 'minimum' => 40],
-            ['label' => 'Roupas', 'available' => 70, 'used' => 28, 'minimum' => 25],
-        ];
-
-        $stockRisks = [
-            ['title' => 'Leite em pó em nível crítico', 'description' => '32 latas disponíveis para demanda mensal de 52.', 'tone' => 'red'],
-            ['title' => 'Kits de higiene abaixo do mínimo', 'description' => 'Reposição recomendada para manter o atendimento da semana.', 'tone' => 'amber'],
-            ['title' => 'Fraldas P regularizadas', 'description' => 'Entrada recente elevou o saldo acima do mínimo.', 'tone' => 'blue'],
-        ];
-
-        $stockMovements = [
-            ['category' => 'Fraldas', 'available' => '78', 'distributed' => '52', 'minimum' => '50', 'status' => 'Normal'],
-            ['category' => 'Higiene', 'available' => '41', 'distributed' => '39', 'minimum' => '45', 'status' => 'Baixo'],
-            ['category' => 'Alimentação', 'available' => '32', 'distributed' => '68', 'minimum' => '40', 'status' => 'Crítico'],
-            ['category' => 'Roupas', 'available' => '70', 'distributed' => '28', 'minimum' => '25', 'status' => 'Normal'],
-        ];
-
-        $totalStock = array_sum(array_column($stock, 'available')) + array_sum(array_column($stock, 'used'));
-
-        return view('pages.reports.index', compact(
-            'startDate',
-            'endDate',
-            'section',
-            'location',
-            'summaryKpis',
-            'attendanceChart',
-            'attendancePipeline',
-            'pumpMetrics',
-            'pumpContracts',
-            'stock',
-            'totalStock',
-            'stockRisks',
-            'stockMovements'
-        ));
-    })->name('reports.index');
+    Route::get('/relatorios', [ReportController::class, 'index'])->name('reports.index');
 });

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePumpLoanRequest;
+use App\Http\Requests\Pumps\StorePumpLoanRequest;
 use App\Services\PumpLoanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;

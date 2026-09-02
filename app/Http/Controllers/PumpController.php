@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RenewPumpLoanRequest;
-use App\Http\Requests\StorePumpRequest;
-use App\Http\Requests\UpdatePumpRequest;
+use App\Http\Requests\Pumps\RenewPumpLoanRequest;
+use App\Http\Requests\Pumps\StorePumpRequest;
+use App\Http\Requests\Pumps\UpdatePumpRequest;
 use App\Models\BombaLeite;
 use App\Services\PumpService;
 use Illuminate\Http\RedirectResponse;

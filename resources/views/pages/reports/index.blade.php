@@ -5,56 +5,6 @@
 @section('breadcrumb', 'Relatórios')
 @section('page-title', 'Relatórios')
 
-@php
-    $reportKpis = [
-        ['label' => 'Renovações no prazo', 'value' => '67%', 'context' => 'Contratos renovados antes do vencimento', 'trend' => '+8%', 'trendType' => 'up', 'icon' => 'autorenew', 'tone' => 'green'],
-        ['label' => 'Aluguéis em aberto', 'value' => 'R$ 110,00', 'context' => '1 mensalidade a receber no período', 'trend' => '-22%', 'trendType' => 'up', 'icon' => 'attach-money', 'tone' => 'amber'],
-        ['label' => 'Retornos concluídos', 'value' => '86%', 'context' => 'Acompanhamentos finalizados no período', 'trend' => '+11%', 'trendType' => 'up', 'icon' => 'check', 'tone' => 'blue'],
-        ['label' => 'Cobertura de estoque', 'value' => '12 dias', 'context' => 'Estimativa pelos itens de maior saída', 'trend' => '-4 dias', 'trendType' => 'down', 'icon' => 'inventory-o', 'tone' => 'rose'],
-    ];
-
-    $pumpOverview = [
-        ['label' => 'Gratuidade', 'value' => '80%', 'description' => '8 de 10 contratos ativos são empréstimos sem cobrança.', 'tone' => 'bg-[#eefbf3] text-[#047857]'],
-        ['label' => 'Receita recorrente', 'value' => 'R$ 220,00', 'description' => 'Valor previsto pelos aluguéis ativos neste mês.', 'tone' => 'bg-[#fff7ed] text-[#b45309]'],
-        ['label' => 'Risco de não devolução', 'value' => '3', 'description' => 'Bombas com renovação ou expiração vencida.', 'tone' => 'bg-[#fdecef] text-[#bf2f63]'],
-    ];
-
-    $pumpContractChart = [
-        ['label' => 'Empréstimos', 'value' => '8 ativos', 'percent' => 80, 'tone' => 'green', 'description' => 'Contratos gratuitos em andamento.', 'details' => ['No prazo' => '5', 'Atrasos' => '3', 'Receita' => 'Sem cobrança']],
-        ['label' => 'Aluguéis', 'value' => '2 ativos', 'percent' => 20, 'tone' => 'amber', 'description' => 'Contratos com mensalidade registrada.', 'details' => ['No prazo' => '2', 'Atrasos' => '0', 'Receita' => 'R$ 220,00']],
-    ];
-
-    $pumpDueDates = [
-        ['pump' => 'BP-004', 'type' => 'Empréstimo', 'beneficiary' => 'Maria da Silva', 'expires_at' => '22/08/2026', 'renewal_at' => '15/08/2026', 'status' => 'Pendente'],
-        ['pump' => 'BP-009', 'type' => 'Aluguel', 'beneficiary' => 'Amanda Souza', 'expires_at' => '30/08/2026', 'renewal_at' => '23/08/2026', 'status' => 'Normal'],
-        ['pump' => 'BP-012', 'type' => 'Empréstimo', 'beneficiary' => 'Patrícia Lima', 'expires_at' => '05/08/2026', 'renewal_at' => '29/07/2026', 'status' => 'Em atraso'],
-    ];
-
-    $attendanceModalityChart = [
-        ['label' => 'Presencial', 'value' => '67%', 'percent' => 67, 'tone' => 'rose', 'description' => '28 atendimentos realizados no período.', 'details' => ['Acompanhamentos' => '3', 'Tempo médio' => '42 min']],
-        ['label' => 'Remota', 'value' => '33%', 'percent' => 33, 'tone' => 'blue', 'description' => '14 atendimentos realizados no período.', 'details' => ['Acompanhamentos' => '2', 'Tempo médio' => '26 min']],
-    ];
-
-    $professionalChart = [
-        ['label' => 'Fernanda Souza', 'value' => '16', 'percent' => 100, 'tone' => 'green', 'description' => 'Maior volume de orientações no período.', 'details' => ['Retornos' => '5', 'Distribuições' => '8']],
-        ['label' => 'Camila Rocha', 'value' => '13', 'percent' => 81, 'tone' => 'blue', 'description' => 'Alta relação entre atendimento e entrega de materiais.', 'details' => ['Retornos' => '4', 'Distribuições' => '10']],
-        ['label' => 'Juliana Matos', 'value' => '9', 'percent' => 56, 'tone' => 'amber', 'description' => 'Retornos exigem acompanhamento.', 'details' => ['Retornos' => '3', 'Distribuições' => '2']],
-    ];
-
-    $stockCoverageChart = [
-        ['label' => 'Leite em pó 400g', 'value' => '12 dias', 'percent' => 22, 'tone' => 'rose', 'description' => '32 unidades em alimentação.', 'details' => ['Consumo médio' => '18/semana', 'Situação' => 'Crítico']],
-        ['label' => 'Kit higiene recém-nascido', 'value' => '18 dias', 'percent' => 33, 'tone' => 'amber', 'description' => '41 unidades em higiene.', 'details' => ['Consumo médio' => '16/semana', 'Situação' => 'Baixo']],
-        ['label' => 'Fralda tamanho P', 'value' => '24 dias', 'percent' => 44, 'tone' => 'green', 'description' => '78 unidades em fraldas.', 'details' => ['Consumo médio' => '22/semana', 'Situação' => 'Normal']],
-        ['label' => 'Body manga curta', 'value' => '54 dias', 'percent' => 100, 'tone' => 'blue', 'description' => '70 unidades em roupas.', 'details' => ['Consumo médio' => '9/semana', 'Situação' => 'Normal']],
-    ];
-
-    $donationSources = [
-        ['source' => 'Campanha Agosto Dourado', 'entries' => '7', 'items' => '118', 'main_category' => 'Alimentação', 'recurrence' => 'Pontual', 'status' => 'Normal'],
-        ['source' => 'Doadores recorrentes', 'entries' => '12', 'items' => '96', 'main_category' => 'Higiene', 'recurrence' => 'Mensal', 'status' => 'Normal'],
-        ['source' => 'Parceiros locais', 'entries' => '4', 'items' => '35', 'main_category' => 'Fraldas', 'recurrence' => 'Irregular', 'status' => 'Baixo'],
-    ];
-@endphp
-
 @section('content')
     <section class="space-y-6">
         <x-app.page-info subheading="Painel analítico" title="Relatórios operacionais"
@@ -102,16 +52,11 @@
                 />
 
                 <x-material.outlined-select
-                    name="section"
+                    name="location"
                     label="Unidades"
                     icon="gmdi-filter-alt-o"
-                    :selected="$section"
-                    :options="[
-                        'all' => 'Todas as unidades',
-                        'ong' => 'ONG',
-                        'home' => 'Domiciliar',
-                        'remote' => 'Remoto',
-                    ]"
+                    :selected="$location"
+                    :options="$locationOptions"
                 />
 
                 <button type="submit"
