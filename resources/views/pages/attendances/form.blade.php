@@ -79,5 +79,16 @@
         </form>
 
         <x-app.confirm-modal id="attendance-finalize-confirmation" title="Finalizar atendimento realizado?" message="Após salvar, as informações deste atendimento realizado não poderão mais ser editadas." confirm-label="Finalizar atendimento" cancel-label="Continuar editando" variant="warning" />
+
+        @include('pages.attendances.partials.category-modal')
+        @include('pages.attendances.partials.procedure-modal')
+
+        @if ($errors->attendanceCategory->any())
+            <script>document.addEventListener('DOMContentLoaded', () => document.getElementById('attendance-category-dialog')?.showModal());</script>
+        @endif
+
+        @if ($errors->procedure->any())
+            <script>document.addEventListener('DOMContentLoaded', () => document.getElementById('attendance-procedure-dialog')?.showModal());</script>
+        @endif
     </section>
 @endsection

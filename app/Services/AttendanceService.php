@@ -181,6 +181,36 @@ class AttendanceService
         LocalAtendimento::create($data);
     }
 
+    public function storeProcedure(array $data): Procedimento
+    {
+        return Procedimento::create([...$data, 'ativo' => true]);
+    }
+
+    public function updateProcedure(Procedimento $procedure, array $data): void
+    {
+        $procedure->update($data);
+    }
+
+    public function toggleProcedure(Procedimento $procedure): void
+    {
+        $procedure->update(['ativo' => ! $procedure->ativo]);
+    }
+
+    public function storeCategory(array $data): CategoriaAtendimento
+    {
+        return CategoriaAtendimento::create([...$data, 'ativo' => true]);
+    }
+
+    public function updateCategory(CategoriaAtendimento $category, array $data): void
+    {
+        $category->update($data);
+    }
+
+    public function toggleCategory(CategoriaAtendimento $category): void
+    {
+        $category->update(['ativo' => ! $category->ativo]);
+    }
+
     private function attendanceAttributes(array $data): array
     {
         return [
@@ -232,6 +262,8 @@ class AttendanceService
             'locations' => $this->selectOptions(LocalAtendimento::orderBy('nome')->pluck('nome', 'id')->all()),
             'attendanceCategories' => $this->activeOptionsWithCurrent(CategoriaAtendimento::class, $attendanceData['attendance_category'] ? (int) $attendanceData['attendance_category'] : null),
             'procedures' => $this->activeOptionsWithCurrent(Procedimento::class, $attendanceData['procedure'] ? (int) $attendanceData['procedure'] : null),
+            'allAttendanceCategories' => CategoriaAtendimento::orderBy('nome')->get(),
+            'allProcedures' => Procedimento::orderBy('nome')->get(),
             'statuses' => $this->formStatuses(),
             'modalities' => StoreAttendanceRequest::modalities(),
             'durations' => StoreAttendanceRequest::durations(),

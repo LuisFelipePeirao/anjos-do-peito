@@ -55,6 +55,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/atendimentos/novo', [AttendanceController::class, 'create'])->name('attendances.create');
         Route::post('/atendimentos', [AttendanceController::class, 'store'])->name('attendances.store');
         Route::post('/atendimentos/locais', [AttendanceController::class, 'storeLocation'])->name('attendances.locations.store');
+        Route::post('/atendimentos/procedimentos', [AttendanceController::class, 'storeProcedure'])->name('attendances.procedures.store');
+        Route::put('/atendimentos/procedimentos/{procedure}', [AttendanceController::class, 'updateProcedure'])->name('attendances.procedures.update');
+        Route::patch('/atendimentos/procedimentos/{procedure}/alternar', [AttendanceController::class, 'toggleProcedure'])->name('attendances.procedures.toggle');
+        Route::post('/atendimentos/categorias', [AttendanceController::class, 'storeCategory'])->name('attendances.categories.store');
+        Route::put('/atendimentos/categorias/{category}', [AttendanceController::class, 'updateCategory'])->name('attendances.categories.update');
+        Route::patch('/atendimentos/categorias/{category}/alternar', [AttendanceController::class, 'toggleCategory'])->name('attendances.categories.toggle');
         Route::get('/atendimentos/beneficiarias/{beneficiaria}/criancas', [AttendanceController::class, 'children'])->name('attendances.children.index');
         Route::get('/atendimentos/{attendance}', [AttendanceController::class, 'show'])->name('attendances.show');
         Route::get('/atendimentos/{attendance}/editar', [AttendanceController::class, 'edit'])->name('attendances.edit');
