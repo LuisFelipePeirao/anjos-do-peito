@@ -14,6 +14,7 @@ use App\Http\Requests\Attendances\UpdateProcedureRequest;
 use App\Models\Atendimento;
 use App\Models\Beneficiaria;
 use App\Models\CategoriaAtendimento;
+use App\Models\LocalAtendimento;
 use App\Models\Procedimento;
 use App\Services\AttendanceService;
 use Illuminate\Http\JsonResponse;
@@ -111,6 +112,20 @@ class AttendanceController extends Controller
         $this->attendances->storeLocation($request->validated());
 
         return back()->with('status', 'Local de atendimento criado com sucesso.');
+    }
+
+    public function updateLocation(StoreLocationRequest $request, LocalAtendimento $location): RedirectResponse
+    {
+        $this->attendances->updateLocation($location, $request->validated());
+
+        return back()->with('status', 'Local de atendimento atualizado com sucesso.');
+    }
+
+    public function toggleLocation(LocalAtendimento $location): RedirectResponse
+    {
+        $this->attendances->toggleLocation($location);
+
+        return back()->with('status', $location->fresh()->ativo ? 'Local reativado com sucesso.' : 'Local inativado com sucesso.');
     }
 
     public function storeProcedure(StoreProcedureRequest $request): RedirectResponse

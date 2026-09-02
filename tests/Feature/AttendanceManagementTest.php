@@ -220,3 +220,46 @@ it('prevents invalid manual statuses and keeps location creation separate', func
     $this->actingAs($user)->post(route('attendances.locations.store'), ['nome' => 'UBS Centro', 'descricao' => 'Sala de apoio'])->assertRedirect();
     $this->assertDatabaseHas('locais_atendimento', ['nome' => 'UBS Centro']);
 });
+
+it('stores attendance location with optional address', function () {
+    $user = User::factory()->administrador()->create();
+
+    $this->actingAs($user)
+        ->post(route('attendances.locations.store'), [
+            'nome' => 'UBS Centro',
+            'descricao' => 'Sala de apoio',
+            'cep' => '88350000',
+            'logradouro' => 'Rua Central',
+            'numero' => '100',
+            'bairro' => 'Centro',
+            'cidade' => 'Brusque',
+            'uf' => 'SC',
+        ])
+        ->assertRedirect();
+
+    $location = LocalAtendimento::with('endereco.cep')->where('nome', 'UBS Centro')->firstOrFail();
+
+    expect($location->endereco->numero)->toBe('100')
+        ->and($location->endereco->cep->cidade)->toBe('Brusque')
+        ->and($location->endereco->cep->uf)->toBe('SC');
+});
+
+it('updates and toggles attendance locations', function () {
+    $user = User::factory()->administrador()->create();
+    $location = LocalAtendimento::create(['nome' => 'Antigo local', 'ativo' => true]);
+
+    $this->actingAs($user)
+        ->put(route('attendances.locations.update', $location), [
+            'nome' => 'Local atualizado',
+            'descricao' => 'Nova descrição',
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('locais_atendimento', ['id' => $location->id, 'nome' => 'Local atualizado']);
+
+    $this->actingAs($user)
+        ->patch(route('attendances.locations.toggle', $location))
+        ->assertRedirect();
+
+    expect($location->fresh()->ativo)->toBeFalse();
+});

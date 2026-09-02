@@ -6,7 +6,9 @@ use App\Http\Requests\Attendances\StoreAttendanceRequest;
 use App\Models\Atendimento;
 use App\Models\Beneficiaria;
 use App\Models\CategoriaAtendimento;
+use App\Models\Cep;
 use App\Models\Crianca;
+use App\Models\Endereco;
 use App\Models\LocalAtendimento;
 use App\Models\Procedimento;
 use App\Models\User;
@@ -57,6 +59,7 @@ class AttendanceService
             'search' => $search,
             'status' => $status,
             'modality' => $modality,
+            'allLocations' => LocalAtendimento::with('endereco.cep')->orderBy('nome')->get(),
         ];
     }
 
@@ -176,9 +179,32 @@ class AttendanceService
         $attendance->delete();
     }
 
-    public function storeLocation(array $data): void
+    public function storeLocation(array $data): LocalAtendimento
     {
-        LocalAtendimento::create($data);
+        return DB::transaction(function () use ($data) {
+            return LocalAtendimento::create([
+                'nome' => $data['nome'],
+                'descricao' => $data['descricao'] ?? null,
+                'id_endereco' => $this->persistAddress($data),
+                'ativo' => true,
+            ]);
+        });
+    }
+
+    public function updateLocation(LocalAtendimento $location, array $data): void
+    {
+        DB::transaction(function () use ($location, $data) {
+            $location->update([
+                'nome' => $data['nome'],
+                'descricao' => $data['descricao'] ?? null,
+                'id_endereco' => $this->persistAddress($data, $location->endereco),
+            ]);
+        });
+    }
+
+    public function toggleLocation(LocalAtendimento $location): void
+    {
+        $location->update(['ativo' => ! $location->ativo]);
     }
 
     public function storeProcedure(array $data): Procedimento
@@ -259,11 +285,12 @@ class AttendanceService
         return [
             'beneficiaries' => $this->selectOptions(Beneficiaria::where('situacao', 'ativo')->orderBy('nome')->pluck('nome', 'id')->all()),
             'professionals' => $this->selectOptions(User::whereIn('perfil', ['administrador', 'enfermeira'])->orderBy('nome')->pluck('nome', 'id')->all()),
-            'locations' => $this->selectOptions(LocalAtendimento::orderBy('nome')->pluck('nome', 'id')->all()),
+            'locations' => $this->selectOptions(LocalAtendimento::where('ativo', true)->orderBy('nome')->pluck('nome', 'id')->all()),
             'attendanceCategories' => $this->activeOptionsWithCurrent(CategoriaAtendimento::class, $attendanceData['attendance_category'] ? (int) $attendanceData['attendance_category'] : null),
             'procedures' => $this->activeOptionsWithCurrent(Procedimento::class, $attendanceData['procedure'] ? (int) $attendanceData['procedure'] : null),
             'allAttendanceCategories' => CategoriaAtendimento::orderBy('nome')->get(),
             'allProcedures' => Procedimento::orderBy('nome')->get(),
+            'allLocations' => LocalAtendimento::with('endereco.cep')->orderBy('nome')->get(),
             'statuses' => $this->formStatuses(),
             'modalities' => StoreAttendanceRequest::modalities(),
             'durations' => StoreAttendanceRequest::durations(),
@@ -416,6 +443,34 @@ class AttendanceService
     private function selectOptions(array $options): array
     {
         return collect($options)->map(fn (string $label, int|string $value) => ['value' => $value, 'label' => $label])->values()->all();
+    }
+
+    private function persistAddress(array $data, ?Endereco $address = null): ?int
+    {
+        $addressFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'numero', 'complemento'];
+        $hasAddress = collect($addressFields)->contains(fn (string $field) => filled($data[$field] ?? null));
+
+        if (! $hasAddress) {
+            return null;
+        }
+
+        $cep = $address?->cep ?? new Cep();
+        $cep->fill([
+            'cep' => (int) $data['cep'],
+            'cidade' => $data['cidade'],
+            'uf' => $data['uf'],
+            'bairro' => $data['bairro'] ?? null,
+            'logradouro' => $data['logradouro'] ?? null,
+        ])->save();
+
+        $address ??= new Endereco();
+        $address->fill([
+            'id_cep' => $cep->id,
+            'numero' => $data['numero'] ?? null,
+            'complemento' => $data['complemento'] ?? null,
+        ])->save();
+
+        return $address->id;
     }
 
     private function activeOptionsWithCurrent(string $modelClass, ?int $currentId): array

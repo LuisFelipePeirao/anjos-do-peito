@@ -55,6 +55,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/atendimentos/novo', [AttendanceController::class, 'create'])->name('attendances.create');
         Route::post('/atendimentos', [AttendanceController::class, 'store'])->name('attendances.store');
         Route::post('/atendimentos/locais', [AttendanceController::class, 'storeLocation'])->name('attendances.locations.store');
+        Route::put('/atendimentos/locais/{location}', [AttendanceController::class, 'updateLocation'])->name('attendances.locations.update');
+        Route::patch('/atendimentos/locais/{location}/alternar', [AttendanceController::class, 'toggleLocation'])->name('attendances.locations.toggle');
         Route::post('/atendimentos/procedimentos', [AttendanceController::class, 'storeProcedure'])->name('attendances.procedures.store');
         Route::put('/atendimentos/procedimentos/{procedure}', [AttendanceController::class, 'updateProcedure'])->name('attendances.procedures.update');
         Route::patch('/atendimentos/procedimentos/{procedure}/alternar', [AttendanceController::class, 'toggleProcedure'])->name('attendances.procedures.toggle');
