@@ -103,5 +103,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/movimentacoes', [StockMovementController::class, 'store'])->name('movements.store');
     Route::get('/movimentacoes/{movement}', [StockMovementController::class, 'show'])->name('movements.show');
 
+    Route::get('/relatorios/exportar', [ReportController::class, 'export'])->name('reports.export');
     Route::get('/relatorios', [ReportController::class, 'index'])->name('reports.index');
 });

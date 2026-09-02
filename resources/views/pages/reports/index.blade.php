@@ -10,8 +10,13 @@
         <x-app.page-info subheading="Painel analítico" title="Relatórios operacionais"
             description="Análises por área para investigar prazos, desempenho, cobertura de estoque e sustentabilidade dos contratos."
             :firstButton="[
-            'label' => 'Exportar relatório',
-            'link' => '#exportar-relatorio',
+            'label' => 'Gerar Relatório de Atividades',
+            'link' => route('reports.export', [
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'section' => $section,
+                'location' => $location,
+            ]),
             'icon' => 'download',
         ]" />
 

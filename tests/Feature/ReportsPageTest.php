@@ -141,6 +141,39 @@ it('validates report filter dates', function () {
         ->assertSessionHasErrors('end_date');
 });
 
+it('shows activity report export button with current filters', function () {
+    $user = User::factory()->administrador()->create();
+    $exportUrl = route('reports.export', [
+        'start_date' => '2026-01-01',
+        'end_date' => '2026-12-31',
+        'section' => 'all',
+        'location' => 'all',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('reports.index', [
+            'start_date' => '2026-01-01',
+            'end_date' => '2026-12-31',
+            'location' => 'all',
+        ]))
+        ->assertOk()
+        ->assertSee('Gerar Relatório de Atividades')
+        ->assertSee(e($exportUrl), false);
+});
+
+it('downloads an xlsx activity report', function () {
+    $user = User::factory()->administrador()->create();
+
+    $response = $this->actingAs($user)->get(route('reports.export', [
+        'start_date' => '2026-01-01',
+        'end_date' => '2026-12-31',
+    ]));
+
+    $response->assertOk();
+    expect($response->headers->get('content-disposition'))->toContain('relatorio-de-atividades-2026-01-01-a-2026-12-31.xlsx');
+    expect($response->headers->get('content-type'))->toContain('spreadsheetml.sheet');
+});
+
 it('counts pump loans that are still active even when withdrawn before the selected period', function () {
     $user = User::factory()->administrador()->create();
     $model = ModeloBomba::create(['fabricante' => 'G-Tech', 'modelo' => 'Smart', 'descricao' => null]);
