@@ -96,16 +96,66 @@ it('requires all clinical data when finalizing a retroactive attendance', functi
         ->assertSessionHasErrors(['summary', 'objective', 'complaint', 'evaluation', 'conduct']);
 });
 
+it('requires category and procedure when finalizing realized attendance', function () {
+    $user = User::factory()->administrador()->create();
+    $payload = attendancePayload(['status' => 'realizado']);
+
+    $this->actingAs($user)
+        ->post(route('attendances.store'), $payload)
+        ->assertSessionHasErrors(['attendance_category', 'procedure']);
+});
+
+it('stores category and procedure for realized attendance and allows drafts without them', function () {
+    $user = User::factory()->administrador()->create();
+    $categoria = CategoriaAtendimento::create(['nome' => 'Gestantes', 'ativo' => true]);
+    $procedimento = Procedimento::create(['nome' => 'Laserterapia', 'ativo' => true]);
+    $beneficiaria = attendanceBeneficiary();
+
+    $this->actingAs($user)
+        ->post(route('attendances.store'), [
+            'save_as' => 'draft',
+            'status' => 'realizado',
+            'beneficiary' => $beneficiaria->id,
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('atendimentos', [
+        'id_beneficiaria' => $beneficiaria->id,
+        'id_categoria_atendimento' => null,
+        'id_procedimento' => null,
+        'rascunho' => true,
+    ]);
+
+    $this->actingAs($user)
+        ->post(route('attendances.store'), attendancePayload([
+            'beneficiaria' => $beneficiaria,
+            'status' => 'realizado',
+            'attendance_category' => $categoria->id,
+            'procedure' => $procedimento->id,
+        ]))
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('atendimentos', [
+        'id_categoria_atendimento' => $categoria->id,
+        'id_procedimento' => $procedimento->id,
+        'rascunho' => false,
+    ]);
+});
+
 it('requires confirmation before finalizing a realized attendance', function () {
     $user = User::factory()->administrador()->create();
+    $categoria = CategoriaAtendimento::create(['nome' => 'Gestantes', 'ativo' => true]);
+    $procedimento = Procedimento::create(['nome' => 'Laserterapia', 'ativo' => true]);
 
-    $this->actingAs($user)->post(route('attendances.store'), attendancePayload(['status' => 'realizado', 'confirmed_finalization' => 0]))
+    $this->actingAs($user)->post(route('attendances.store'), attendancePayload(['status' => 'realizado', 'confirmed_finalization' => 0, 'attendance_category' => $categoria->id, 'procedure' => $procedimento->id]))
         ->assertSessionHasErrors('status');
 });
 
 it('locks final realized attendances in the interface and backend', function () {
     $user = User::factory()->administrador()->create();
-    $payload = attendancePayload(['status' => 'realizado']);
+    $categoria = CategoriaAtendimento::create(['nome' => 'Gestantes', 'ativo' => true]);
+    $procedimento = Procedimento::create(['nome' => 'Laserterapia', 'ativo' => true]);
+    $payload = attendancePayload(['status' => 'realizado', 'attendance_category' => $categoria->id, 'procedure' => $procedimento->id]);
     $this->actingAs($user)->post(route('attendances.store'), $payload);
     $attendance = Atendimento::firstOrFail();
 
@@ -116,13 +166,15 @@ it('locks final realized attendances in the interface and backend', function () 
 
 it('allows a realized draft to be completed and then locks it', function () {
     $user = User::factory()->administrador()->create();
+    $categoria = CategoriaAtendimento::create(['nome' => 'Gestantes', 'ativo' => true]);
+    $procedimento = Procedimento::create(['nome' => 'Laserterapia', 'ativo' => true]);
     $beneficiaria = attendanceBeneficiary();
     $this->actingAs($user)->post(route('attendances.store'), ['save_as' => 'draft', 'status' => 'realizado', 'beneficiary' => $beneficiaria->id]);
     $attendance = Atendimento::firstOrFail();
 
-    $this->actingAs($user)->put(route('attendances.update', $attendance), attendancePayload(['beneficiaria' => $beneficiaria, 'status' => 'realizado', 'save_as' => 'final']))->assertRedirect(route('attendances.show', $attendance));
+    $this->actingAs($user)->put(route('attendances.update', $attendance), attendancePayload(['beneficiaria' => $beneficiaria, 'status' => 'realizado', 'save_as' => 'final', 'attendance_category' => $categoria->id, 'procedure' => $procedimento->id]))->assertRedirect(route('attendances.show', $attendance));
     expect($attendance->fresh()->rascunho)->toBeFalse();
-    $this->actingAs($user)->put(route('attendances.update', $attendance), attendancePayload(['beneficiaria' => $beneficiaria, 'status' => 'realizado']))->assertForbidden();
+    $this->actingAs($user)->put(route('attendances.update', $attendance), attendancePayload(['beneficiaria' => $beneficiaria, 'status' => 'realizado', 'attendance_category' => $categoria->id, 'procedure' => $procedimento->id]))->assertForbidden();
 });
 
 it('returns only the selected beneficiary children and validates the child ownership', function () {
@@ -140,6 +192,8 @@ it('returns only the selected beneficiary children and validates the child owner
 
 it('starts an attendance and saves or finalizes its clinical continuation', function () {
     $user = User::factory()->administrador()->create();
+    $categoria = CategoriaAtendimento::create(['nome' => 'Puerperas e nutrizes', 'ativo' => true]);
+    $procedimento = Procedimento::create(['nome' => 'Puericultura', 'ativo' => true]);
     $this->actingAs($user)->post(route('attendances.store'), attendancePayload());
     $attendance = Atendimento::firstOrFail();
 
@@ -150,8 +204,12 @@ it('starts an attendance and saves or finalizes its clinical continuation', func
     $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'draft', 'summary' => 'Registro parcial'])->assertRedirect(route('attendances.show', $attendance));
     expect($attendance->fresh()->situacao)->toBe('em_atendimento')->and($attendance->fresh()->rascunho)->toBeTrue();
 
-    $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'final', 'confirmed_finalization' => 1, 'summary' => 'Registro completo', 'objective' => 'Objetivo', 'complaint' => 'Queixa', 'evaluation' => 'Avaliação', 'conduct' => 'Conduta'])->assertRedirect(route('attendances.show', $attendance));
+    $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'final', 'confirmed_finalization' => 1, 'summary' => 'Registro completo', 'objective' => 'Objetivo', 'complaint' => 'Queixa', 'evaluation' => 'Avaliação', 'conduct' => 'Conduta'])->assertSessionHasErrors(['attendance_category', 'procedure']);
+
+    $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'final', 'confirmed_finalization' => 1, 'attendance_category' => $categoria->id, 'procedure' => $procedimento->id, 'summary' => 'Registro completo', 'objective' => 'Objetivo', 'complaint' => 'Queixa', 'evaluation' => 'Avaliação', 'conduct' => 'Conduta'])->assertRedirect(route('attendances.show', $attendance));
     expect($attendance->fresh()->situacao)->toBe('realizado')->and($attendance->fresh()->rascunho)->toBeFalse();
+    expect($attendance->fresh()->id_categoria_atendimento)->toBe($categoria->id)
+        ->and($attendance->fresh()->id_procedimento)->toBe($procedimento->id);
 });
 
 it('prevents invalid manual statuses and keeps location creation separate', function () {

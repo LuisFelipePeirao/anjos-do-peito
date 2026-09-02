@@ -47,6 +47,14 @@
                     </div>
                     <div><x-material.select name="modality" label="Modalidade" :options="$modalities" :selected="old('modality', $attendanceData['modality'])" />@error('modality') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
                     <div><x-material.select name="location" label="Local" :options="$locations" :selected="old('location', $attendanceData['location'])" placeholder="Selecionar local cadastrado" />@error('location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div class="flex items-end gap-2">
+                        <div class="min-w-0 flex-1"><x-material.select name="attendance_category" label="População atendida" :options="$attendanceCategories" :selected="old('attendance_category', $attendanceData['attendance_category'])" placeholder="Selecione" />@error('attendance_category') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                        <button type="button" data-dialog-open="attendance-category-dialog" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white text-[#ef5b97] shadow-sm transition hover:bg-[#fbf1f3]" aria-label="Gerenciar população atendida" title="Gerenciar população atendida"><x-gmdi-add class="h-4 w-4" /></button>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <div class="min-w-0 flex-1"><x-material.select name="procedure" label="Procedimento" :options="$procedures" :selected="old('procedure', $attendanceData['procedure'])" placeholder="Selecione" />@error('procedure') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                        <button type="button" data-dialog-open="attendance-procedure-dialog" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white text-[#ef5b97] shadow-sm transition hover:bg-[#fbf1f3]" aria-label="Gerenciar procedimentos" title="Gerenciar procedimentos"><x-gmdi-add class="h-4 w-4" /></button>
+                    </div>
                 </div>
             </article>
 

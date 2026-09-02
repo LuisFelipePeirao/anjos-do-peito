@@ -30,6 +30,8 @@ class StoreAttendanceRequest extends FormRequest
             'location' => [$required, 'integer', 'exists:locais_atendimento,id'],
             'beneficiary' => ['required', 'integer', 'exists:beneficiarias,id'],
             'child' => ['nullable', 'integer', 'exists:criancas,id'],
+            'attendance_category' => ['nullable', 'integer', Rule::exists('categorias_atendimento', 'id')->where(fn ($query) => $query->where('ativo', true))],
+            'procedure' => ['nullable', 'integer', Rule::exists('procedimentos', 'id')->where(fn ($query) => $query->where('ativo', true))],
             'professional' => [$required, 'integer', Rule::exists('usuarios', 'id')->where(fn ($query) => $query->whereIn('perfil', ['administrador', 'enfermeira']))],
             'summary' => ['nullable', 'string', 'max:255'],
             'objective' => ['nullable', 'string'],
@@ -64,7 +66,7 @@ class StoreAttendanceRequest extends FormRequest
 
                 $errors = [];
 
-                foreach (['summary', 'objective', 'complaint', 'evaluation', 'conduct'] as $field) {
+                foreach (['summary', 'objective', 'complaint', 'evaluation', 'conduct', 'attendance_category', 'procedure'] as $field) {
                     if (! filled($this->input($field))) {
                         $errors[$field] = 'Este campo é obrigatório para finalizar o atendimento.';
                     }

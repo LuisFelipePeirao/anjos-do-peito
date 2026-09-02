@@ -24,6 +24,8 @@ class SaveAttendanceContinuationRequest extends FormRequest
             'evaluation' => ['nullable', 'string'],
             'conduct' => ['nullable', 'string'],
             'notes' => ['nullable', 'string'],
+            'attendance_category' => ['nullable', 'integer', Rule::exists('categorias_atendimento', 'id')->where(fn ($query) => $query->where('ativo', true))],
+            'procedure' => ['nullable', 'integer', Rule::exists('procedimentos', 'id')->where(fn ($query) => $query->where('ativo', true))],
         ];
     }
 
@@ -40,7 +42,7 @@ class SaveAttendanceContinuationRequest extends FormRequest
                 ]);
             }
 
-            $requiredFields = ['summary', 'objective', 'complaint', 'evaluation', 'conduct'];
+            $requiredFields = ['summary', 'objective', 'complaint', 'evaluation', 'conduct', 'attendance_category', 'procedure'];
             $errors = [];
 
             foreach ($requiredFields as $field) {

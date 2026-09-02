@@ -102,6 +102,14 @@
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['location_name'] }}</dd>
                     </div>
                     <div>
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">População atendida</dt>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['attendance_category_name'] }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">Procedimento</dt>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['procedure_name'] }}</dd>
+                    </div>
+                    <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">CPF</dt>
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['cpf'] }}</dd>
                     </div>
