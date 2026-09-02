@@ -263,3 +263,64 @@ it('updates and toggles attendance locations', function () {
 
     expect($location->fresh()->ativo)->toBeFalse();
 });
+
+it('renders location modal with a shared edit form and compact action list', function () {
+    $user = User::factory()->administrador()->create();
+    $location = LocalAtendimento::create([
+        'nome' => 'Domiciliar Norte',
+        'descricao' => 'Visita domiciliar agendada.',
+        'ativo' => true,
+    ]);
+
+    $response = $this->actingAs($user)->get(route('attendances.index'));
+
+    $response->assertOk()
+        ->assertSee('data-location-form', false)
+        ->assertSee('data-location-store-action="'.route('attendances.locations.store').'"', false)
+        ->assertSee('data-location-edit', false)
+        ->assertSee('data-location-update-action="'.route('attendances.locations.update', $location).'"', false)
+        ->assertSee('title="Editar local"', false)
+        ->assertSee('title="Inativar local"', false)
+        ->assertSee('Domiciliar Norte')
+        ->assertSee('Ativo')
+        ->assertDontSee('value="Domiciliar Norte"', false)
+        ->assertDontSee('value="Visita domiciliar agendada."', false)
+        ->assertDontSee('>Inativar<', false)
+        ->assertDontSee('>Reativar<', false);
+});
+
+it('renders category and procedure dialogs with shared edit forms and external management actions', function () {
+    $user = User::factory()->administrador()->create();
+    $category = CategoriaAtendimento::create([
+        'nome' => 'Gestantes',
+        'descricao' => 'Acompanhamento pré-natal.',
+        'ativo' => true,
+    ]);
+    $procedure = Procedimento::create([
+        'nome' => 'Laserterapia',
+        'descricao' => 'Procedimento clínico.',
+        'ativo' => true,
+    ]);
+
+    $response = $this->actingAs($user)->get(route('attendances.create'));
+
+    $response->assertOk()
+        ->assertSee('data-entity-form', false)
+        ->assertSee('data-entity-store-action="'.route('attendances.categories.store').'"', false)
+        ->assertSee('data-entity-store-action="'.route('attendances.procedures.store').'"', false)
+        ->assertSee('data-entity-edit', false)
+        ->assertSee('data-entity-update-action="'.route('attendances.categories.update', $category).'"', false)
+        ->assertSee('data-entity-update-action="'.route('attendances.procedures.update', $procedure).'"', false)
+        ->assertSee('title="Editar categoria"', false)
+        ->assertSee('title="Editar procedimento"', false)
+        ->assertSee('title="Inativar categoria"', false)
+        ->assertSee('title="Inativar procedimento"', false)
+        ->assertSee('Gerenciar população atendida', false)
+        ->assertSee('Gerenciar procedimentos', false)
+        ->assertSee('Gestantes')
+        ->assertSee('Laserterapia')
+        ->assertDontSee('value="Gestantes"', false)
+        ->assertDontSee('value="Laserterapia"', false)
+        ->assertDontSee('>Inativar<', false)
+        ->assertDontSee('>Reativar<', false);
+});

@@ -152,6 +152,95 @@ document.querySelectorAll('[data-dialog-auto-open]').forEach((dialog) => {
     }
 });
 
+const locationForm = document.querySelector('[data-location-form]');
+
+if (locationForm) {
+    const methodInput = locationForm.querySelector('[data-location-method]');
+    const submitLabel = locationForm.querySelector('[data-location-submit-label]');
+    const storeAction = locationForm.dataset.locationStoreAction;
+
+    const locationFields = ['nome', 'descricao', 'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'cidade', 'uf'];
+
+    const setLocationField = (name, value = '') => {
+        const field = locationForm.querySelector(`[name="${name}"]`);
+
+        if (field) {
+            field.value = value;
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    };
+
+    const resetLocationForm = () => {
+        locationForm.action = storeAction;
+        if (methodInput) {
+            methodInput.disabled = true;
+        }
+        locationFields.forEach((field) => setLocationField(field, ''));
+        if (submitLabel) {
+            submitLabel.textContent = 'Salvar local';
+        }
+    };
+
+    document.querySelectorAll('[data-location-edit]').forEach((button) => {
+        button.addEventListener('click', () => {
+            locationForm.action = button.dataset.locationUpdateAction;
+            if (methodInput) {
+                methodInput.disabled = false;
+            }
+            locationFields.forEach((field) => setLocationField(field, button.dataset[`location${field.charAt(0).toUpperCase()}${field.slice(1)}`] || ''));
+            if (submitLabel) {
+                submitLabel.textContent = 'Salvar alterações';
+            }
+            locationForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            locationForm.querySelector('[name="nome"]')?.focus();
+        });
+    });
+
+    locationForm.querySelector('[data-location-reset]')?.addEventListener('click', resetLocationForm);
+}
+
+document.querySelectorAll('[data-entity-form]').forEach((entityForm) => {
+    const methodInput = entityForm.querySelector('[data-entity-method]');
+    const submitLabel = entityForm.querySelector('[data-entity-submit-label]');
+    const storeAction = entityForm.dataset.entityStoreAction;
+    const fields = (entityForm.dataset.entityFields || '').split(',').filter(Boolean);
+
+    const setField = (name, value = '') => {
+        const field = entityForm.querySelector(`[name="${name}"]`);
+
+        if (field) {
+            field.value = value;
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    };
+
+    const resetForm = () => {
+        entityForm.action = storeAction;
+        methodInput?.setAttribute('disabled', '');
+        fields.forEach((field) => setField(field));
+        if (submitLabel) {
+            submitLabel.textContent = `Salvar ${entityForm.closest('dialog')?.dataset.entityLabel || 'item'}`;
+        }
+    };
+
+    entityForm.closest('dialog')?.querySelectorAll('[data-entity-edit]').forEach((button) => {
+        button.addEventListener('click', () => {
+            entityForm.action = button.dataset.entityUpdateAction;
+            methodInput?.removeAttribute('disabled');
+            fields.forEach((field) => setField(field, button.dataset[`entity${field.charAt(0).toUpperCase()}${field.slice(1)}`] || ''));
+            if (submitLabel) {
+                submitLabel.textContent = 'Salvar alterações';
+            }
+            entityForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            entityForm.querySelector('[name="nome"]')?.focus();
+        });
+    });
+
+    entityForm.querySelector('[data-entity-reset]')?.addEventListener('click', resetForm);
+});
+
 const digitsOnly = (value, length) => value.replace(/\D/g, '').slice(0, length);
 const formatCpf = (value) => digitsOnly(value, 11)
     .replace(/(\d{3})(\d)/, '$1.$2')
