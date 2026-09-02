@@ -19,6 +19,8 @@ class Atendimento extends Model
         'rascunho',
         'id_beneficiaria',
         'id_crianca',
+        'id_categoria_atendimento',
+        'id_procedimento',
         'id_usuario',
     ];
 
@@ -48,6 +50,16 @@ class Atendimento extends Model
     public function crianca(): BelongsTo
     {
         return $this->belongsTo(Crianca::class, 'id_crianca');
+    }
+
+    public function categoriaAtendimento(): BelongsTo
+    {
+        return $this->belongsTo(CategoriaAtendimento::class, 'id_categoria_atendimento');
+    }
+
+    public function procedimento(): BelongsTo
+    {
+        return $this->belongsTo(Procedimento::class, 'id_procedimento');
     }
 
     public function detalhe(): HasOne

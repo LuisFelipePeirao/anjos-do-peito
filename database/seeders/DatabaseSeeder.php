@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
             BeneficiariasSeeder::class,
             CriancasSeeder::class,
             LocaisAtendimentoSeeder::class,
+            CategoriasAtendimentoSeeder::class,
+            ProcedimentosSeeder::class,
             AtendimentosSeeder::class,
             AtendimentoDetalhesSeeder::class,
             DoadoresSeeder::class,

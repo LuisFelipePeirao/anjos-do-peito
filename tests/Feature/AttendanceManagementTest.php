@@ -2,8 +2,10 @@
 
 use App\Models\Atendimento;
 use App\Models\Beneficiaria;
+use App\Models\CategoriaAtendimento;
 use App\Models\Crianca;
 use App\Models\LocalAtendimento;
+use App\Models\Procedimento;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -44,6 +46,29 @@ it('shows a scheduled form with clinical fields hidden and draft action', functi
     $this->actingAs($user)->get(route('attendances.create'))
         ->assertOk()->assertSee('data-attendance-clinical-fields class="space-y-6 hidden"', false)
         ->assertSee('Salvar rascunho')->assertSee('attendance-finalize-confirmation');
+});
+
+it('has attendance category and procedure models linked to attendances', function () {
+    $user = User::factory()->administrador()->create();
+    $beneficiaria = attendanceBeneficiary();
+    $local = LocalAtendimento::create(['nome' => 'Sede ICAP']);
+    $categoria = CategoriaAtendimento::create(['nome' => 'Gestantes', 'ativo' => true]);
+    $procedimento = Procedimento::create(['nome' => 'Manejo para amamentação', 'ativo' => true]);
+
+    $attendance = Atendimento::create([
+        'data_hora' => '2026-08-10 09:00:00',
+        'modalidade' => 'presencial',
+        'id_local' => $local->id,
+        'situacao' => 'realizado',
+        'rascunho' => false,
+        'id_beneficiaria' => $beneficiaria->id,
+        'id_usuario' => $user->id,
+        'id_categoria_atendimento' => $categoria->id,
+        'id_procedimento' => $procedimento->id,
+    ]);
+
+    expect($attendance->fresh()->categoriaAtendimento->nome)->toBe('Gestantes')
+        ->and($attendance->fresh()->procedimento->nome)->toBe('Manejo para amamentação');
 });
 
 it('creates a final scheduled attendance without persisting clinical details', function () {
