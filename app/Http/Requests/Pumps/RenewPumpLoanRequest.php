@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Pumps;
 
 use App\Models\BombaLeite;
 use Illuminate\Foundation\Http\FormRequest;

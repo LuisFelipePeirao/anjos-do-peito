@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Pumps;
 
-use App\Models\BombaLeite;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-class UpdatePumpRequest extends FormRequest
+class StorePumpRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,15 +15,11 @@ class UpdatePumpRequest extends FormRequest
 
     public function rules(): array
     {
-        /** @var BombaLeite|null $pump */
-        $pump = $this->route('pump');
-        $hasActiveLoan = $pump?->cessoes()->whereIn('situacao', ['ativa', 'atrasada'])->exists() ?? false;
-
         return [
-            'codigo' => ['required', 'string', 'max:255', Rule::unique('bomba_leite', 'codigo')->ignore($pump?->id)],
+            'codigo' => ['required', 'string', 'max:255', Rule::unique('bomba_leite', 'codigo')],
             'id_modelo' => ['required', 'integer', 'exists:modelos_bombas,id'],
             'num_serie' => ['nullable', 'string', 'max:255'],
-            'situacao' => ['required', Rule::in($hasActiveLoan ? ['alugada'] : ['disponivel', 'manutencao', 'baixada'])],
+            'situacao' => ['required', Rule::in(['disponivel', 'manutencao', 'baixada'])],
             'data_aquisicao' => ['nullable', 'date'],
             'origem' => ['required', Rule::in(['compra', 'doacao', 'emprestimo'])],
             'id_doador' => ['nullable', 'integer', 'exists:doadores,id'],
@@ -39,7 +34,6 @@ class UpdatePumpRequest extends FormRequest
             'id_doador' => $this->normalizeDonor($this->input('id_doador')),
             'situacao' => $this->normalizeOption($this->input('situacao'), [
                 'Disponível' => 'disponivel',
-                'Emprestada' => 'alugada',
                 'Manutenção' => 'manutencao',
                 'Inativa' => 'baixada',
             ]),

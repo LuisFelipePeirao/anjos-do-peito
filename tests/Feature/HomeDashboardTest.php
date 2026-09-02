@@ -56,3 +56,17 @@ it('builds the home dashboard from database records', function () {
         ->assertSee('Atendimento registrado para Maria Real.')
         ->assertSee('Entrada de 5 pacote de Fralda P.');
 });
+
+it('shows the authenticated user in the top navbar', function () {
+    $user = User::factory()->enfermeira()->create([
+        'nome' => 'Carla Navbar',
+        'email' => 'carla.navbar@example.com',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertOk()
+        ->assertSee('Carla Navbar')
+        ->assertSee('Enfermeira')
+        ->assertDontSee('Luzilene Zimmerman');
+});

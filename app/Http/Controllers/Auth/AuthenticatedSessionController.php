@@ -3,45 +3,33 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    public function __construct(private readonly AuthService $auth)
+    {
+    }
+
     public function create(): View
     {
         return view('auth.login');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(LoginRequest $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'senha' => ['required', 'string'],
-        ]);
-
-        if (! Auth::attempt([
-            'email' => $credentials['email'],
-            'password' => $credentials['senha'],
-        ], $request->boolean('remember'))) {
-            return back()
-                ->withErrors(['email' => 'As credenciais informadas não conferem.'])
-                ->onlyInput('email');
-        }
-
-        $request->session()->regenerate();
+        $this->auth->login($request->validated(), $request->boolean('remember'), $request->session());
 
         return redirect()->intended(route('home'));
     }
 
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $this->auth->logout($request->session());
 
         return redirect()->route('login');
     }

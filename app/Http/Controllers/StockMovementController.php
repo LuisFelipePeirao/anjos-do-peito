@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreStockMovementRequest;
+use App\Http\Requests\StockMovements\StoreStockMovementRequest;
 use App\Models\EstoqueMovimentacao;
 use App\Services\StockMovementService;
 use Illuminate\Http\RedirectResponse;
