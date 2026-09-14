@@ -14,7 +14,7 @@
             </x-slot:icon>
         </x-material.input>
 
-        <x-material.input label="Senha" name="senha" type="password">
+        <x-material.input label="Senha" name="senha" type="password" :password-toggle="true">
             <x-slot:icon>
                 <x-gmdi-lock-o />
             </x-slot:icon>

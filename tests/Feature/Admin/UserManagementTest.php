@@ -40,6 +40,33 @@ it('allows administrador to create internal user', function () {
     ]);
 });
 
+it('shows password visibility controls on user forms', function () {
+    $admin = User::factory()->administrador()->create();
+    $user = User::factory()->create();
+
+    $this->actingAs($admin)
+        ->get(route('users.create'))
+        ->assertOk()
+        ->assertSee('data-password-toggle="senha"', false)
+        ->assertSee('data-password-toggle="senha_confirmation"', false)
+        ->assertSee('data-password-input-wrapper', false)
+        ->assertSee('rounded-[4px] text-[#667085]', false)
+        ->assertSee('focus-visible:ring-2', false)
+        ->assertDontSee('hover:bg-[#fdecef]', false)
+        ->assertDontSee('rounded-full text-[#667085] transition hover:bg', false);
+
+    $this->actingAs($admin)
+        ->get(route('users.edit', $user))
+        ->assertOk()
+        ->assertSee('data-password-toggle="senha"', false)
+        ->assertSee('data-password-toggle="senha_confirmation"', false)
+        ->assertSee('data-password-input-wrapper', false)
+        ->assertSee('rounded-[4px] text-[#667085]', false)
+        ->assertSee('focus-visible:ring-2', false)
+        ->assertDontSee('hover:bg-[#fdecef]', false)
+        ->assertDontSee('rounded-full text-[#667085] transition hover:bg', false);
+});
+
 it('prevents deactivating the only active administrador', function () {
     $admin = User::factory()->administrador()->create();
 

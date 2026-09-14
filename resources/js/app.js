@@ -1,5 +1,36 @@
 const shell = document.getElementById('app-shell');
 
+const passwordToggleTarget = (button) => {
+    const field = button.closest('md-filled-text-field');
+
+    if (field) {
+        return field;
+    }
+
+    return button.closest('label')?.querySelector('input[type="password"], input[type="text"]');
+};
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-password-toggle]');
+
+    if (!button) {
+        return;
+    }
+
+    const field = passwordToggleTarget(button);
+
+    if (!field) {
+        return;
+    }
+
+    const isVisible = field.type === 'text';
+    field.type = isVisible ? 'password' : 'text';
+    button.setAttribute('aria-label', isVisible ? 'Mostrar senha' : 'Ocultar senha');
+    button.setAttribute('aria-pressed', String(!isVisible));
+    button.querySelector('[data-password-visible-icon]')?.classList.toggle('hidden', !isVisible);
+    button.querySelector('[data-password-hidden-icon]')?.classList.toggle('hidden', isVisible);
+});
+
 if (shell) {
     const collapseButton = document.querySelector('[data-sidebar-collapse]');
     const mobileToggle = document.querySelector('[data-sidebar-mobile-toggle]');

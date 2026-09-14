@@ -11,13 +11,13 @@
 
         <h1 class="mb-8 text-[2rem] font-medium md:text-[2.5rem]">Nova Senha</h1>
 
-        <x-material.input label="Senha" name="senha" type="password">
+        <x-material.input label="Senha" name="senha" type="password" :password-toggle="true">
             <x-slot:icon>
                 <x-gmdi-lock-o />
             </x-slot:icon>
         </x-material.input>
 
-        <x-material.input label="Confirmar senha" name="senha_confirmation" type="password">
+        <x-material.input label="Confirmar senha" name="senha_confirmation" type="password" :password-toggle="true">
             <x-slot:icon>
                 <x-gmdi-lock-o />
             </x-slot:icon>
