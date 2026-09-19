@@ -57,6 +57,18 @@ it('requires management profile for pump mutations', function () {
     $this->actingAs(User::factory()->atendente()->create())->get(route('pumps.edit', $pump))->assertForbidden();
 });
 
+it('uses floating controls on the pump form', function () {
+    $user = User::factory()->administrador()->create();
+    pumpModel();
+
+    $this->actingAs($user)->get(route('pumps.create'))
+        ->assertOk()
+        ->assertSee('id="codigo"', false)
+        ->assertSee('name="acessorios"', false)
+        ->assertSee('peer-not-placeholder-shown:-top-2.5', false)
+        ->assertSee('text-[#c2414b]', false);
+});
+
 it('creates lists shows and updates milk pumps using database records', function () {
     $user = User::factory()->administrador()->create();
     $model = pumpModel();

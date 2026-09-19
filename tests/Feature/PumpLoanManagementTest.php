@@ -52,6 +52,20 @@ it('requires management profile for loan registration', function () {
         ->assertForbidden();
 });
 
+it('uses floating controls while keeping billing fields disabled', function () {
+    $user = User::factory()->administrador()->create();
+    loanPump();
+    loanBeneficiary();
+
+    $this->actingAs($user)->get(route('pumps.loans.create'))
+        ->assertOk()
+        ->assertSee('id="withdrawn_at"', false)
+        ->assertSee('name="billing_notes"', false)
+        ->assertSee('data-pump-billing-field', false)
+        ->assertSee('disabled="disabled"', false)
+        ->assertSee('peer-not-placeholder-shown:-top-2.5', false);
+});
+
 it('registers a free pump loan and marks pump as borrowed', function () {
     $user = User::factory()->administrador()->create();
     $pump = loanPump();
