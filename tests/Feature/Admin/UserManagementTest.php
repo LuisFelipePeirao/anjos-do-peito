@@ -67,6 +67,19 @@ it('shows password visibility controls on user forms', function () {
         ->assertDontSee('rounded-full text-[#667085] transition hover:bg', false);
 });
 
+it('uses floating controls without changing password fields', function () {
+    $admin = User::factory()->administrador()->create();
+
+    $this->actingAs($admin)->get(route('users.create'))
+        ->assertOk()
+        ->assertSee('name="nome"', false)
+        ->assertSee('name="email"', false)
+        ->assertSee('name="perfil"', false)
+        ->assertSee('data-select-required-asterisk', false)
+        ->assertSee('type="password"', false)
+        ->assertDontSee('x-material.floating-input type="password"', false);
+});
+
 it('prevents deactivating the only active administrador', function () {
     $admin = User::factory()->administrador()->create();
 

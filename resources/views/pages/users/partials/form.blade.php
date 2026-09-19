@@ -21,35 +21,9 @@
     </div>
 
     <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
-        <label class="block xl:col-span-2">
-            <span class="{{ $labelClass }}">Nome completo</span>
-            <input
-                type="text"
-                name="nome"
-                value="{{ old('nome', $user?->nome) }}"
-                class="{{ $inputClass }}"
-                placeholder="Ex.: Maria da Silva"
-                required
-            >
-            @error('nome')
-                <span class="mt-2 block text-sm font-medium text-red-600">{{ $message }}</span>
-            @enderror
-        </label>
+        <x-material.floating-input name="nome" label="Nome completo" :value="old('nome', $user?->nome)" placeholder="Ex.: Maria da Silva" wrapper-class="xl:col-span-2" required />
 
-        <label class="block">
-            <span class="{{ $labelClass }}">E-mail</span>
-            <input
-                type="email"
-                name="email"
-                value="{{ old('email', $user?->email) }}"
-                class="{{ $inputClass }}"
-                placeholder="nome@email.com"
-                required
-            >
-            @error('email')
-                <span class="mt-2 block text-sm font-medium text-red-600">{{ $message }}</span>
-            @enderror
-        </label>
+        <x-material.floating-input type="email" name="email" label="E-mail" :value="old('email', $user?->email)" placeholder="nome@email.com" required />
     </div>
 </article>
 
