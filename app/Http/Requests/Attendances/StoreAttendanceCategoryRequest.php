@@ -21,4 +21,15 @@ class StoreAttendanceCategoryRequest extends FormRequest
             'descricao' => ['nullable', 'string'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'nome.required' => 'O nome da categoria é obrigatório.',
+            'nome.string' => 'O nome da categoria deve ser um texto válido.',
+            'nome.max' => 'O nome da categoria não pode ter mais de :max caracteres.',
+            'nome.unique' => 'Já existe uma categoria com este nome.',
+            'descricao.string' => 'A descrição deve ser um texto válido.',
+        ];
+    }
 }

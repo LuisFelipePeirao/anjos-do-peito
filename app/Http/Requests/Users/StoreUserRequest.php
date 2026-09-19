@@ -23,6 +23,20 @@ class StoreUserRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'required' => 'Este campo é obrigatório.',
+            'string' => 'Informe um texto válido.',
+            'max' => 'Este campo não pode ter mais de :max caracteres.',
+            'email.email' => 'O e-mail informado não é válido.',
+            'email.unique' => 'Este e-mail já está cadastrado.',
+            'senha.confirmed' => 'A confirmação da senha não confere.',
+            'senha.password' => 'A senha não atende aos requisitos de segurança.',
+            'perfil.in' => 'Selecione um perfil válido.',
+        ];
+    }
+
     public static function profiles(): array
     {
         return ['administrador', 'atendente', 'enfermeira'];

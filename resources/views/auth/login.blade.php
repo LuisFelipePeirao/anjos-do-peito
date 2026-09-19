@@ -24,6 +24,10 @@
             <p class="mb-4 text-sm font-medium text-red-600">{{ $message }}</p>
         @enderror
 
+        @error('senha')
+            <p class="mb-4 text-sm font-medium text-red-600">{{ $message }}</p>
+        @enderror
+
         @if (session('status'))
             <p class="mb-4 text-sm font-medium text-green-700">{{ session('status') }}</p>
         @endif

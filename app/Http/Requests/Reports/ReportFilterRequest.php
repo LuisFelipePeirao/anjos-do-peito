@@ -28,6 +28,16 @@ class ReportFilterRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'start_date.date' => 'Informe uma data inicial válida.',
+            'end_date.date' => 'Informe uma data final válida.',
+            'end_date.after_or_equal' => 'A data final deve ser igual ou posterior à data inicial.',
+            'section.in' => 'Selecione uma seção válida.',
+        ];
+    }
+
     public function filters(): array
     {
         $validated = $this->validated();

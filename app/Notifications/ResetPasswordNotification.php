@@ -12,11 +12,11 @@ class ResetPasswordNotification extends ResetPassword
         $expirationMinutes = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
 
         return (new MailMessage)
-            ->subject('Redefinicao de senha')
-            ->greeting('Ola!')
-            ->line('Recebemos uma solicitacao para redefinir a senha da sua conta.')
+            ->subject('Redefinição de senha')
+            ->greeting('Olá!')
+            ->line('Recebemos uma solicitação para redefinir a senha da sua conta.')
             ->action('Redefinir senha', $url)
             ->line("Este link expira em {$expirationMinutes} minutos.")
-            ->line('Se voce nao solicitou a redefinicao de senha, ignore este e-mail.');
+            ->line('Se você não solicitou a redefinição de senha, ignore este e-mail.');
     }
 }

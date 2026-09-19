@@ -20,6 +20,15 @@ class BeneficiaryFilterRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'q.string' => 'A busca deve ser um texto válido.',
+            'q.max' => 'A busca não pode ter mais de :max caracteres.',
+            'status.in' => 'Selecione uma situação válida.',
+        ];
+    }
+
     public function filters(): array
     {
         return [

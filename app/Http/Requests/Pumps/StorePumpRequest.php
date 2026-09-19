@@ -27,6 +27,29 @@ class StorePumpRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'codigo.required' => 'O código da bomba é obrigatório.',
+            'codigo.string' => 'O código da bomba deve ser um texto válido.',
+            'codigo.max' => 'O código da bomba não pode ter mais de :max caracteres.',
+            'codigo.unique' => 'Já existe uma bomba com este código.',
+            'id_modelo.required' => 'O modelo da bomba é obrigatório.',
+            'id_modelo.integer' => 'Selecione um modelo válido.',
+            'id_modelo.exists' => 'O modelo selecionado não existe.',
+            'num_serie.string' => 'O número de série deve ser um texto válido.',
+            'num_serie.max' => 'O número de série não pode ter mais de :max caracteres.',
+            'situacao.required' => 'A situação da bomba é obrigatória.',
+            'situacao.in' => 'Selecione uma situação válida.',
+            'data_aquisicao.date' => 'Informe uma data de aquisição válida.',
+            'origem.required' => 'A origem da bomba é obrigatória.',
+            'origem.in' => 'Selecione uma origem válida.',
+            'id_doador.integer' => 'Selecione um doador válido.',
+            'id_doador.exists' => 'O doador selecionado não existe.',
+            'acessorios.string' => 'Os acessórios devem ser um texto válido.',
+        ];
+    }
+
     protected function prepareForValidation(): void
     {
         $this->merge([

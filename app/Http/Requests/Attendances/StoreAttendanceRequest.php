@@ -42,6 +42,42 @@ class StoreAttendanceRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'save_as.required' => 'Informe como deseja salvar o atendimento.',
+            'save_as.in' => 'Selecione uma opção de salvamento válida.',
+            'confirmed_finalization.boolean' => 'A confirmação de finalização é inválida.',
+            'date.required' => 'A data do atendimento é obrigatória.',
+            'date.date' => 'Informe uma data de atendimento válida.',
+            'time.required' => 'O horário do atendimento é obrigatório.',
+            'time.date_format' => 'Informe um horário válido.',
+            'duration.required' => 'A duração prevista é obrigatória.',
+            'duration.in' => 'Selecione uma duração válida.',
+            'status.required' => 'A situação do atendimento é obrigatória.',
+            'status.in' => 'Selecione uma situação de atendimento válida.',
+            'modality.required' => 'A modalidade do atendimento é obrigatória.',
+            'modality.in' => 'Selecione uma modalidade válida.',
+            'location.required' => 'O local do atendimento é obrigatório.',
+            'location.integer' => 'Selecione um local válido.',
+            'location.exists' => 'O local selecionado não existe.',
+            'beneficiary.required' => 'A beneficiária é obrigatória.',
+            'beneficiary.integer' => 'Selecione uma beneficiária válida.',
+            'beneficiary.exists' => 'A beneficiária selecionada não existe.',
+            'child.integer' => 'Selecione uma criança válida.',
+            'child.exists' => 'A criança selecionada não existe.',
+            'attendance_category.integer' => 'Selecione uma categoria de atendimento válida.',
+            'attendance_category.exists' => 'A categoria de atendimento selecionada não está disponível.',
+            'procedure.integer' => 'Selecione um procedimento válido.',
+            'procedure.exists' => 'O procedimento selecionado não está disponível.',
+            'professional.required' => 'O profissional responsável é obrigatório.',
+            'professional.integer' => 'Selecione um profissional válido.',
+            'professional.exists' => 'O profissional selecionado não está disponível.',
+            'summary.max' => 'O resumo não pode ter mais de :max caracteres.',
+            'string' => 'Informe um texto válido.',
+        ];
+    }
+
     public function withValidator($validator): void
     {
         $validator->after(function () {

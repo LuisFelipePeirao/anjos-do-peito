@@ -19,4 +19,13 @@ class LoginRequest extends FormRequest
             'remember' => ['nullable', 'boolean'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'O campo e-mail é obrigatório.',
+            'email.email' => 'O e-mail inserido não é válido.',
+            'senha.required' => 'O campo senha é obrigatório.'
+        ];
+    }
 }

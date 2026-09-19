@@ -21,4 +21,15 @@ class StoreProcedureRequest extends FormRequest
             'descricao' => ['nullable', 'string'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'nome.required' => 'O nome do procedimento é obrigatório.',
+            'nome.string' => 'O nome do procedimento deve ser um texto válido.',
+            'nome.max' => 'O nome do procedimento não pode ter mais de :max caracteres.',
+            'nome.unique' => 'Já existe um procedimento com este nome.',
+            'descricao.string' => 'A descrição deve ser um texto válido.',
+        ];
+    }
 }

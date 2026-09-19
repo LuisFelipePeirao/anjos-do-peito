@@ -42,6 +42,21 @@ class StoreBeneficiaryRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'required' => 'Este campo é obrigatório.',
+            'string' => 'Informe um texto válido.',
+            'max' => 'Este campo não pode ter mais de :max caracteres.',
+            'email' => 'O e-mail informado não é válido.',
+            'cpf.regex' => 'O CPF deve conter 11 dígitos.',
+            'cpf.unique' => 'Este CPF já está cadastrado.',
+            'cep.regex' => 'O CEP deve conter 8 dígitos.',
+            'origem_cadastro.in' => 'Selecione uma origem de cadastro válida.',
+            'uf.in' => 'Selecione uma UF válida.',
+        ];
+    }
+
     public static function origins(): array
     {
         return ['busca_espontanea' => 'Busca espontânea', 'encaminhamento_ubs' => 'Encaminhamento UBS', 'indicacao' => 'Indicação', 'acao_social' => 'Ação social'];

@@ -21,6 +21,16 @@ class AttendanceFilterRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'q.string' => 'A busca deve ser um texto válido.',
+            'q.max' => 'A busca não pode ter mais de :max caracteres.',
+            'status.in' => 'Selecione uma situação válida.',
+            'modality.in' => 'Selecione uma modalidade válida.',
+        ];
+    }
+
     public function filters(): array
     {
         return [
