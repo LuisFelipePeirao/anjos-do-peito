@@ -31,6 +31,55 @@ document.addEventListener('click', (event) => {
     button.querySelector('[data-password-hidden-icon]')?.classList.toggle('hidden', isVisible);
 });
 
+const syncSelectRequiredAsterisk = (select) => {
+    const wrapper = select.closest('[data-select-required]');
+    const asterisk = wrapper?.querySelector('[data-select-required-asterisk]');
+    const field = select.shadowRoot?.querySelector('[part="field"]');
+    const label = field?.shadowRoot?.querySelector('.label:not(.hidden)');
+
+    if (!wrapper || !asterisk || !label) {
+        return;
+    }
+
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const labelRect = label.getBoundingClientRect();
+    const labelStyle = window.getComputedStyle(label);
+
+    asterisk.style.left = `${labelRect.right - wrapperRect.left + 4}px`;
+    asterisk.style.top = `${labelRect.top - wrapperRect.top}px`;
+    asterisk.style.fontSize = labelStyle.fontSize;
+    asterisk.style.lineHeight = labelStyle.lineHeight;
+    asterisk.style.fontWeight = labelStyle.fontWeight;
+    asterisk.style.visibility = 'visible';
+};
+
+const scheduleSelectRequiredAsterisk = (select) => {
+    requestAnimationFrame(() => {
+        syncSelectRequiredAsterisk(select);
+        window.setTimeout(() => syncSelectRequiredAsterisk(select), 170);
+    });
+};
+
+const selectWithRequiredAsterisk = (target) => target instanceof Element
+    ? target.closest('md-outlined-select[required]')
+    : null;
+
+document.querySelectorAll('md-outlined-select[required]').forEach(scheduleSelectRequiredAsterisk);
+
+['focusin', 'focusout', 'input', 'change'].forEach((eventName) => {
+    document.addEventListener(eventName, (event) => {
+        const select = selectWithRequiredAsterisk(event.target);
+
+        if (select) {
+            scheduleSelectRequiredAsterisk(select);
+        }
+    }, true);
+});
+
+window.addEventListener('resize', () => {
+    document.querySelectorAll('md-outlined-select[required]').forEach(syncSelectRequiredAsterisk);
+});
+
 if (shell) {
     const collapseButton = document.querySelector('[data-sidebar-collapse]');
     const mobileToggle = document.querySelector('[data-sidebar-mobile-toggle]');

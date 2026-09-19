@@ -33,8 +33,8 @@
             <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5"><div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fdecef] text-[#ef5b97]"><x-lucide-calendar-days class="h-5 w-5" /></span><div><h3 class="text-lg font-bold text-[#111827]">Agenda</h3><p class="mt-1 text-sm text-[#667085]">Data, horário, modalidade e situação do atendimento.</p></div></div></div>
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
-                    <label class="block"><span class="text-sm font-semibold text-[#344054]">Data</span><input type="date" name="date" value="{{ old('date', $attendanceData['date']) }}" class="{{ $inputClass }}">@error('date') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</label>
-                    <label class="block"><span class="text-sm font-semibold text-[#344054]">Horário</span><input type="time" name="time" value="{{ old('time', $attendanceData['time']) }}" class="{{ $inputClass }}">@error('time') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</label>
+                    <x-material.floating-input type="date" name="date" label="Data" :value="old('date', $attendanceData['date'])" />
+                    <x-material.floating-input type="time" name="time" label="Horário" :value="old('time', $attendanceData['time'])" />
                     <div><x-material.select name="duration" label="Duração prevista" :options="$durations" :selected="old('duration', $attendanceData['duration'])" />@error('duration') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
                     <div>
                         @if ($isEdit)
