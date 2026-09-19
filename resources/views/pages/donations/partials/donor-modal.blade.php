@@ -17,29 +17,13 @@
         </div>
 
         <div class="mt-5 grid gap-5 md:grid-cols-2">
-            <label class="block">
-                <span class="text-sm font-semibold text-[#344054]">Nome</span>
-                <input name="nome" type="text" value="{{ old('nome') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Ex.: Campanha Solidária" required>
-                @error('nome', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-            </label>
+            <div><x-material.floating-input name="nome" label="Nome" :value="old('nome')" placeholder="Ex.: Campanha Solidária" required />@error('nome', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
 
-            <label class="block">
-                <span class="text-sm font-semibold text-[#344054]">Telefone</span>
-                <input name="telefone" type="text" value="{{ old('telefone') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Ex.: (47) 99999-0000">
-                @error('telefone', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-            </label>
+            <div><x-material.floating-input name="telefone" label="Telefone" :value="old('telefone')" placeholder="Ex.: (47) 99999-0000" />@error('telefone', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
 
-            <label class="block md:col-span-2">
-                <span class="text-sm font-semibold text-[#344054]">E-mail</span>
-                <input name="email" type="email" value="{{ old('email') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Ex.: doador@email.com">
-                @error('email', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-            </label>
+            <div class="md:col-span-2"><x-material.floating-input type="email" name="email" label="E-mail" :value="old('email')" placeholder="Ex.: doador@email.com" />@error('email', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
 
-            <label class="block md:col-span-2">
-                <span class="text-sm font-semibold text-[#344054]">Observação</span>
-                <textarea name="observacao" class="mt-2 min-h-32 w-full rounded-[8px] border border-[#e4d8d9] px-3 py-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Observações sobre contato, campanha ou preferências do doador.">{{ old('observacao') }}</textarea>
-                @error('observacao', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-            </label>
+            <div class="md:col-span-2"><x-material.floating-textarea name="observacao" label="Observação" :value="old('observacao')" placeholder="Observações sobre contato, campanha ou preferências do doador." class="min-h-32" />@error('observacao', 'donor') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
         </div>
 
         <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

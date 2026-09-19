@@ -21,28 +21,16 @@
         <form method="POST" action="{{ route('donations.materials.store') }}" class="space-y-6">
             @csrf
             <x-donations.partials.form-shell title="Dados do item" description="Informações usadas no saldo e nos alertas de reposição.">
-                <label class="block">
-                    <span class="{{ $labelClass }}">Nome</span>
-                    <input type="text" name="nome" value="{{ old('nome') }}" class="{{ $inputClass }}" placeholder="Ex.: Fralda tamanho P" required>
-                    @error('nome') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                </label>
+                <x-material.floating-input name="nome" label="Nome" :value="old('nome')" placeholder="Ex.: Fralda tamanho P" required />
 
                 <div>
                     <x-material.select name="id_categoria" label="Categoria" :options="$categories" :selected="old('id_categoria')" placeholder="Selecione" required />
                     @error('id_categoria') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                 </div>
 
-                <label class="block">
-                    <span class="{{ $labelClass }}">Unidade de medida</span>
-                    <input type="text" name="unidade_medida" value="{{ old('unidade_medida') }}" class="{{ $inputClass }}" placeholder="Ex.: pacote" required>
-                    @error('unidade_medida') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                </label>
+                <x-material.floating-input name="unidade_medida" label="Unidade de medida" :value="old('unidade_medida')" placeholder="Ex.: pacote" required />
 
-                <label class="block">
-                    <span class="{{ $labelClass }}">Estoque mínimo</span>
-                    <input type="number" min="0" name="estoque_minimo" value="{{ old('estoque_minimo', 0) }}" class="{{ $inputClass }}" required>
-                    @error('estoque_minimo') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                </label>
+                <x-material.floating-input type="number" name="estoque_minimo" label="Estoque mínimo" :value="old('estoque_minimo', 0)" min="0" required />
             </x-donations.partials.form-shell>
 
             <x-donations.partials.actions :cancel-route="route('donations.index')" submit-label="Salvar item" />

@@ -91,6 +91,29 @@ it('shows stock items as a separate stock item surface', function () {
         ->assertSee('Registrar movimentação');
 });
 
+it('uses floating controls for materials, donors and distribution items', function () {
+    $user = User::factory()->administrador()->create();
+    stockCategory();
+    stockMaterial();
+    stockBeneficiary();
+
+    $this->actingAs($user)->get(route('donations.materials.create'))
+        ->assertOk()
+        ->assertSee('id="nome"', false)
+        ->assertSee('required', false)
+        ->assertSee('peer-focus:-top-2.5', false);
+
+    $this->actingAs($user)->get(route('donations.create'))
+        ->assertOk()
+        ->assertSee('name="observacao"', false)
+        ->assertSee('peer-not-placeholder-shown:-top-2.5', false);
+
+    $this->actingAs($user)->get(route('donations.distributions.create'))
+        ->assertOk()
+        ->assertSee('name="items[0][quantidade]"', false)
+        ->assertSee('id="items[0][quantidade]"', false);
+});
+
 it('creates materials donors and donations through layered requests and service', function () {
     $user = User::factory()->administrador()->create();
     $category = stockCategory(['nome' => 'Higiene']);
