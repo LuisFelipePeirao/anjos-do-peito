@@ -35,7 +35,7 @@
     aria-label="Menu principal">
     <div class="flex h-16 items-center gap-3 border-b border-[#eadfe0] px-5">
         <div class="sidebar-logo flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fdecef] text-[#ef5b97]">
-            <img src="{{ asset('assets/img/logo_ong.png') }}" alt="Logo" class="h-10 w-10" />
+            <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-10 w-10" />
         </div>
 
         <div class="sidebar-brand min-w-0 flex-1">

@@ -70,3 +70,21 @@ it('shows the authenticated user in the top navbar', function () {
         ->assertSee('Enfermeira')
         ->assertDontSee('Luzilene Zimmerman');
 });
+
+it('shows the system logo in the sidebar', function () {
+    $user = User::factory()->enfermeira()->create();
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertOk()
+        ->assertSee('assets/img/logo.png');
+});
+
+it('shows the VITA favicon in the browser tab', function () {
+    $user = User::factory()->enfermeira()->create();
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertOk()
+        ->assertSee('assets/img/favicon_VITA.png');
+});

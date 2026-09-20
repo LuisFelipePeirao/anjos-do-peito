@@ -10,6 +10,12 @@ it('redirects guests away from home', function () {
         ->assertRedirect(route('login'));
 });
 
+it('shows the VITA favicon in the login browser tab', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('assets/img/favicon_VITA.png');
+});
+
 it('authenticates a user with email and senha', function () {
     $user = User::factory()->create([
         'email' => 'admin@example.com',
