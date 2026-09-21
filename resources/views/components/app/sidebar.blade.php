@@ -39,7 +39,7 @@
         </div>
 
         <div class="sidebar-brand min-w-0 flex-1">
-            <strong class="block truncate text-sm font-semibold text-[#111827]">Anjos do Peito</strong>
+            <strong class="block truncate text-sm font-semibold text-[#111827]">VITA</strong>
         </div>
 
         <button

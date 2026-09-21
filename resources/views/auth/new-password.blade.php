@@ -35,6 +35,6 @@
             class="mb-8 block text-right text-base font-medium text-[#8590AD] transition duration-500 hover:text-[#ef5b97]">Acessar
             o sistema</a>
 
-        <x-login.login-button value="Redefinir Senha" />
+        <x-login.login-button value="Redefinir senha" />
     </form>
 @endsection

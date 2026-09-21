@@ -23,6 +23,16 @@ it('requires authentication for beneficiary management', function () {
     $this->get(route('beneficiaries.index'))->assertRedirect(route('login'));
 });
 
+it('does not show an edit action in beneficiary table', function () {
+    $user = User::factory()->create();
+    $beneficiaria = Beneficiaria::create([...beneficiaryPayload(), 'cpf' => '12345678909', 'situacao' => 'ativo']);
+
+    $this->actingAs($user)->get(route('beneficiaries.index'))
+        ->assertOk()
+        ->assertSee(route('beneficiaries.show', $beneficiaria), false)
+        ->assertDontSee(route('beneficiaries.edit', $beneficiaria), false);
+});
+
 it('shows a floating label for the full-name field when creating a beneficiary', function () {
     $user = User::factory()->create();
 

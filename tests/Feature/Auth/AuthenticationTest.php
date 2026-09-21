@@ -16,6 +16,12 @@ it('shows the VITA favicon in the login browser tab', function () {
         ->assertSee('assets/img/favicon_VITA.png');
 });
 
+it('shows the VITA logo on the reset password page', function () {
+    $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com']))
+        ->assertOk()
+        ->assertSee('http://localhost:8000/assets/img/logo_VITA.png');
+});
+
 it('authenticates a user with email and senha', function () {
     $user = User::factory()->create([
         'email' => 'admin@example.com',

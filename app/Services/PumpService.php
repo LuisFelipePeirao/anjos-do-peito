@@ -199,7 +199,6 @@ class PumpService
                 'view' => route('pumps.show', $pump),
                 'items' => [
                     ['icon' => 'visibility-o', 'route' => route('pumps.show', $pump), 'title' => 'Visualizar bomba'],
-                    ['icon' => 'edit-o', 'route' => route('pumps.edit', $pump), 'title' => 'Editar bomba'],
                     ['icon' => 'delete-o', 'route' => route('pumps.destroy', $pump), 'title' => 'Excluir bomba', 'variant' => 'danger', 'confirmation' => ['method' => 'DELETE']],
                 ],
             ],

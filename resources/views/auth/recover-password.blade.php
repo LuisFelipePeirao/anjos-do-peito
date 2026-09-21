@@ -23,14 +23,14 @@
         @enderror
 
         <x-login.login-span>
-            Insira o seu e-mail no campo acima para recuperar sua senha.
-            Se o e-mail informado estiver cadastrado, voce recebera um link para criar uma nova senha.
+            Insira seu e-mail no campo acima para recuperar sua senha.
+            Se o e-mail informado estiver cadastrado, você receberá um link para criar uma nova senha.
         </x-login.login-span>
 
         <a href="{{ route('login') }}"
             class="mb-8 block text-right text-base font-medium text-[#8590AD] transition duration-500 hover:text-[#ef5b97]">Acessar
             o sistema</a>
 
-        <x-login.login-button value="Enviar E-mail" />
+        <x-login.login-button value="Enviar e-mail" />
     </form>
 @endsection

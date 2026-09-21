@@ -88,3 +88,63 @@ it('shows the VITA favicon in the browser tab', function () {
         ->assertOk()
         ->assertSee('assets/img/favicon_VITA.png');
 });
+
+it('shows monthly realized attendances without a target', function () {
+    $user = User::factory()->enfermeira()->create();
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertOk()
+        ->assertSee('Atendimentos realizados por mês')
+        ->assertDontSee('Meta calculada')
+        ->assertDontSee('da meta');
+});
+
+it('keeps the monthly attendance chart at its content height', function () {
+    $user = User::factory()->enfermeira()->create();
+
+    $this->actingAs($user)
+        ->get(route('home'))
+        ->assertOk()
+        ->assertSee('shadow-[0_14px_35px_rgba(28,25,23,0.05)] self-start', false);
+});
+
+it('explains each stock status in the distribution chart', function () {
+    $html = view('components.chart.stock-distribution', [
+        'title' => 'Estoque',
+        'description' => 'Teste',
+        'data' => [
+            ['label' => 'Adequado', 'available' => 5, 'used' => 1, 'minimum' => 2],
+            ['label' => 'Baixo', 'available' => 1, 'used' => 4, 'minimum' => 2],
+            ['label' => 'Vazio', 'available' => 0, 'used' => 3, 'minimum' => 1],
+        ],
+    ])->render();
+
+    expect($html)
+        ->toContain('Estoque adequado')
+        ->toContain('Baixo estoque')
+        ->toContain('Sem estoque')
+        ->toContain('Mínimo: 2')
+        ->toContain('Disponível')
+        ->toContain('Em uso');
+});
+
+it('keeps the attendance legend without a latest-month summary card', function () {
+    $html = view('components.chart.column-chart', [
+        'title' => 'Atendimentos realizados por mês',
+        'description' => 'Quantidade de atendimentos realizados nos últimos meses.',
+        'data' => [
+            'values' => [
+                ['month' => 'Ago', 'total' => 7],
+                ['month' => 'Set', 'total' => 9],
+            ],
+        ],
+    ])->render();
+
+    expect($html)
+        ->toContain('>16</strong>')
+        ->toContain('nos últimos 2 meses')
+        ->toContain('Atendimentos realizados')
+        ->not->toContain('9 realizados')
+        ->not->toContain('+2 vs. Ago');
+});

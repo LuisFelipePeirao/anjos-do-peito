@@ -57,6 +57,16 @@ it('requires management profile for pump mutations', function () {
     $this->actingAs(User::factory()->atendente()->create())->get(route('pumps.edit', $pump))->assertForbidden();
 });
 
+it('does not show an edit action in pump table', function () {
+    $user = User::factory()->administrador()->create();
+    $pump = BombaLeite::create(pumpPayload());
+
+    $this->actingAs($user)->get(route('pumps.index'))
+        ->assertOk()
+        ->assertSee(route('pumps.show', $pump), false)
+        ->assertDontSee(route('pumps.edit', $pump), false);
+});
+
 it('uses floating controls on the pump form', function () {
     $user = User::factory()->administrador()->create();
     pumpModel();
