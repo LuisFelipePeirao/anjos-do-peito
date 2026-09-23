@@ -102,12 +102,12 @@
                     </div>
                     @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
                         <div class="sm:col-span-2 xl:col-span-4">
-                            <div data-pump-loan-actions class="flex flex-col gap-3">
-                                <button type="button" data-dialog-open="pump-renewal-modal" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                            <div data-pump-loan-actions class="flex flex-wrap gap-3">
+                                <button type="button" data-dialog-open="pump-renewal-modal" class="inline-flex h-10 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                                     <x-lucide-refresh-cw class="h-4 w-4" />
                                     Renovar empréstimo
                                 </button>
-                                <button type="button" data-dialog-open="pump-return-modal" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] border border-[#23845a] bg-white px-4 text-sm font-semibold text-[#23845a] shadow-sm transition hover:bg-[#e8f8ee]">
+                                <button type="button" data-dialog-open="pump-return-modal" class="inline-flex h-10 items-center justify-center gap-2 rounded-[8px] border border-[#23845a] bg-white px-4 text-sm font-semibold text-[#23845a] shadow-sm transition hover:bg-[#e8f8ee]">
                                     <x-lucide-undo-2 class="h-4 w-4" />
                                     Registrar devolução
                                 </button>
