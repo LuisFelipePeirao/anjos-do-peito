@@ -69,7 +69,7 @@
                                 {{ $pumpData['status'] }}
                             </span>
                         </div>
-                        <p class="mt-2 whitespace-pre-line text-sm text-[#667085]">
+                        <p class="mt-2 text-sm text-[#667085]" style="white-space: pre-line">
                             {{ $currentContract ? $currentContract['notes'] : 'Bomba sem contrato ativo no momento, disponível para nova saída.' }}
                         </p>
                     </div>
