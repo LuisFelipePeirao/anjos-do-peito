@@ -40,7 +40,7 @@ it('shows a floating label for the full-name field when creating a beneficiary',
         ->assertOk()
         ->assertSee('name="nome"', false)
         ->assertSee('id="cpf"', false)
-        ->assertSee('<span aria-hidden="true" class="ml-0.5 text-[#c2414b]">*</span>', false)
+        ->assertSee('<span aria-hidden="true" data-required-indicator="nome" class="ml-0.5 text-[#c2414b]">*</span>', false)
         ->assertSee('peer h-11 w-full rounded-[8px] border bg-white px-3 text-sm', false)
         ->assertSee('class="pointer-events-none absolute left-3 top-0 flex h-11 items-center', false)
         ->assertSee('peer-focus:-top-2.5', false)

@@ -33,26 +33,26 @@
             <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5"><div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fdecef] text-[#ef5b97]"><x-lucide-calendar-days class="h-5 w-5" /></span><div><h3 class="text-lg font-bold text-[#111827]">Agenda</h3><p class="mt-1 text-sm text-[#667085]">Data, horário, modalidade e situação do atendimento.</p></div></div></div>
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
-                    <x-material.floating-input type="date" name="date" label="Data" :value="old('date', $attendanceData['date'])" />
-                    <x-material.floating-input type="time" name="time" label="Horário" :value="old('time', $attendanceData['time'])" />
-                    <div><x-material.select name="duration" label="Duração prevista" :options="$durations" :selected="old('duration', $attendanceData['duration'])" />@error('duration') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <x-material.floating-input type="date" name="date" label="Data" :value="old('date', $attendanceData['date'])" required-indicator />
+                    <x-material.floating-input type="time" name="time" label="Horário" :value="old('time', $attendanceData['time'])" required-indicator />
+                    <div><x-material.select name="duration" label="Duração prevista" :options="$durations" :selected="old('duration', $attendanceData['duration'])" required-indicator />@error('duration') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
                     <div>
                         @if ($isEdit)
                             <input type="hidden" name="status" value="{{ $selectedStatus }}">
-                            <x-material.select name="status_display" label="Situação" :options="[$selectedStatus => $attendanceData['status_label']]" :selected="$selectedStatus" disabled data-attendance-status-select data-initial-status="{{ $selectedStatus }}" />
+                            <x-material.select name="status_display" label="Situação" :options="[$selectedStatus => $attendanceData['status_label']]" :selected="$selectedStatus" required-indicator disabled data-attendance-status-select data-initial-status="{{ $selectedStatus }}" />
                         @else
                             <x-material.select name="status" label="Situação" :options="$statuses" :selected="$selectedStatus" data-attendance-status-select data-initial-status="{{ $selectedStatus }}" />
                         @endif
                         @error('status') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </div>
-                    <div><x-material.select name="modality" label="Modalidade" :options="$modalities" :selected="old('modality', $attendanceData['modality'])" />@error('modality') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                    <div><x-material.select name="location" label="Local" :options="$locations" :selected="old('location', $attendanceData['location'])" placeholder="Selecionar local cadastrado" />@error('location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="modality" label="Modalidade" :options="$modalities" :selected="old('modality', $attendanceData['modality'])" required-indicator />@error('modality') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="location" label="Local" :options="$locations" :selected="old('location', $attendanceData['location'])" placeholder="Selecionar local cadastrado" required-indicator />@error('location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
                     <div class="space-y-3">
-                        <div><x-material.select name="attendance_category" label="População atendida" :options="$attendanceCategories" :selected="old('attendance_category', $attendanceData['attendance_category'])" placeholder="Selecione" />@error('attendance_category') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                        <button type="button" data-dialog-open="attendance-category-dialog" class="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm font-semibold text-[#ef5b97] shadow-sm transition hover:bg-[#fbf1f3]" aria-label="Gerenciar população atendida"><x-gmdi-add class="h-4 w-4" /> Gerenciar categorias</button>
+                        <div><x-material.select name="attendance_category" label="Categoria do atendimento" :options="$attendanceCategories" :selected="old('attendance_category', $attendanceData['attendance_category'])" placeholder="Selecione" required-indicator />@error('attendance_category') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                        <button type="button" data-dialog-open="attendance-category-dialog" class="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm font-semibold text-[#ef5b97] shadow-sm transition hover:bg-[#fbf1f3]" aria-label="Gerenciar categoria de atendimento"><x-gmdi-add class="h-4 w-4" /> Gerenciar categorias</button>
                     </div>
                     <div class="space-y-3">
-                        <div><x-material.select name="procedure" label="Procedimento" :options="$procedures" :selected="old('procedure', $attendanceData['procedure'])" placeholder="Selecione" />@error('procedure') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                        <div><x-material.select name="procedure" label="Procedimento" :options="$procedures" :selected="old('procedure', $attendanceData['procedure'])" placeholder="Selecione" required-indicator />@error('procedure') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
                         <button type="button" data-dialog-open="attendance-procedure-dialog" class="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm font-semibold text-[#ef5b97] shadow-sm transition hover:bg-[#fbf1f3]" aria-label="Gerenciar procedimentos"><x-gmdi-add class="h-4 w-4" /> Gerenciar procedimentos</button>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
                     <div><x-material.select name="beneficiary" label="Beneficiária" :options="$beneficiaries" :selected="old('beneficiary', $attendanceData['beneficiary'])" placeholder="Selecione" required data-attendance-beneficiary />@error('beneficiary') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
                     <div><x-material.select name="child" label="Criança" :options="[]" :selected="old('child', $attendanceData['child'])" placeholder="Nenhuma criança vinculada" data-attendance-child data-initial-child="{{ old('child', $attendanceData['child']) }}" />@error('child') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                    <div><x-material.select name="professional" label="Profissional" :options="$professionals" :selected="old('professional', $attendanceData['professional'])" placeholder="Selecione" />@error('professional') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="professional" label="Profissional" :options="$professionals" :selected="old('professional', $attendanceData['professional'])" placeholder="Selecione" required-indicator />@error('professional') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
                 </div>
             </article>
 

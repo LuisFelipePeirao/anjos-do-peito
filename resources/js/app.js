@@ -61,10 +61,10 @@ const scheduleSelectRequiredAsterisk = (select) => {
 };
 
 const selectWithRequiredAsterisk = (target) => target instanceof Element
-    ? target.closest('md-outlined-select[required]')
+    ? target.closest('md-outlined-select')?.closest('[data-select-required]')?.querySelector('md-outlined-select')
     : null;
 
-document.querySelectorAll('md-outlined-select[required]').forEach(scheduleSelectRequiredAsterisk);
+document.querySelectorAll('[data-select-required] md-outlined-select').forEach(scheduleSelectRequiredAsterisk);
 
 ['focusin', 'focusout', 'input', 'change'].forEach((eventName) => {
     document.addEventListener(eventName, (event) => {
@@ -77,7 +77,7 @@ document.querySelectorAll('md-outlined-select[required]').forEach(scheduleSelect
 });
 
 window.addEventListener('resize', () => {
-    document.querySelectorAll('md-outlined-select[required]').forEach(syncSelectRequiredAsterisk);
+    document.querySelectorAll('[data-select-required] md-outlined-select').forEach(syncSelectRequiredAsterisk);
 });
 
 if (shell) {
@@ -410,7 +410,6 @@ if (attendanceStatusSelect && attendanceClinicalFields) {
 if (attendanceForm) {
     const beneficiarySelect = attendanceForm.querySelector('[data-attendance-beneficiary]');
     const childSelect = attendanceForm.querySelector('[data-attendance-child]');
-    const childPlaceholder = 'Nenhuma criança vinculada';
 
     const selectedValue = (select) => select?.value
         || select?.querySelector('md-select-option[selected]')?.getAttribute('value')
@@ -419,20 +418,22 @@ if (attendanceForm) {
     const setChildOptions = (children, selectedChild = '') => {
         if (!childSelect) return;
 
-        childSelect.replaceChildren();
-        const placeholder = document.createElement('md-select-option');
-        placeholder.value = '';
-        placeholder.innerHTML = `<div slot="headline" class="text-sm font-normal leading-5 text-[#111827]">${childPlaceholder}</div>`;
-        if (!selectedChild) placeholder.setAttribute('selected', '');
-        childSelect.append(placeholder);
-
-        children.forEach((child) => {
+        const options = children.map((child) => {
             const option = document.createElement('md-select-option');
             option.value = child.value;
-            option.innerHTML = `<div slot="headline" class="text-sm font-normal leading-5 text-[#111827]">${child.label}</div>`;
             if (String(child.value) === String(selectedChild)) option.setAttribute('selected', '');
-            childSelect.append(option);
+
+            const headline = document.createElement('div');
+            headline.slot = 'headline';
+            headline.className = 'text-sm font-normal leading-5 text-[#111827]';
+            headline.style.fontFamily = 'Instrument Sans, ui-sans-serif, system-ui, sans-serif';
+            headline.textContent = child.label;
+            option.append(headline);
+
+            return option;
         });
+
+        childSelect.replaceChildren(...options);
     };
 
     const loadChildren = async (preserveSelection = false) => {

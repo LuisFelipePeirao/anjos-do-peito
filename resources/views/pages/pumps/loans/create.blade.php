@@ -108,15 +108,10 @@
                     </div>
                 </div>
 
-                <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
+                <div class="grid gap-5 p-5 md:grid-cols-2">
                     <x-material.floating-input type="date" name="withdrawn_at" label="Data de retirada" :value="old('withdrawn_at', now()->toDateString())" required />
 
                     <x-material.floating-input type="date" name="expected_return" label="Devolução prevista" :value="old('expected_return', now()->addDays(30)->toDateString())" required />
-
-                    <div>
-                        <x-material.select name="renewal" label="Renovação" :options="$renewals" :selected="old('renewal', 'none')" />
-                        @error('renewal') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </div>
                 </div>
             </article>
 

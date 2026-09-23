@@ -44,7 +44,7 @@
                         @method('PATCH')
                         <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
                             <x-lucide-play class="h-4 w-4" />
-                            Continuar atendimento
+                            Iniciar atendimento
                         </button>
                     </form>
                 @elseif ($attendance->situacao === 'em_atendimento')
@@ -102,7 +102,7 @@
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['location_name'] }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase text-[#667085]">População atendida</dt>
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">Categoria</dt>
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $attendanceData['attendance_category_name'] }}</dd>
                     </div>
                     <div>

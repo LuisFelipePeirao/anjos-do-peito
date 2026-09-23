@@ -10,6 +10,7 @@ use App\Models\ModeloBomba;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class PumpService
 {
@@ -84,6 +85,28 @@ class PumpService
         $pump->update(['situacao' => 'alugada']);
 
         return $loan->refresh();
+    }
+
+    public function returnLoan(BombaLeite $pump, array $data, int $userId): CessaoBomba
+    {
+        return DB::transaction(function () use ($pump, $data, $userId) {
+            $loan = $pump->cessoes()
+                ->whereIn('situacao', ['ativa', 'atrasada'])
+                ->latest('data_retirada')
+                ->first();
+
+            abort_unless($loan, 409);
+
+            $loan->update([
+                'id_usuario_devolucao' => $userId,
+                'data_devolucao' => $data['returned_at'],
+                'situacao' => 'finalizada',
+                'observacao_devolucao' => $data['return_notes'] ?? null,
+            ]);
+            $pump->update(['situacao' => 'disponivel']);
+
+            return $loan->refresh();
+        });
     }
 
     public function destroy(BombaLeite $pump): bool

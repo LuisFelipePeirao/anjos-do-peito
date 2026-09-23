@@ -5,12 +5,17 @@
     'selected' => null,
     'placeholder' => null,
     'required' => false,
+    'requiredIndicator' => false,
     'wrapperClass' => '',
 ])
 
+@php
+    $showRequiredMarker = $required || $requiredIndicator;
+@endphp
+
 <div
     @class(['relative block', $wrapperClass])
-    @if ($required) data-select-required @endif
+    @if ($showRequiredMarker) data-select-required @endif
 >
 
     <md-outlined-select
@@ -79,10 +84,11 @@
         @endforeach
     </md-outlined-select>
 
-    @if ($required)
+    @if ($showRequiredMarker)
         <span
             aria-hidden="true"
             data-select-required-asterisk
+            data-required-indicator="{{ $name }}"
             class="pointer-events-none absolute z-10 text-sm font-semibold leading-5 text-[#c2414b]"
             style="visibility: hidden;"
         >*</span>

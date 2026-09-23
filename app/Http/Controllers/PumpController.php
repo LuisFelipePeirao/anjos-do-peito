@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Pumps\RenewPumpLoanRequest;
+use App\Http\Requests\Pumps\ReturnPumpLoanRequest;
 use App\Http\Requests\Pumps\StorePumpRequest;
 use App\Http\Requests\Pumps\UpdatePumpRequest;
 use App\Models\BombaLeite;
@@ -81,6 +82,13 @@ class PumpController extends Controller
         $this->pumps->renewLoan($pump, $request->validated()['expires_at']);
 
         return redirect()->route('pumps.show', $pump)->with('status', 'Empréstimo renovado com sucesso.');
+    }
+
+    public function returnLoan(ReturnPumpLoanRequest $request, BombaLeite $pump): RedirectResponse
+    {
+        $this->pumps->returnLoan($pump, $request->validated(), $request->user()->id);
+
+        return redirect()->route('pumps.show', $pump)->with('status', 'Devolução da bomba registrada com sucesso.');
     }
 
     public function destroy(BombaLeite $pump): RedirectResponse

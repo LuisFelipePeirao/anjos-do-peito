@@ -8,26 +8,24 @@
         <form action="{{ route('attendances.locations.store') }}" method="POST" class="mt-5 space-y-5 rounded-lg border border-[#f0e7e8] p-4" data-location-form data-location-store-action="{{ route('attendances.locations.store') }}">
             @csrf
             <input type="hidden" name="_method" value="PUT" data-location-method disabled>
-            <label class="block">
-                <span class="text-sm font-semibold text-[#344054]">Nome</span>
-                <input name="nome" type="text" value="{{ old('nome') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Ex.: Domiciliar, UBS Centro, Google Meet" required>
+            <div>
+                <x-material.floating-input name="nome" label="Nome" :value="old('nome')" placeholder="Ex.: Domiciliar, UBS Centro, Google Meet" required />
                 @error('nome', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-            </label>
+            </div>
 
-            <label class="block">
-                <span class="text-sm font-semibold text-[#344054]">Descrição</span>
-                <textarea name="descricao" class="mt-2 min-h-28 w-full rounded-[8px] border border-[#e4d8d9] px-3 py-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Observações sobre uso, acesso ou referência do local.">{{ old('descricao') }}</textarea>
+            <div>
+                <x-material.floating-textarea name="descricao" label="Descrição" :value="old('descricao')" placeholder="Observações sobre uso, acesso ou referência do local." />
                 @error('descricao', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-            </label>
+            </div>
 
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-                <label class="block xl:col-span-2"><span class="text-sm font-semibold text-[#344054]">CEP</span><input type="text" name="cep" value="{{ old('cep') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="00000-000" inputmode="numeric" data-mask="cep" data-cep-input>@error('cep', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror<span data-cep-feedback class="mt-1 block text-xs text-[#667085]"></span></label>
-                <label class="block xl:col-span-3"><span class="text-sm font-semibold text-[#344054]">Rua</span><input type="text" name="logradouro" value="{{ old('logradouro') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Ex.: Rua das Palmeiras">@error('logradouro', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</label>
-                <label class="block"><span class="text-sm font-semibold text-[#344054]">Número</span><input type="text" name="numero" value="{{ old('numero') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="245"></label>
-                <label class="block md:col-span-2"><span class="text-sm font-semibold text-[#344054]">Complemento</span><input type="text" name="complemento" value="{{ old('complemento') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Casa, sala, referência"></label>
-                <label class="block xl:col-span-2"><span class="text-sm font-semibold text-[#344054]">Bairro</span><input type="text" name="bairro" value="{{ old('bairro') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Centro"></label>
-                <label class="block xl:col-span-2"><span class="text-sm font-semibold text-[#344054]">Cidade</span><input type="text" name="cidade" value="{{ old('cidade') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm outline-none focus:border-[#ef5b97]" placeholder="Cidade">@error('cidade', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</label>
-                <label class="block"><span class="text-sm font-semibold text-[#344054]">UF</span><input type="text" name="uf" value="{{ old('uf') }}" class="mt-2 h-11 w-full rounded-[8px] border border-[#e4d8d9] px-3 text-sm shadow-sm uppercase outline-none focus:border-[#ef5b97]" placeholder="SC" maxlength="2">@error('uf', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</label>
+                <div class="xl:col-span-2"><x-material.floating-input name="cep" label="CEP" :value="old('cep')" placeholder="00000-000" inputmode="numeric" data-mask="cep" data-cep-input />@error('cep', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror<span data-cep-feedback class="mt-1 block text-xs text-[#667085]"></span></div>
+                <div class="xl:col-span-3"><x-material.floating-input name="logradouro" label="Rua" :value="old('logradouro')" placeholder="Ex.: Rua das Palmeiras" />@error('logradouro', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                <x-material.floating-input name="numero" label="Número" :value="old('numero')" placeholder="245" />
+                <x-material.floating-input name="complemento" label="Complemento" :value="old('complemento')" placeholder="Casa, sala, referência" wrapper-class="md:col-span-2" />
+                <x-material.floating-input name="bairro" label="Bairro" :value="old('bairro')" placeholder="Centro" wrapper-class="xl:col-span-2" />
+                <div class="xl:col-span-2"><x-material.floating-input name="cidade" label="Cidade" :value="old('cidade')" placeholder="Cidade" />@error('cidade', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                <div><x-material.floating-input name="uf" label="UF" :value="old('uf')" placeholder="SC" maxlength="2" class="uppercase" />@error('uf', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
             </div>
 
             <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

@@ -25,7 +25,6 @@ class PumpLoanService
                 ])
                 ->all(),
             'beneficiaries' => Beneficiaria::where('situacao', 'ativo')->orderBy('nome')->pluck('nome', 'id')->all(),
-            'renewals' => ['none' => 'Sem renovação automática', '30_days' => 'A cada 30 dias', '60_days' => 'A cada 60 dias'],
             'billingMethods' => ['pix' => 'Pix', 'dinheiro' => 'Dinheiro', 'boleto' => 'Boleto'],
         ];
     }
@@ -64,7 +63,6 @@ class PumpLoanService
     private function withdrawalNotes(array $data): ?string
     {
         return collect([
-            filled($data['renewal'] ?? null) && $data['renewal'] !== 'none' ? 'Renovação: '.$this->renewalLabel($data['renewal']) : null,
             'Termo: '.($data['term_signed'] ? 'assinado' : 'não assinado'),
             $data['notes'] ?? null,
         ])->filter()->join("\n") ?: null;
@@ -77,11 +75,6 @@ class PumpLoanService
             'Dia de vencimento: '.($data['due_day'] ?? '-'),
             $data['billing_notes'] ?? null,
         ])->filter(fn (?string $value) => filled($value))->join("\n") ?: null;
-    }
-
-    private function renewalLabel(?string $renewal): string
-    {
-        return ['30_days' => 'a cada 30 dias', '60_days' => 'a cada 60 dias'][$renewal] ?? 'sem renovação automática';
     }
 
     private function billingMethodLabel(?string $method): string

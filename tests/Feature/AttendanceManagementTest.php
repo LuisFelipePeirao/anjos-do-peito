@@ -48,6 +48,25 @@ it('shows a scheduled form with clinical fields hidden and draft action', functi
         ->assertSee('Salvar rascunho')->assertSee('attendance-finalize-confirmation');
 });
 
+it('marks finalization fields without making them browser-required for drafts', function () {
+    $user = User::factory()->administrador()->create();
+    attendanceBeneficiary();
+    User::factory()->enfermeira()->create();
+    LocalAtendimento::create(['nome' => 'Domiciliar']);
+
+    $response = $this->actingAs($user)->get(route('attendances.create'));
+
+    $response->assertOk()
+        ->assertSee('data-required-indicator="date"', false)
+        ->assertSee('data-required-indicator="duration"', false)
+        ->assertSee('data-required-indicator="professional"', false)
+        ->assertSee('data-required-indicator="summary"', false)
+        ->assertSee('data-required-indicator="attendance_category"', false);
+
+    expect($response->getContent())->not->toMatch('/<input[^>]*name="date"[^>]*\srequired(?:[\s>])/')
+        ->and($response->getContent())->not->toMatch('/<md-outlined-select[^>]*name="duration"[^>]*\srequired(?:[\s>])/');
+});
+
 it('has attendance category and procedure models linked to attendances', function () {
     $user = User::factory()->administrador()->create();
     $beneficiaria = attendanceBeneficiary();
@@ -77,6 +96,26 @@ it('creates a final scheduled attendance without persisting clinical details', f
 
     $this->assertDatabaseHas('atendimentos', ['situacao' => 'agendado', 'rascunho' => false]);
     $this->assertDatabaseMissing('atendimento_detalhes', ['resumo' => 'Orientações sobre amamentação']);
+});
+
+it('uses action labels that match scheduled and in-progress attendance states', function () {
+    $user = User::factory()->administrador()->create();
+    $this->actingAs($user)->post(route('attendances.store'), attendancePayload());
+    $attendance = Atendimento::firstOrFail();
+
+    $this->actingAs($user)
+        ->get(route('attendances.show', $attendance))
+        ->assertOk()
+        ->assertSee('Iniciar atendimento')
+        ->assertDontSee('Continuar atendimento');
+
+    $this->actingAs($user)->patch(route('attendances.start', $attendance));
+
+    $this->actingAs($user)
+        ->get(route('attendances.show', $attendance))
+        ->assertOk()
+        ->assertSee('Continuar atendimento')
+        ->assertDontSee('Iniciar atendimento');
 });
 
 it('creates an incomplete draft requiring only beneficiary and status', function () {
@@ -287,6 +326,24 @@ it('renders location modal with a shared edit form and compact action list', fun
         ->assertDontSee('value="Visita domiciliar agendada."', false)
         ->assertDontSee('>Inativar<', false)
         ->assertDontSee('>Reativar<', false);
+});
+
+it('renders attendance management modal fields with floating labels', function () {
+    $user = User::factory()->administrador()->create();
+
+    $locationResponse = $this->actingAs($user)->get(route('attendances.index'));
+
+    $locationResponse->assertOk()
+        ->assertSee('for="nome"', false)
+        ->assertSee('peer-focus:-top-2.5', false)
+        ->assertSee('for="cep"', false);
+
+    $managementResponse = $this->actingAs($user)->get(route('attendances.create'));
+
+    $managementResponse->assertOk()
+        ->assertSee('for="nome"', false)
+        ->assertSee('peer-focus:-top-2.5', false)
+        ->assertSee('for="descricao"', false);
 });
 
 it('renders category and procedure dialogs with shared edit forms and external management actions', function () {

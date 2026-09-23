@@ -165,8 +165,19 @@ it('shows renewal only for borrowed pumps and renews the current loan', function
         'situacao' => 'ativa',
     ]);
 
-    $this->actingAs($user)->get(route('pumps.show', $availablePump))->assertOk()->assertDontSee('Renovar empréstimo');
-    $this->actingAs($user)->get(route('pumps.show', $borrowedPump))->assertOk()->assertSee('Renovar empréstimo');
+    $this->actingAs($user)
+        ->get(route('pumps.show', $availablePump))
+        ->assertOk()
+        ->assertDontSee('Renovar empréstimo')
+        ->assertDontSee('Registrar devolução');
+    $this->actingAs($user)
+        ->get(route('pumps.show', $borrowedPump))
+        ->assertOk()
+        ->assertSee('Renovar empréstimo')
+        ->assertSee('Registrar devolução')
+        ->assertSee('data-pump-loan-actions', false)
+        ->assertSee('for="expires_at"', false)
+        ->assertSee('peer-focus:-top-2.5', false);
 
     $this->actingAs($user)
         ->patch(route('pumps.loans.renew', $borrowedPump), ['expires_at' => now()->addDays(20)->toDateString()])
@@ -209,4 +220,44 @@ it('warns before renewing overdue loans and normalizes their status', function (
         'data_prevista_devolucao' => now()->addMonth()->toDateString().' 00:00:00',
         'situacao' => 'ativa',
     ]);
+});
+
+it('shows return action for borrowed pumps and finalizes their current loan', function () {
+    $user = User::factory()->administrador()->create();
+    $model = pumpModel();
+    $beneficiary = pumpBeneficiary();
+    $pump = BombaLeite::create(pumpPayload(['model' => $model, 'codigo' => 'BL-RETURN', 'situacao' => 'alugada']));
+
+    $loan = CessaoBomba::create([
+        'id_bomba' => $pump->id,
+        'id_beneficiaria' => $beneficiary->id,
+        'id_usuario_retirada' => $user->id,
+        'tipo' => 'gratuita',
+        'data_retirada' => now()->subDays(5),
+        'data_prevista_devolucao' => now()->addDays(5)->toDateString(),
+        'situacao' => 'ativa',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('pumps.show', $pump))
+        ->assertOk()
+        ->assertSee('Registrar devolução');
+
+    $returnedAt = now()->toDateTimeString();
+
+    $this->actingAs($user)
+        ->patch(route('pumps.loans.return', $pump), [
+            'returned_at' => $returnedAt,
+            'return_notes' => 'Bomba devolvida com acessórios completos.',
+        ])
+        ->assertRedirect(route('pumps.show', $pump));
+
+    $this->assertDatabaseHas('cessoes_bombas', [
+        'id' => $loan->id,
+        'id_usuario_devolucao' => $user->id,
+        'data_devolucao' => $returnedAt,
+        'situacao' => 'finalizada',
+        'observacao_devolucao' => 'Bomba devolvida com acessórios completos.',
+    ]);
+    $this->assertDatabaseHas('bomba_leite', ['id' => $pump->id, 'situacao' => 'disponivel']);
 });

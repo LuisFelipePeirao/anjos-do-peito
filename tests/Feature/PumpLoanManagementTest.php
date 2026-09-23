@@ -63,6 +63,7 @@ it('uses floating controls while keeping billing fields disabled', function () {
         ->assertSee('name="billing_notes"', false)
         ->assertSee('data-pump-billing-field', false)
         ->assertSee('disabled="disabled"', false)
+        ->assertDontSee('name="renewal"', false)
         ->assertSee('peer-not-placeholder-shown:-top-2.5', false);
 });
 
@@ -79,7 +80,6 @@ it('registers a free pump loan and marks pump as borrowed', function () {
         'beneficiary' => $beneficiary->id,
         'withdrawn_at' => '2026-08-20',
         'expected_return' => '2026-09-20',
-        'renewal' => 'none',
         'term_signed' => 1,
         'notes' => 'Orientada sobre higienização.',
     ])->assertRedirect(route('pumps.show', $pump));
@@ -105,7 +105,6 @@ it('registers a rental and creates the first pending payment', function () {
         'beneficiary' => 'Ana Empréstimo',
         'withdrawn_at' => '2026-08-21',
         'expected_return' => '2026-09-21',
-        'renewal' => 'A cada 30 dias',
         'monthly_fee' => 'R$ 120,50',
         'due_day' => 10,
         'billing_method' => 'Pix',

@@ -19,16 +19,14 @@
             @csrf
             <input type="hidden" name="_method" value="PUT" data-entity-method disabled>
             <div class="grid gap-4 md:grid-cols-2">
-                <label class="block">
-                    <span class="text-sm font-semibold text-[#344054]">Nome</span>
-                    <input name="nome" value="{{ old('nome') }}" class="{{ $inputClass }}" placeholder="{{ $namePlaceholder }}" required>
+                <div>
+                    <x-material.floating-input name="nome" label="Nome" :value="old('nome')" :placeholder="$namePlaceholder" required />
                     @error('nome', $errorBag) <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                </label>
-                <label class="block">
-                    <span class="text-sm font-semibold text-[#344054]">Descrição</span>
-                    <input name="descricao" value="{{ old('descricao') }}" class="{{ $inputClass }}" placeholder="Descrição opcional">
+                </div>
+                <div>
+                    <x-material.floating-input name="descricao" label="Descrição" :value="old('descricao')" placeholder="Descrição opcional" />
                     @error('descricao', $errorBag) <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                </label>
+                </div>
             </div>
             <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <button type="button" data-entity-reset class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] hover:bg-[#fbfaf9]">Cancelar</button>

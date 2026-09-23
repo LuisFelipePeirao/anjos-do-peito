@@ -17,7 +17,7 @@
             @csrf
             @method('PUT')
             @include('pages.pumps.partials.form')
-            @include('pages.pumps.partials.actions', ['cancelRoute' => route('pumps.show', $pump), 'submitLabel' => 'Atualizar bomba'])
+            @include('pages.pumps.partials.actions', ['cancelRoute' => route('pumps.show', $pump), 'submitLabel' => 'Atualizar bomba de leite'])
         </form>
     </section>
 @endsection

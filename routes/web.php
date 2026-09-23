@@ -85,6 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/bombas-de-leite/{pump}/editar', [PumpController::class, 'edit'])->name('pumps.edit');
     Route::put('/bombas-de-leite/{pump}', [PumpController::class, 'update'])->name('pumps.update');
     Route::patch('/bombas-de-leite/{pump}/renovar-emprestimo', [PumpController::class, 'renewLoan'])->name('pumps.loans.renew');
+    Route::patch('/bombas-de-leite/{pump}/registrar-devolucao', [PumpController::class, 'returnLoan'])->name('pumps.loans.return');
     Route::delete('/bombas-de-leite/{pump}', [PumpController::class, 'destroy'])->name('pumps.destroy');
 
     Route::get('/doacoes-e-estoque', [DonationStockController::class, 'index'])->name('donations.index');
