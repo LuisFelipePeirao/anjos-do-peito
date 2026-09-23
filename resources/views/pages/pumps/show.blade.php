@@ -216,11 +216,10 @@
             />
         @elseif ($tab === 'payments')
             @if (count($payments))
-                <x-tables.datatable
-                    :header="['Data e hora', 'Referência', 'Forma', 'Valor', 'Situação']"
-                    :data="$payments"
-                    :show-actions="false"
-                />
+                <div class="overflow-x-auto rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]"><table class="w-full min-w-225 text-left text-sm"><thead class="border-b border-[#eadfe0] bg-[#fbfaf9] text-xs uppercase text-[#667085]"><tr><th class="px-5 py-4">Beneficiária</th><th class="px-5 py-4">Data</th><th class="px-5 py-4">Referência</th><th class="px-5 py-4">Forma</th><th class="px-5 py-4">Valor</th><th class="px-5 py-4">Situação</th><th class="px-5 py-4 text-right">Ações</th></tr></thead><tbody class="divide-y divide-[#f0e7e8]">@foreach ($payments as $payment)<tr><th class="px-5 py-4 font-semibold text-[#111827]">{{ $payment['beneficiary'] }}</th><td class="px-5 py-4">{{ $payment['date'] }}</td><td class="px-5 py-4">{{ $payment['reference'] }}</td><td class="px-5 py-4">{{ $payment['method'] }}</td><td class="px-5 py-4">{{ $payment['value'] }}</td><td class="px-5 py-4">{{ $payment['status'] }}</td><td class="px-5 py-4 text-right">@if ($payment['can_register'])<button type="button" data-dialog-open="payment-{{ $payment['id'] }}" class="rounded-lg bg-[#23845a] px-3 py-2 text-xs font-semibold text-white">Registrar pagamento</button>@endif</td></tr>@endforeach</tbody></table></div>
+                @foreach ($payments as $payment)
+                    @if ($payment['can_register'])<dialog id="payment-{{ $payment['id'] }}" data-dialog-modal class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5"><form method="POST" action="{{ route('pumps.payments.pay', [$pump, $payment['id']]) }}" class="space-y-5">@csrf @method('PATCH')<h2 class="text-lg font-bold">Registrar pagamento</h2><x-material.floating-input type="date" name="paid_at" label="Data do pagamento" :value="old('paid_at', now()->toDateString())" required /><x-material.floating-textarea name="notes" label="Observações" :value="old('notes')" /><div class="flex justify-end gap-3"><button type="button" data-dialog-close class="rounded-lg border px-4 py-2">Cancelar</button><button class="rounded-lg bg-[#23845a] px-4 py-2 font-semibold text-white">Confirmar pagamento</button></div></form></dialog>@endif
+                @endforeach
             @else
                 <article class="rounded-[8px] border border-[#eadfe0] bg-white p-8 text-center shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fdecef] text-[#ef5b97]">

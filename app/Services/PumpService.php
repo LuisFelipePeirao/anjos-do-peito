@@ -291,15 +291,18 @@ class PumpService
     private function payments(BombaLeite $pump): array
     {
         return $pump->cessoes
-            ->flatMap->pagamentos
-            ->sortByDesc('data_vencimento')
-            ->map(fn ($payment) => [
+            ->flatMap(fn (CessaoBomba $loan) => $loan->pagamentos->map(fn ($payment) => [
+                'id' => $payment->id,
+                'beneficiary' => $loan->beneficiaria?->nome ?? '-',
+                'sort_date' => ($payment->data_pagamento ?? $payment->data_vencimento)?->toDateString(),
                 'date' => ($payment->data_pagamento ?? $payment->data_vencimento)?->format('d/m/Y') ?? '-',
                 'reference' => $payment->competencia?->translatedFormat('m/Y') ?? '-',
-                'method' => $payment->data_pagamento ? 'Registrado' : '-',
+                'method' => $loan->forma_cobranca ? strtoupper($loan->forma_cobranca) : '-',
                 'value' => $this->money($payment->valor),
                 'status' => $this->paymentStatusLabel($payment->situacao),
-            ])
+                'can_register' => in_array($payment->situacao, ['pendente', 'atrasado'], true),
+            ]))
+            ->sortByDesc('sort_date')
             ->values()
             ->all();
     }

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Pumps\RegisterRentalPaymentRequest;
 use App\Http\Requests\Pumps\RenewPumpLoanRequest;
 use App\Http\Requests\Pumps\ReturnPumpLoanRequest;
 use App\Http\Requests\Pumps\StorePumpRequest;
 use App\Http\Requests\Pumps\UpdatePumpRequest;
 use App\Models\BombaLeite;
+use App\Models\PagamentoAluguel;
 use App\Services\PumpService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -89,6 +91,20 @@ class PumpController extends Controller
         $this->pumps->returnLoan($pump, $request->validated(), $request->user()->id);
 
         return redirect()->route('pumps.show', $pump)->with('status', 'Devolução da bomba registrada com sucesso.');
+    }
+
+    public function registerPayment(RegisterRentalPaymentRequest $request, BombaLeite $pump, PagamentoAluguel $payment): RedirectResponse
+    {
+        abort_unless($payment->cessao()->where('id_bomba', $pump->id)->exists(), 404);
+        abort_unless(in_array($payment->situacao, ['pendente', 'atrasado'], true), 409);
+
+        $payment->update([
+            'situacao' => 'pago',
+            'data_pagamento' => $request->validated('paid_at'),
+            'observacao' => $request->validated('notes'),
+        ]);
+
+        return redirect()->route('pumps.show', ['pump' => $pump, 'tab' => 'payments'])->with('status', 'Pagamento registrado com sucesso.');
     }
 
     public function destroy(BombaLeite $pump): RedirectResponse
