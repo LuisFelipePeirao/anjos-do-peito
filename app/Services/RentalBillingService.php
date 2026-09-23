@@ -27,7 +27,17 @@ class RentalBillingService
             $created = 0;
             $cursor = $loan->proxima_cobranca_em->copy()->startOfMonth();
             while ($cursor->lte($today->copy()->startOfMonth())) {
-                $payment = PagamentoAluguel::firstOrCreate(['id_cessao' => $loan->id, 'competencia' => $cursor->toDateString()], ['valor' => $loan->valor_mensalidade, 'data_vencimento' => $this->dueDate($cursor, $loan->dia_vencimento), 'situacao' => 'pendente']);
+                $dueDate = $this->dueDate($cursor, $loan->dia_vencimento);
+
+                if ($loan->data_prevista_devolucao && $dueDate->gt($loan->data_prevista_devolucao)) {
+                    break;
+                }
+
+                if ($dueDate->gt($today)) {
+                    break;
+                }
+
+                $payment = PagamentoAluguel::firstOrCreate(['id_cessao' => $loan->id, 'competencia' => $cursor->toDateString()], ['valor' => $loan->valor_mensalidade, 'data_vencimento' => $dueDate, 'situacao' => $dueDate->lt($today) ? 'atrasado' : 'pendente']);
                 $created += $payment->wasRecentlyCreated ? 1 : 0;
                 $cursor->addMonth();
             }
