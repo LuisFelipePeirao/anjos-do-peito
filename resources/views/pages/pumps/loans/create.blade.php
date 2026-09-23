@@ -129,7 +129,7 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
-                    <x-material.floating-input name="monthly_fee" label="Mensalidade" :value="old('monthly_fee')" placeholder="Ex.: R$ 100,00" inputmode="decimal" data-pump-billing-field disabled />
+                    <x-material.floating-input name="monthly_fee" label="Mensalidade" :value="old('monthly_fee')" placeholder="R$ 0,00" inputmode="numeric" data-mask="currency-brl" data-pump-billing-field disabled />
 
                     <x-material.floating-input type="number" name="due_day" label="Dia de vencimento" :value="old('due_day')" placeholder="Ex.: 10" min="1" max="31" data-pump-billing-field disabled />
 

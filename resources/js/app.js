@@ -330,8 +330,21 @@ const formatPhone = (value) => digitsOnly(value, 11)
     .replace(/^(\d{2})(\d)/, '($1) $2')
     .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
 const formatCep = (value) => digitsOnly(value, 8).replace(/(\d{5})(\d)/, '$1-$2');
+const formatCurrencyBrl = (value) => {
+    if (!value.includes('R$') && /^\d+[.,]\d{1,2}$/.test(value)) {
+        return `R$ ${Number(value.replace(',', '.')).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
 
-const maskFormatters = { cpf: formatCpf, phone: formatPhone, cep: formatCep };
+    const cents = digitsOnly(value, 12);
+
+    if (cents === '') {
+        return '';
+    }
+
+    return `R$ ${(Number(cents) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+
+const maskFormatters = { cpf: formatCpf, phone: formatPhone, cep: formatCep, 'currency-brl': formatCurrencyBrl };
 
 document.querySelectorAll('[data-mask]').forEach((input) => {
     const formatter = maskFormatters[input.dataset.mask];

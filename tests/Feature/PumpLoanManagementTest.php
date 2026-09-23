@@ -63,6 +63,7 @@ it('uses floating controls while keeping billing fields disabled', function () {
         ->assertSee('id="withdrawn_at"', false)
         ->assertSee('name="billing_notes"', false)
         ->assertSee('data-pump-billing-field', false)
+        ->assertSee('data-mask="currency-brl"', false)
         ->assertSee('disabled="disabled"', false)
         ->assertDontSee('name="renewal"', false)
         ->assertSee('peer-not-placeholder-shown:-top-2.5', false);
