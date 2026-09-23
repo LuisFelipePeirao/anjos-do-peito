@@ -33,3 +33,4 @@ Não serão criados novos campos nesta tabela. Campos existentes usados pelo con
 - A tarefa agendada cria somente parcelas de cessões ativas e de tipo `aluguel`.
 - Cessão devolvida não gera novas parcelas. Parcelas existentes permanecem para baixa ou cancelamento manual.
 - Um vencimento no dia 29, 30 ou 31 usa o último dia quando o mês não possuir esse dia.
+- Uma competência só é criada quando seu vencimento estiver dentro da data prevista de devolução vigente. Renovação que amplie esse prazo permite gerar posteriormente competência antes bloqueada; se vencida, ela nasce como `atrasado`.

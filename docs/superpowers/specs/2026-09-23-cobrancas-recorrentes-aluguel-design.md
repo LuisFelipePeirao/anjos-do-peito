@@ -33,9 +33,9 @@ O dicionário objetivo das alterações fica em `docs/Alterações_underline BD.
 
 ## Geração recorrente
 
-Um comando Artisan, executado diariamente pelo Laravel Scheduler, processa cessões ativas de aluguel cuja `proxima_cobranca_em` seja hoje ou anterior. Para cada competência em aberto, ele cria uma parcela pendente com valor atual da cessão e vencimento calculado por `dia_vencimento`, avança `proxima_cobranca_em` em um mês e repete até ficar futura.
+Um comando Artisan, executado diariamente pelo Laravel Scheduler, processa cessões ativas de aluguel cuja `proxima_cobranca_em` seja hoje ou anterior. Para cada competência em aberto, ele cria parcela somente quando seu vencimento chegou e está dentro da `data_prevista_devolucao`; então avança `proxima_cobranca_em` em um mês. Competência bloqueada pelo fim previsto permanece no cursor, sem ser descartada.
 
-O cálculo usa o último dia do mês quando o dia contratado não existir. Antes ou depois da geração, parcelas `pendente` com vencimento anterior a hoje passam para `atrasado`, enumeração já existente na tabela. Parcelas pagas ou canceladas nunca são modificadas por essa rotina.
+O cálculo usa o último dia do mês quando o dia contratado não existir. Antes ou depois da geração, parcelas `pendente` com vencimento anterior a hoje passam para `atrasado`, enumeração já existente na tabela. Se renovação manual ampliar a data prevista, a próxima execução recupera competências bloqueadas cujo vencimento agora caiba no novo prazo; elas já nascem `atrasado` quando vencidas. Parcelas pagas ou canceladas nunca são modificadas por essa rotina.
 
 ## Operação financeira
 
