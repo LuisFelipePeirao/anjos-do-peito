@@ -4,7 +4,7 @@
 
 - Data: 23/09/2026
 - Funcionalidade: controle interno de cobranças recorrentes para aluguéis de bombas de leite.
-- Migration prevista: `add_recurring_billing_fields_to_cessoes_bombas_table`.
+- Migration: `2026_09_23_000001_add_recurring_billing_fields_to_cessoes_bombas_table`.
 - Tabelas criadas: nenhuma.
 - Tabelas alteradas: `cessoes_bombas` e `pagamentos_alugueis`.
 

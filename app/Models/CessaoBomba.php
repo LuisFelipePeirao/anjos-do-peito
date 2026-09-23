@@ -19,6 +19,10 @@ class CessaoBomba extends Model
         'id_usuario_devolucao',
         'tipo',
         'valor_mensalidade',
+        'dia_vencimento',
+        'forma_cobranca',
+        'primeira_cobranca_em',
+        'proxima_cobranca_em',
         'data_retirada',
         'data_prevista_devolucao',
         'data_devolucao',
@@ -34,6 +38,8 @@ class CessaoBomba extends Model
             'data_prevista_devolucao' => 'date',
             'data_devolucao' => 'datetime',
             'valor_mensalidade' => 'decimal:2',
+            'primeira_cobranca_em' => 'date',
+            'proxima_cobranca_em' => 'date',
         ];
     }
 
