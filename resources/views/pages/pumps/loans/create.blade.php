@@ -123,7 +123,7 @@
                         </span>
                         <div>
                             <h3 class="text-lg font-bold text-[#111827]">Dados do aluguel</h3>
-                            <p class="mt-1 text-sm text-[#667085]">Preencha estes campos quando o tipo selecionado for aluguel.</p>
+                            <p class="mt-1 text-sm text-[#667085]">A primeira parcela será registrada agora; as próximas serão geradas automaticamente para controle interno.</p>
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
 
                     <div class="md:col-span-2 xl:col-span-4">
                         <x-material.floating-textarea name="billing_notes" label="Observações financeiras" :value="old('billing_notes')" placeholder="Registre combinações de pagamento, isenção parcial, atraso negociado ou orientação administrativa." data-pump-billing-field disabled />
-                        <span class="{{ $hintClass }}">Para remover o custo, selecione a opção "Empréstimo" no início do formulário.</span>
+                        <span class="{{ $hintClass }}">A equipe registrará baixas e cancelamentos internamente. Para remover o custo, selecione "Empréstimo".</span>
                     </div>
                 </div>
             </article>
