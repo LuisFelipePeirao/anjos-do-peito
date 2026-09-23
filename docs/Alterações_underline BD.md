@@ -25,7 +25,7 @@ Os campos são opcionais para preservar as cessões gratuitas e os registros his
 | --- | --- | --- |
 | Inclusão de índice único | `id_cessao`, `competencia` | Impede que a tarefa agendada crie duas parcelas para a mesma cessão e mesma competência mensal. Garante idempotência caso o agendador seja executado mais de uma vez ou seja reprocessado. |
 
-Não serão criados novos campos nesta tabela. Campos existentes usados pelo controle: `competencia` identifica o mês da parcela; `valor` preserva o valor cobrado naquele mês; `data_vencimento` guarda a data limite; `data_pagamento` registra a baixa manual; `situacao` controla `pendente`, `vencido`, `pago` ou `cancelado`; e `observacao` guarda informações administrativas da parcela.
+Não serão criados novos campos nesta tabela. Campos existentes usados pelo controle: `competencia` identifica o mês da parcela; `valor` preserva o valor cobrado naquele mês; `data_vencimento` guarda a data limite; `data_pagamento` registra a baixa manual; `situacao` controla `pendente`, `atrasado`, `pago` ou `cancelado`; e `observacao` guarda informações administrativas da parcela.
 
 ## Regras de integridade relacionadas
 

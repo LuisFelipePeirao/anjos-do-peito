@@ -35,7 +35,7 @@ O dicionário objetivo das alterações fica em `docs/Alterações_underline BD.
 
 Um comando Artisan, executado diariamente pelo Laravel Scheduler, processa cessões ativas de aluguel cuja `proxima_cobranca_em` seja hoje ou anterior. Para cada competência em aberto, ele cria uma parcela pendente com valor atual da cessão e vencimento calculado por `dia_vencimento`, avança `proxima_cobranca_em` em um mês e repete até ficar futura.
 
-O cálculo usa o último dia do mês quando o dia contratado não existir. Antes ou depois da geração, parcelas `pendente` com vencimento anterior a hoje passam para `vencido`. Parcelas pagas ou canceladas nunca são modificadas por essa rotina.
+O cálculo usa o último dia do mês quando o dia contratado não existir. Antes ou depois da geração, parcelas `pendente` com vencimento anterior a hoje passam para `atrasado`, enumeração já existente na tabela. Parcelas pagas ou canceladas nunca são modificadas por essa rotina.
 
 ## Operação financeira
 
@@ -54,6 +54,6 @@ Uma tela de cobranças lista parcelas por situação, competência e beneficiár
 - Cria empréstimo gratuito sem dados financeiros.
 - Gera competências em atraso sem duplicar parcelas.
 - Calcula corretamente fevereiro e meses sem dia 29, 30 ou 31.
-- Marca pendente vencido como `vencido`.
+- Marca pendente vencido como `atrasado`.
 - Não gera parcelas depois da devolução.
 - Registra pagamento e cancelamento manual sem apagar histórico.
