@@ -69,7 +69,7 @@
                                 {{ $pumpData['status'] }}
                             </span>
                         </div>
-                        <p class="mt-2 text-sm text-[#667085]">
+                        <p class="mt-2 whitespace-pre-line text-sm text-[#667085]">
                             {{ $currentContract ? $currentContract['notes'] : 'Bomba sem contrato ativo no momento, disponível para nova saída.' }}
                         </p>
                     </div>
@@ -85,7 +85,7 @@
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $pumpData['serial_number'] }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase text-[#667085]">Beneficiária atual</dt>
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">Comodatário</dt>
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['beneficiary'] ?? '-' }}</dd>
                     </div>
                     <div>
