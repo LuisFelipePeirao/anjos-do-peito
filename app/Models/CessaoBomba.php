@@ -58,6 +58,11 @@ class CessaoBomba extends Model
         return $this->belongsTo(User::class, 'id_usuario_retirada');
     }
 
+    public function usuarioDevolucao(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id_usuario_devolucao');
+    }
+
     public function pagamentos(): HasMany
     {
         return $this->hasMany(PagamentoAluguel::class, 'id_cessao');

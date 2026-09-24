@@ -124,7 +124,7 @@ class PumpService
 
     public function showData(BombaLeite $pump): array
     {
-        $pump->load(['modelo', 'doador', 'cessoes.beneficiaria', 'cessoes.usuarioRetirada', 'cessoes.pagamentos', 'manutencoes.usuario']);
+        $pump->load(['modelo', 'doador', 'cessoes.beneficiaria', 'cessoes.usuarioRetirada', 'cessoes.usuarioDevolucao', 'cessoes.pagamentos', 'manutencoes.usuario']);
         $currentContract = $this->currentContract($pump);
         $isAvailable = $pump->situacao === 'disponivel';
         $isRental = $currentContract?->tipo === 'aluguel';
@@ -354,7 +354,7 @@ class PumpService
             'date' => $loan->data_devolucao,
             'type' => 'Devolução registrada',
             'description' => $loan->observacao_devolucao ?: 'Bomba devolvida e disponibilizada para novo uso.',
-            'responsible' => $loan->usuarioRetirada?->nome ?? '-',
+            'responsible' => $loan->usuarioDevolucao?->nome ?? '-',
             'icon' => 'undo-2',
         ]);
 
