@@ -33,6 +33,8 @@ class PumpLoanService
     public function create(array $data, int $userId): CessaoBomba
     {
         return DB::transaction(function () use ($data, $userId) {
+            $pump = BombaLeite::query()->lockForUpdate()->findOrFail($data['pump']);
+            abort_unless($pump->situacao === 'disponivel', 409);
             $isRental = $data['contract_type'] === 'aluguel';
             $firstBilling = $isRental ? Carbon::parse($data['first_billing_at']) : null;
             $loan = CessaoBomba::create([
@@ -51,7 +53,7 @@ class PumpLoanService
                 'observacao_retirada' => $this->withdrawalNotes($data),
             ]);
 
-            BombaLeite::whereKey($data['pump'])->update(['situacao' => 'alugada']);
+            $pump->update(['situacao' => 'alugada']);
 
             if ($isRental) {
                 $loan->pagamentos()->create([

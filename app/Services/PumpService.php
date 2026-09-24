@@ -143,7 +143,9 @@ class PumpService
                 'data_fim' => $data['finished_at'],
                 'observacao' => filled($data['notes'] ?? null) ? $data['notes'] : $lockedMaintenance->observacao,
             ]);
-            $lockedPump->update(['situacao' => 'disponivel']);
+            if ($lockedPump->situacao !== 'baixada') {
+                $lockedPump->update(['situacao' => 'disponivel']);
+            }
 
             return $lockedMaintenance->refresh();
         });
@@ -161,7 +163,9 @@ class PumpService
                 'situacao' => 'cancelada',
                 'observacao' => filled($data['notes'] ?? null) ? $data['notes'] : $lockedMaintenance->observacao,
             ]);
-            $lockedPump->update(['situacao' => 'disponivel']);
+            if ($lockedPump->situacao !== 'baixada') {
+                $lockedPump->update(['situacao' => 'disponivel']);
+            }
 
             return $lockedMaintenance->refresh();
         });
@@ -415,6 +419,22 @@ class PumpService
             'icon' => $maintenance->tipo === 'higienizacao' ? 'sparkles' : 'wrench',
         ]);
 
+        $maintenanceCompletions = $pump->manutencoes->filter(fn (ManutencaoBomba $maintenance) => $maintenance->situacao === 'concluida' && $maintenance->data_fim)->map(fn (ManutencaoBomba $maintenance) => [
+            'date' => $maintenance->data_fim,
+            'type' => 'Manutenção concluída',
+            'description' => $maintenance->observacao ?: 'Manutenção concluída e bomba liberada para uso.',
+            'responsible' => $maintenance->usuario?->nome ?? '-',
+            'icon' => 'circle-check',
+        ]);
+
+        $maintenanceCancellations = $pump->manutencoes->filter(fn (ManutencaoBomba $maintenance) => $maintenance->situacao === 'cancelada')->map(fn (ManutencaoBomba $maintenance) => [
+            'date' => $maintenance->data_inicio,
+            'type' => 'Manutenção cancelada',
+            'description' => $maintenance->observacao ?: 'Manutenção cancelada.',
+            'responsible' => $maintenance->usuario?->nome ?? '-',
+            'icon' => 'circle-x',
+        ]);
+
         $returns = $pump->cessoes->filter(fn (CessaoBomba $loan) => $loan->data_devolucao)->map(fn (CessaoBomba $loan) => [
             'date' => $loan->data_devolucao,
             'type' => 'Devolução registrada',
@@ -426,6 +446,8 @@ class PumpService
         return $items
             ->merge($loans)
             ->merge($maintenances)
+            ->merge($maintenanceCompletions)
+            ->merge($maintenanceCancellations)
             ->merge($returns)
             ->filter(fn (array $item) => $item['date'])
             ->sortByDesc('date')

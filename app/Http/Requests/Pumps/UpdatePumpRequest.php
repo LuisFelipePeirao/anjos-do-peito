@@ -19,12 +19,13 @@ class UpdatePumpRequest extends FormRequest
         /** @var BombaLeite|null $pump */
         $pump = $this->route('pump');
         $hasActiveLoan = $pump?->cessoes()->whereIn('situacao', ['ativa', 'atrasada'])->exists() ?? false;
+        $hasActiveMaintenance = $pump?->manutencoes()->whereIn('situacao', ['aberta', 'em_andamento'])->exists() ?? false;
 
         return [
             'codigo' => ['required', 'string', 'max:255', Rule::unique('bomba_leite', 'codigo')->ignore($pump?->id)],
             'id_modelo' => ['required', 'integer', 'exists:modelos_bombas,id'],
             'num_serie' => ['nullable', 'string', 'max:255'],
-            'situacao' => ['required', Rule::in($hasActiveLoan ? ['alugada'] : ['disponivel', 'manutencao', 'baixada'])],
+            'situacao' => ['required', Rule::in($hasActiveLoan ? ['alugada'] : ($hasActiveMaintenance ? ['manutencao', 'baixada'] : ['disponivel', 'manutencao', 'baixada']))],
             'data_aquisicao' => ['nullable', 'date'],
             'origem' => ['required', Rule::in(['compra', 'doacao', 'emprestimo'])],
             'id_doador' => ['nullable', 'integer', 'exists:doadores,id'],

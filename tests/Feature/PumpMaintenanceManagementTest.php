@@ -162,3 +162,24 @@ it('shows maintenance form and actions for an open maintenance record', function
         ->assertSee('Concluir')
         ->assertSee('Cancelar manutenção');
 });
+
+it('keeps a written-off pump inactive when maintenance is finished', function () {
+    [$user, $pump, $maintenance] = maintenanceInProgress();
+    $pump->update(['situacao' => 'baixada']);
+
+    $this->actingAs($user)->patch(route('pumps.maintenance.finish', [$pump, $maintenance]), [
+        'finished_at' => '2026-09-24T17:00',
+    ])->assertRedirect();
+
+    $this->assertDatabaseHas('bomba_leite', ['id' => $pump->id, 'situacao' => 'baixada']);
+});
+
+it('shows a completion event in maintenance history', function () {
+    [$user, $pump, $maintenance] = maintenanceInProgress();
+    $this->actingAs($user)->patch(route('pumps.maintenance.finish', [$pump, $maintenance]), [
+        'finished_at' => '2026-09-24T17:00',
+    ]);
+
+    $this->actingAs($user)->get(route('pumps.show', ['pump' => $pump, 'tab' => 'history']))
+        ->assertSee('Manutenção concluída');
+});
