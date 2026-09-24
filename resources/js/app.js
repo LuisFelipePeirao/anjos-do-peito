@@ -34,8 +34,8 @@ document.addEventListener('click', (event) => {
 const syncSelectRequiredAsterisk = (select) => {
     const wrapper = select.closest('[data-select-required]');
     const asterisk = wrapper?.querySelector('[data-select-required-asterisk]');
-    const field = select.shadowRoot?.querySelector('[part="field"]');
-    const label = field?.shadowRoot?.querySelector('.label:not(.hidden)');
+    const field = select.shadowRoot?.querySelector('md-outlined-field, [part="field"]');
+    const label = field?.shadowRoot?.querySelector('[part="label"], .label:not(.hidden), label:not(.hidden)');
 
     if (!wrapper || !asterisk || !label) {
         return;
@@ -57,6 +57,7 @@ const scheduleSelectRequiredAsterisk = (select) => {
     requestAnimationFrame(() => {
         syncSelectRequiredAsterisk(select);
         window.setTimeout(() => syncSelectRequiredAsterisk(select), 170);
+        window.setTimeout(() => syncSelectRequiredAsterisk(select), 500);
     });
 };
 
@@ -64,7 +65,10 @@ const selectWithRequiredAsterisk = (target) => target instanceof Element
     ? target.closest('md-outlined-select')?.closest('[data-select-required]')?.querySelector('md-outlined-select')
     : null;
 
-document.querySelectorAll('[data-select-required] md-outlined-select').forEach(scheduleSelectRequiredAsterisk);
+document.querySelectorAll('[data-select-required] md-outlined-select').forEach((select) => {
+    scheduleSelectRequiredAsterisk(select);
+    customElements.whenDefined('md-outlined-select').then(() => scheduleSelectRequiredAsterisk(select));
+});
 
 ['focusin', 'focusout', 'input', 'change'].forEach((eventName) => {
     document.addEventListener(eventName, (event) => {
