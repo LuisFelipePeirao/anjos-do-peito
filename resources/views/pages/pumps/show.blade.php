@@ -101,11 +101,17 @@
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['next_renewal_at'] ?? '-' }}</dd>
                     </div>
                     @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
-                        <div class="sm:col-span-2">
-                            <button type="button" data-dialog-open="pump-renewal-modal" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
-                                <x-lucide-refresh-cw class="h-4 w-4" />
-                                Renovar empréstimo
-                            </button>
+                        <div class="sm:col-span-2 xl:col-span-4">
+                            <div data-pump-loan-actions class="flex flex-col gap-3">
+                                <button type="button" data-dialog-open="pump-renewal-modal" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                                    <x-lucide-refresh-cw class="h-4 w-4" />
+                                    Renovar empréstimo
+                                </button>
+                                <button type="button" data-dialog-open="pump-return-modal" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-[8px] border border-[#23845a] bg-white px-4 text-sm font-semibold text-[#23845a] shadow-sm transition hover:bg-[#e8f8ee]">
+                                    <x-lucide-undo-2 class="h-4 w-4" />
+                                    Registrar devolução
+                                </button>
+                            </div>
                         </div>
                     @endif
                 </dl>
@@ -276,6 +282,42 @@
 
         @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
             <dialog
+                id="pump-return-modal"
+                aria-labelledby="pump-return-modal-title"
+                data-dialog-modal
+                @error('returned_at') data-dialog-auto-open @enderror
+                class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45 backdrop:backdrop-blur-[2px]"
+            >
+                <form method="POST" action="{{ route('pumps.loans.return', $pump) }}" class="p-5 sm:p-6">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="flex items-start gap-4">
+                        <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e8f8ee] text-[#23845a]">
+                            <x-lucide-undo-2 class="h-5 w-5" />
+                        </span>
+                        <div class="min-w-0 flex-1 pt-0.5">
+                            <h2 id="pump-return-modal-title" class="text-base font-semibold text-[#111827]">Registrar devolução</h2>
+                            <p class="mt-1.5 text-sm leading-6 text-[#667085]">Confirme recebimento da bomba para finalizar empréstimo atual.</p>
+                        </div>
+                        <button type="button" data-dialog-close class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#98a2b3] transition hover:cursor-pointer hover:bg-[#f7edef] hover:text-[#667085] focus:outline-none focus:ring-3 focus:ring-[#fdecef]" aria-label="Fechar">
+                            <x-gmdi-close-o class="h-5 w-5" />
+                        </button>
+                    </div>
+
+                    <div class="mt-6 space-y-5">
+                        <x-material.floating-input type="datetime-local" name="returned_at" label="Data e hora da devolução" :value="old('returned_at', now()->format('Y-m-d\\TH:i'))" required />
+                        <x-material.floating-textarea name="return_notes" label="Observações da devolução" :value="old('return_notes')" />
+                    </div>
+
+                    <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                        <button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] transition hover:cursor-pointer hover:bg-[#fbfaf9] focus:outline-none focus:ring-3 focus:ring-[#fdecef]">Cancelar</button>
+                        <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#23845a] px-4 text-sm font-semibold text-white transition hover:cursor-pointer hover:bg-[#1d6b49] focus:outline-none focus:ring-3 focus:ring-[#d1f3dc]">Registrar devolução</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <dialog
                 id="pump-renewal-modal"
                 aria-labelledby="pump-renewal-modal-title"
                 data-dialog-modal
@@ -311,11 +353,10 @@
                         </button>
                     </div>
 
-                    <label class="mt-6 block">
-                        <span class="text-sm font-semibold text-[#344054]">Nova expiração</span>
-                        <input type="date" name="expires_at" value="{{ old('expires_at', $currentContract['renewal_min_date']) }}" min="{{ $currentContract['renewal_min_date'] }}" class="mt-2 h-11 w-full rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#ef5b97] focus:ring-2 focus:ring-[#ef5b97]/15" required>
+                    <div class="mt-6">
+                        <x-material.floating-input type="date" name="expires_at" label="Nova expiração" :value="old('expires_at', $currentContract['renewal_min_date'])" :min="$currentContract['renewal_min_date']" required />
                         @error('expires_at') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
+                    </div>
 
                     <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                         <button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] transition hover:cursor-pointer hover:bg-[#fbfaf9] focus:outline-none focus:ring-3 focus:ring-[#fdecef]">

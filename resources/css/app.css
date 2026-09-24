@@ -13,6 +13,18 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+@layer base {
+    button:enabled,
+    input[type='button']:enabled,
+    input[type='submit']:enabled,
+    input[type='reset']:enabled,
+    [role='button']:not([aria-disabled='true']),
+    md-outlined-select:not([disabled]),
+    md-select-option:not([disabled]) {
+        cursor: pointer;
+    }
+}
+
 .auth-input,
 .auth-input:focus,
 .auth-input:focus-visible {

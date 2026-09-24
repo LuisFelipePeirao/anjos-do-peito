@@ -14,7 +14,13 @@ class LocalAtendimento extends Model
         'nome',
         'id_endereco',
         'descricao',
+        'ativo',
     ];
+
+    protected function casts(): array
+    {
+        return ['ativo' => 'boolean'];
+    }
 
     public function endereco(): BelongsTo
     {

@@ -19,33 +19,21 @@
     </div>
 
     <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
-        <label class="block">
-            <span class="{{ $labelClass }}">Código patrimonial</span>
-            <input type="text" name="codigo" value="{{ old('codigo', $pumpData['codigo']) }}" class="{{ $inputClass }}" placeholder="Ex.: BL-009" required>
-            @error('codigo') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-        </label>
+        <x-material.floating-input name="codigo" label="Código patrimonial" :value="old('codigo', $pumpData['codigo'])" placeholder="Ex.: BL-009" required />
 
         <div>
             <x-material.select name="id_modelo" label="Modelo" :options="$models" :selected="old('id_modelo', $pumpData['id_modelo'])" placeholder="Selecione" required />
             @error('id_modelo') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
         </div>
 
-        <label class="block">
-            <span class="{{ $labelClass }}">Número de série</span>
-            <input type="text" name="num_serie" value="{{ old('num_serie', $pumpData['num_serie']) }}" class="{{ $inputClass }}" placeholder="Ex.: SN-2026-009">
-            @error('num_serie') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-        </label>
+        <x-material.floating-input name="num_serie" label="Número de série" :value="old('num_serie', $pumpData['num_serie'])" placeholder="Ex.: SN-2026-009" />
 
         <div>
             <x-material.select name="situacao" label="Situação" :options="$editableStatuses" :selected="old('situacao', $pumpData['situacao'])" />
             @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
         </div>
 
-        <label class="block">
-            <span class="{{ $labelClass }}">Data de aquisição</span>
-            <input type="date" name="data_aquisicao" value="{{ old('data_aquisicao', $pumpData['data_aquisicao']) }}" class="{{ $inputClass }}">
-            @error('data_aquisicao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-        </label>
+        <x-material.floating-input type="date" name="data_aquisicao" label="Data de aquisição" :value="old('data_aquisicao', $pumpData['data_aquisicao'])" />
 
         <div>
             <x-material.select name="origem" label="Origem" :options="$origins" :selected="old('origem', $pumpData['origem'])" placeholder="Selecione" />
@@ -57,10 +45,6 @@
             @error('id_doador') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
         </div>
 
-        <label class="block md:col-span-2 xl:col-span-4">
-            <span class="{{ $labelClass }}">Itens do kit</span>
-            <textarea name="acessorios" class="{{ $textareaClass }}" placeholder="Ex.: motor, frasco, mangueira, conector, fonte, bolsa de transporte.">{{ old('acessorios', $pumpData['acessorios']) }}</textarea>
-            @error('acessorios') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-        </label>
+        <x-material.floating-textarea name="acessorios" label="Itens do kit" :value="old('acessorios', $pumpData['acessorios'])" placeholder="Ex.: motor, frasco, mangueira, conector, fonte, bolsa de transporte." wrapper-class="md:col-span-2 xl:col-span-4" />
     </div>
 </article>

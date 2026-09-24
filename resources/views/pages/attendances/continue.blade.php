@@ -30,6 +30,13 @@
             @csrf
             @method('PUT')
             <input type="hidden" name="confirmed_finalization" value="0" data-attendance-finalization-confirmation>
+            <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+                <div class="border-b border-[#f0e7e8] p-5"><div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fdecef] text-[#ef5b97]"><x-lucide-list-checks class="h-5 w-5" /></span><div><h3 class="text-lg font-bold text-[#111827]">Classificação do atendimento</h3><p class="mt-1 text-sm text-[#667085]">Informe a categoria e procedimento realizado.</p></div></div></div>
+                <div class="grid gap-5 p-5 md:grid-cols-2">
+                    <div><x-material.select name="attendance_category" label="Categoria" :options="$attendanceCategories" :selected="old('attendance_category', $attendanceData['attendance_category'])" placeholder="Selecione" />@error('attendance_category') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="procedure" label="Procedimento" :options="$procedures" :selected="old('procedure', $attendanceData['procedure'])" placeholder="Selecione" />@error('procedure') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                </div>
+            </article>
             @include('pages.attendances.partials.clinical-fields', ['attendanceData' => $attendanceData, 'textareaClass' => $textareaClass, 'inputClass' => $inputClass])
             <div class="sticky bottom-0 -mx-4 border-t border-[#eadfe0] bg-[#fbfaf9]/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8"><div class="mx-auto flex max-w-6xl flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                 <a href="{{ route('attendances.show', $attendance) }}" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">Cancelar</a>

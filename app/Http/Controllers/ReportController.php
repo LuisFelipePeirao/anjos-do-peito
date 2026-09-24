@@ -3,15 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Reports\ReportFilterRequest;
+use App\Services\ActivityReportExportService;
 use App\Services\ReportService;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\View\View;
 
 class ReportController extends Controller
 {
-    public function __construct(private readonly ReportService $reports) {}
+    public function __construct(
+        private readonly ReportService $reports,
+        private readonly ActivityReportExportService $activityReportExport,
+    ) {}
 
     public function index(ReportFilterRequest $request): View
     {
         return view('pages.reports.index', $this->reports->indexData($request->filters()));
+    }
+
+    public function export(ReportFilterRequest $request): StreamedResponse
+    {
+        return $this->activityReportExport->download($request->filters());
     }
 }

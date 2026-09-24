@@ -32,6 +32,8 @@ class RenewPumpLoanRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'expires_at.required' => 'A nova data de devolução é obrigatória.',
+            'expires_at.date' => 'Informe uma data de devolução válida.',
             'expires_at.after' => 'Informe uma nova data posterior ao vencimento atual ou à data de hoje.',
         ];
     }

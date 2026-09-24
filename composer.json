@@ -13,7 +13,9 @@
         "codeat3/blade-google-material-design-icons": "^1.21",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
-        "mallardduck/blade-lucide-icons": "^2.0"
+        "mallardduck/blade-lucide-icons": "^2.0",
+        "phpoffice/phpspreadsheet": "^5.9",
+        "resend/resend-php": "^1.14"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

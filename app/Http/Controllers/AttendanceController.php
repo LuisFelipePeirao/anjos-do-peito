@@ -4,11 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Attendances\AttendanceFilterRequest;
 use App\Http\Requests\Attendances\SaveAttendanceContinuationRequest;
+use App\Http\Requests\Attendances\StoreAttendanceCategoryRequest;
 use App\Http\Requests\Attendances\StoreAttendanceRequest;
 use App\Http\Requests\Attendances\StoreLocationRequest;
+use App\Http\Requests\Attendances\StoreProcedureRequest;
+use App\Http\Requests\Attendances\UpdateAttendanceCategoryRequest;
 use App\Http\Requests\Attendances\UpdateAttendanceRequest;
+use App\Http\Requests\Attendances\UpdateProcedureRequest;
 use App\Models\Atendimento;
 use App\Models\Beneficiaria;
+use App\Models\CategoriaAtendimento;
+use App\Models\LocalAtendimento;
+use App\Models\Procedimento;
 use App\Services\AttendanceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -105,5 +112,61 @@ class AttendanceController extends Controller
         $this->attendances->storeLocation($request->validated());
 
         return back()->with('status', 'Local de atendimento criado com sucesso.');
+    }
+
+    public function updateLocation(StoreLocationRequest $request, LocalAtendimento $location): RedirectResponse
+    {
+        $this->attendances->updateLocation($location, $request->validated());
+
+        return back()->with('status', 'Local de atendimento atualizado com sucesso.');
+    }
+
+    public function toggleLocation(LocalAtendimento $location): RedirectResponse
+    {
+        $this->attendances->toggleLocation($location);
+
+        return back()->with('status', $location->fresh()->ativo ? 'Local reativado com sucesso.' : 'Local inativado com sucesso.');
+    }
+
+    public function storeProcedure(StoreProcedureRequest $request): RedirectResponse
+    {
+        $this->attendances->storeProcedure($request->validated());
+
+        return back()->with('status', 'Procedimento criado com sucesso.');
+    }
+
+    public function updateProcedure(UpdateProcedureRequest $request, Procedimento $procedure): RedirectResponse
+    {
+        $this->attendances->updateProcedure($procedure, $request->validated());
+
+        return back()->with('status', 'Procedimento atualizado com sucesso.');
+    }
+
+    public function toggleProcedure(Procedimento $procedure): RedirectResponse
+    {
+        $this->attendances->toggleProcedure($procedure);
+
+        return back()->with('status', $procedure->fresh()->ativo ? 'Procedimento reativado com sucesso.' : 'Procedimento inativado com sucesso.');
+    }
+
+    public function storeCategory(StoreAttendanceCategoryRequest $request): RedirectResponse
+    {
+        $this->attendances->storeCategory($request->validated());
+
+        return back()->with('status', 'Categoria de atendimento criada com sucesso.');
+    }
+
+    public function updateCategory(UpdateAttendanceCategoryRequest $request, CategoriaAtendimento $category): RedirectResponse
+    {
+        $this->attendances->updateCategory($category, $request->validated());
+
+        return back()->with('status', 'Categoria de atendimento atualizada com sucesso.');
+    }
+
+    public function toggleCategory(CategoriaAtendimento $category): RedirectResponse
+    {
+        $this->attendances->toggleCategory($category);
+
+        return back()->with('status', $category->fresh()->ativo ? 'Categoria de atendimento reativada com sucesso.' : 'Categoria de atendimento inativada com sucesso.');
     }
 }

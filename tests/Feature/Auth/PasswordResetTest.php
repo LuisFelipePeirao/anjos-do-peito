@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -16,7 +16,7 @@ it('sends a password reset link', function () {
         'email' => 'maria@example.com',
     ])->assertSessionHas('status');
 
-    Notification::assertSentTo($user, ResetPassword::class);
+    Notification::assertSentTo($user, ResetPasswordNotification::class);
 });
 
 it('resets password with a valid token', function () {
@@ -31,7 +31,7 @@ it('resets password with a valid token', function () {
     ]);
 
     $token = null;
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) use (&$token) {
+    Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) use (&$token) {
         $token = $notification->token;
 
         return true;
@@ -45,6 +45,36 @@ it('resets password with a valid token', function () {
     ])->assertRedirect(route('login'));
 
     expect(Hash::check('new-secret-password', $user->fresh()->senha))->toBeTrue();
+});
+
+it('rejects password reset after thirty minutes', function () {
+    Notification::fake();
+    $user = User::factory()->create([
+        'email' => 'maria@example.com',
+        'senha' => 'old-password',
+    ]);
+
+    $this->post(route('password.email'), [
+        'email' => 'maria@example.com',
+    ]);
+
+    $token = null;
+    Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) use (&$token) {
+        $token = $notification->token;
+
+        return true;
+    });
+
+    $this->travel(31)->minutes();
+
+    $this->from(route('password.request'))->post(route('password.update'), [
+        'token' => $token,
+        'email' => 'maria@example.com',
+        'senha' => 'new-secret-password',
+        'senha_confirmation' => 'new-secret-password',
+    ])->assertRedirect(route('password.request'));
+
+    expect(Hash::check('old-password', $user->fresh()->senha))->toBeTrue();
 });
 
 it('rejects password reset with an invalid token', function () {

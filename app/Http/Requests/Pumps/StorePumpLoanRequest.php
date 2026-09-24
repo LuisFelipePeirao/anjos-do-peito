@@ -22,7 +22,6 @@ class StorePumpLoanRequest extends FormRequest
             'beneficiary' => ['required', 'integer', Rule::exists('beneficiarias', 'id')->where(fn ($query) => $query->where('situacao', 'ativo'))],
             'withdrawn_at' => ['required', 'date'],
             'expected_return' => ['required', 'date', 'after_or_equal:withdrawn_at'],
-            'renewal' => ['nullable', Rule::in(['none', '30_days', '60_days'])],
             'monthly_fee' => ['required_if:contract_type,aluguel', 'nullable', 'numeric', 'min:0'],
             'due_day' => ['required_if:contract_type,aluguel', 'nullable', 'integer', 'between:1,31'],
             'billing_method' => ['required_if:contract_type,aluguel', 'nullable', Rule::in(['pix', 'dinheiro', 'boleto'])],
@@ -33,13 +32,46 @@ class StorePumpLoanRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'contract_type.required' => 'O tipo de contrato é obrigatório.',
+            'contract_type.in' => 'Selecione um tipo de contrato válido.',
+            'pump.required' => 'A bomba de leite é obrigatória.',
+            'pump.integer' => 'Selecione uma bomba de leite válida.',
+            'pump.exists' => 'A bomba selecionada não está disponível.',
+            'beneficiary.required' => 'A beneficiária é obrigatória.',
+            'beneficiary.integer' => 'Selecione uma beneficiária válida.',
+            'beneficiary.exists' => 'A beneficiária selecionada não está disponível.',
+            'withdrawn_at.required' => 'A data de retirada é obrigatória.',
+            'withdrawn_at.date' => 'Informe uma data de retirada válida.',
+            'expected_return.required' => 'A data prevista de devolução é obrigatória.',
+            'expected_return.date' => 'Informe uma data prevista de devolução válida.',
+            'expected_return.after_or_equal' => 'A devolução deve ser na mesma data ou após a retirada.',
+            'monthly_fee.required_if' => 'Informe o valor mensal para contratos de aluguel.',
+            'monthly_fee.numeric' => 'O valor mensal deve ser numérico.',
+            'monthly_fee.min' => 'O valor mensal não pode ser menor que :min.',
+            'due_day.required_if' => 'Informe o dia de vencimento para contratos de aluguel.',
+            'due_day.integer' => 'O dia de vencimento deve ser um número inteiro.',
+            'due_day.between' => 'O dia de vencimento deve estar entre :min e :max.',
+            'billing_method.required_if' => 'Informe a forma de cobrança para contratos de aluguel.',
+            'billing_method.in' => 'Selecione uma forma de cobrança válida.',
+            'first_billing_at.required_if' => 'Informe a data da primeira cobrança para contratos de aluguel.',
+            'first_billing_at.date' => 'Informe uma data de cobrança válida.',
+            'first_billing_at.after_or_equal' => 'A primeira cobrança deve ser na mesma data ou após a retirada.',
+            'billing_notes.string' => 'As observações de cobrança devem ser um texto válido.',
+            'term_signed.required' => 'Confirme a assinatura do termo.',
+            'term_signed.boolean' => 'A confirmação do termo é inválida.',
+            'notes.string' => 'As observações devem ser um texto válido.',
+        ];
+    }
+
     protected function prepareForValidation(): void
     {
         $this->merge([
             'contract_type' => $this->normalizeOption($this->input('contract_type'), ['Empréstimo' => 'emprestimo', 'Aluguel' => 'aluguel']),
             'pump' => $this->normalizePump($this->input('pump')),
             'beneficiary' => $this->normalizeBeneficiary($this->input('beneficiary')),
-            'renewal' => $this->normalizeOption($this->input('renewal'), ['Sem renovação automática' => 'none', 'A cada 30 dias' => '30_days', 'A cada 60 dias' => '60_days']),
             'monthly_fee' => $this->normalizeMoney($this->input('monthly_fee')),
             'billing_method' => $this->normalizeOption($this->input('billing_method'), ['Pix' => 'pix', 'Dinheiro' => 'dinheiro', 'Boleto' => 'boleto']),
             'term_signed' => $this->normalizeBoolean($this->input('term_signed')),

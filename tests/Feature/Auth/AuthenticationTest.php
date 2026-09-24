@@ -10,6 +10,18 @@ it('redirects guests away from home', function () {
         ->assertRedirect(route('login'));
 });
 
+it('shows the VITA favicon in the login browser tab', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('assets/img/favicon_VITA.png');
+});
+
+it('shows the VITA logo on the reset password page', function () {
+    $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com']))
+        ->assertOk()
+        ->assertSee('http://localhost:8000/assets/img/logo_VITA.png');
+});
+
 it('authenticates a user with email and senha', function () {
     $user = User::factory()->create([
         'email' => 'admin@example.com',
@@ -46,4 +58,23 @@ it('logs out an authenticated user', function () {
         ->assertRedirect(route('login'));
 
     $this->assertGuest();
+});
+
+it('shows password visibility controls on login and reset password forms', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('data-password-toggle="senha"', false)
+        ->assertSee('rounded-[4px] text-[#8590ad]', false)
+        ->assertSee('focus-visible:ring-2', false)
+        ->assertDontSee('hover:bg-[#fdecef]', false)
+        ->assertDontSee('rounded-full text-[#8590ad] transition hover:bg', false);
+
+    $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com']))
+        ->assertOk()
+        ->assertSee('data-password-toggle="senha"', false)
+        ->assertSee('data-password-toggle="senha_confirmation"', false)
+        ->assertSee('rounded-[4px] text-[#8590ad]', false)
+        ->assertSee('focus-visible:ring-2', false)
+        ->assertDontSee('hover:bg-[#fdecef]', false)
+        ->assertDontSee('rounded-full text-[#8590ad] transition hover:bg', false);
 });

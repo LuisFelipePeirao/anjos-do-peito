@@ -14,13 +14,17 @@
             </x-slot:icon>
         </x-material.input>
 
-        <x-material.input label="Senha" name="senha" type="password">
+        <x-material.input label="Senha" name="senha" type="password" :password-toggle="true">
             <x-slot:icon>
                 <x-gmdi-lock-o />
             </x-slot:icon>
         </x-material.input>
 
         @error('email')
+            <p class="mb-4 text-sm font-medium text-red-600">{{ $message }}</p>
+        @enderror
+
+        @error('senha')
             <p class="mb-4 text-sm font-medium text-red-600">{{ $message }}</p>
         @enderror
 

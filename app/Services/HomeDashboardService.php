@@ -24,7 +24,6 @@ class HomeDashboardService
             'pipeline' => $pipeline,
             'risks' => $risks,
             'recent' => $recent,
-            'maxAttendance' => $monthlyAttendances['values'] ? max(array_column($monthlyAttendances['values'], 'total')) : 0,
             'totalStock' => array_sum(array_column($stock, 'available')) + array_sum(array_column($stock, 'used')),
         ];
     }
@@ -55,7 +54,7 @@ class HomeDashboardService
             [
                 'label' => 'Atendimentos no mês',
                 'value' => $currentAttendances,
-                'context' => 'Meta calculada: '.(collect($monthlyAttendances['values'])->last()['target'] ?? 0).' atendimentos',
+                'context' => 'Atendimentos realizados no mês atual',
                 'trend' => $this->signedDelta($currentAttendances - $previousAttendances),
                 'trendType' => $currentAttendances >= $previousAttendances ? 'up' : 'down',
                 'icon' => 'content-paste-o',
@@ -87,20 +86,13 @@ class HomeDashboardService
         $months = collect(range(5, 0))->map(fn (int $monthsAgo) => now()->subMonthsNoOverflow($monthsAgo)->startOfMonth());
         $values = $months->map(function (Carbon $month) {
             $total = $this->realizedAttendancesBetween($month, $month->copy()->endOfMonth());
-            $historicalAverage = max(1, $this->realizedAttendancesBefore($month, 3));
-            $target = max($total, (int) ceil($historicalAverage * 1.1));
-
             return [
                 'month' => $this->monthLabel($month),
                 'total' => $total,
-                'target' => $target,
             ];
         })->values()->all();
 
-        $current = collect($values)->last();
-        $percent = ($current['target'] ?? 0) > 0 ? min(100, round(($current['total'] / $current['target']) * 100)) : 0;
-
-        return ['percent' => $percent.'%', 'values' => $values];
+        return ['values' => $values];
     }
 
     private function stock(): array
@@ -257,14 +249,6 @@ class HomeDashboardService
             ->where('rascunho', false)
             ->whereBetween('data_hora', [$start, $end])
             ->count();
-    }
-
-    private function realizedAttendancesBefore(Carbon $month, int $months): int
-    {
-        $start = $month->copy()->subMonthsNoOverflow($months)->startOfMonth();
-        $end = $month->copy()->subMonthNoOverflow()->endOfMonth();
-
-        return (int) ceil($this->realizedAttendancesBetween($start, $end) / max($months, 1));
     }
 
     private function overduePumpCount(): int

@@ -16,7 +16,7 @@
         <form method="POST" action="{{ route('pumps.store') }}" class="space-y-6">
             @csrf
             @include('pages.pumps.partials.form')
-            @include('pages.pumps.partials.actions', ['cancelRoute' => route('pumps.index'), 'submitLabel' => 'Salvar bomba'])
+            @include('pages.pumps.partials.actions', ['cancelRoute' => route('pumps.index'), 'submitLabel' => 'Salvar bomba de leite'])
         </form>
     </section>
 @endsection

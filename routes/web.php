@@ -55,6 +55,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/atendimentos/novo', [AttendanceController::class, 'create'])->name('attendances.create');
         Route::post('/atendimentos', [AttendanceController::class, 'store'])->name('attendances.store');
         Route::post('/atendimentos/locais', [AttendanceController::class, 'storeLocation'])->name('attendances.locations.store');
+        Route::put('/atendimentos/locais/{location}', [AttendanceController::class, 'updateLocation'])->name('attendances.locations.update');
+        Route::patch('/atendimentos/locais/{location}/alternar', [AttendanceController::class, 'toggleLocation'])->name('attendances.locations.toggle');
+        Route::post('/atendimentos/procedimentos', [AttendanceController::class, 'storeProcedure'])->name('attendances.procedures.store');
+        Route::put('/atendimentos/procedimentos/{procedure}', [AttendanceController::class, 'updateProcedure'])->name('attendances.procedures.update');
+        Route::patch('/atendimentos/procedimentos/{procedure}/alternar', [AttendanceController::class, 'toggleProcedure'])->name('attendances.procedures.toggle');
+        Route::post('/atendimentos/categorias', [AttendanceController::class, 'storeCategory'])->name('attendances.categories.store');
+        Route::put('/atendimentos/categorias/{category}', [AttendanceController::class, 'updateCategory'])->name('attendances.categories.update');
+        Route::patch('/atendimentos/categorias/{category}/alternar', [AttendanceController::class, 'toggleCategory'])->name('attendances.categories.toggle');
         Route::get('/atendimentos/beneficiarias/{beneficiaria}/criancas', [AttendanceController::class, 'children'])->name('attendances.children.index');
         Route::get('/atendimentos/{attendance}', [AttendanceController::class, 'show'])->name('attendances.show');
         Route::get('/atendimentos/{attendance}/editar', [AttendanceController::class, 'edit'])->name('attendances.edit');
@@ -77,6 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/bombas-de-leite/{pump}/editar', [PumpController::class, 'edit'])->name('pumps.edit');
     Route::put('/bombas-de-leite/{pump}', [PumpController::class, 'update'])->name('pumps.update');
     Route::patch('/bombas-de-leite/{pump}/renovar-emprestimo', [PumpController::class, 'renewLoan'])->name('pumps.loans.renew');
+    Route::patch('/bombas-de-leite/{pump}/registrar-devolucao', [PumpController::class, 'returnLoan'])->name('pumps.loans.return');
     Route::delete('/bombas-de-leite/{pump}', [PumpController::class, 'destroy'])->name('pumps.destroy');
 
     Route::get('/doacoes-e-estoque', [DonationStockController::class, 'index'])->name('donations.index');
@@ -95,5 +104,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/movimentacoes', [StockMovementController::class, 'store'])->name('movements.store');
     Route::get('/movimentacoes/{movement}', [StockMovementController::class, 'show'])->name('movements.show');
 
+    Route::get('/relatorios/exportar', [ReportController::class, 'export'])->name('reports.export');
     Route::get('/relatorios', [ReportController::class, 'index'])->name('reports.index');
 });

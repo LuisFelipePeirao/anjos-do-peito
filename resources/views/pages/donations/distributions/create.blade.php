@@ -73,22 +73,14 @@
                             @error('id_doador') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 
-                        <label class="block">
-                            <span class="{{ $labelClass }}">Data e hora</span>
-                            <input type="datetime-local" name="data_hora" value="{{ old('data_hora', now()->format('Y-m-d\TH:i')) }}" class="{{ $inputClass }}" required>
-                            @error('data_hora') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                        </label>
+                        <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
                         <div>
                             <x-material.select name="situacao" label="Situação" :options="['recebida' => 'Recebida', 'cancelada' => 'Cancelada']" :selected="old('situacao', 'recebida')" required />
                             @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 
-                        <label class="block md:col-span-2">
-                            <span class="{{ $labelClass }}">Observação</span>
-                            <textarea name="observacao" class="{{ $textareaClass }}">{{ old('observacao') }}</textarea>
-                            @error('observacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                        </label>
+                        <x-material.floating-textarea name="observacao" label="Observação" :value="old('observacao')" wrapper-class="md:col-span-2" />
                     </x-donations.partials.form-shell>
 
                     <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]" data-entry-items>
@@ -115,19 +107,13 @@
                                         <x-material.select name="items[{{ $index }}][id_material]" label="Material" :options="$materials" :selected="$row['id_material'] ?? null" placeholder="Selecione" />
                                     </div>
 
-                                    <label class="block">
-                                        <span class="{{ $labelClass }}">Quantidade</span>
-                                        <input type="number" min="1" name="items[{{ $index }}][quantidade]" value="{{ $row['quantidade'] ?? null }}" class="{{ $inputClass }}" data-entry-quantity>
-                                    </label>
+                                    <x-material.floating-input type="number" name="items[{{ $index }}][quantidade]" label="Quantidade" :value="$row['quantidade'] ?? null" min="1" data-entry-quantity />
 
                                     <button type="button" data-remove-entry-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                                         <x-gmdi-delete-o class="h-4 w-4" />
                                     </button>
 
-                                    <label class="block md:col-span-3">
-                                        <span class="{{ $labelClass }}">Observação do item</span>
-                                        <input type="text" name="items[{{ $index }}][observacao]" value="{{ $row['observacao'] ?? null }}" class="{{ $inputClass }}" data-entry-observation>
-                                    </label>
+                                    <x-material.floating-input name="items[{{ $index }}][observacao]" label="Observação do item" :value="$row['observacao'] ?? null" wrapper-class="md:col-span-3" data-entry-observation />
                                 </div>
                             @endforeach
                         </div>
@@ -141,22 +127,14 @@
                             @error('id_beneficiaria') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 
-                        <label class="block">
-                            <span class="{{ $labelClass }}">Data e hora</span>
-                            <input type="datetime-local" name="data_hora" value="{{ old('data_hora', now()->format('Y-m-d\TH:i')) }}" class="{{ $inputClass }}" required>
-                            @error('data_hora') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                        </label>
+                        <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
                         <div>
                             <x-material.select name="situacao" label="Situação" :options="['entregue' => 'Entregue', 'pendente' => 'Pendente', 'cancelada' => 'Cancelada']" :selected="old('situacao', 'entregue')" required />
                             @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 
-                        <label class="block md:col-span-2">
-                            <span class="{{ $labelClass }}">Observação</span>
-                            <textarea name="observacao" class="{{ $textareaClass }}">{{ old('observacao') }}</textarea>
-                            @error('observacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                        </label>
+                        <x-material.floating-textarea name="observacao" label="Observação" :value="old('observacao')" wrapper-class="md:col-span-2" />
                     </x-donations.partials.form-shell>
 
                     <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]" data-distribution-items data-materials='@json($materialBalances)'>
@@ -190,10 +168,7 @@
                                         </div>
                                     </div>
 
-                                    <label class="block">
-                                        <span class="{{ $labelClass }}">Quantidade</span>
-                                        <input type="number" min="1" name="items[{{ $index }}][quantidade]" value="{{ $row['quantidade'] ?? null }}" class="{{ $inputClass }}" data-distribution-quantity>
-                                    </label>
+                                    <x-material.floating-input type="number" name="items[{{ $index }}][quantidade]" label="Quantidade" :value="$row['quantidade'] ?? null" min="1" data-distribution-quantity />
 
                                     <button type="button" data-remove-distribution-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                                         <x-gmdi-delete-o class="h-4 w-4" />
@@ -217,23 +192,11 @@
                             @error('operacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 
-                        <label class="block">
-                            <span class="{{ $labelClass }}">Quantidade</span>
-                            <input type="number" min="1" name="quantidade" value="{{ old('quantidade') }}" class="{{ $inputClass }}" required>
-                            @error('quantidade') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                        </label>
+                        <x-material.floating-input type="number" name="quantidade" label="Quantidade" :value="old('quantidade')" min="1" required />
 
-                        <label class="block">
-                            <span class="{{ $labelClass }}">Data e hora</span>
-                            <input type="datetime-local" name="data_hora" value="{{ old('data_hora', now()->format('Y-m-d\TH:i')) }}" class="{{ $inputClass }}" required>
-                            @error('data_hora') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                        </label>
+                        <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
-                        <label class="block md:col-span-2">
-                            <span class="{{ $labelClass }}">Observação</span>
-                            <textarea name="observacao" class="{{ $textareaClass }}" required>{{ old('observacao') }}</textarea>
-                            @error('observacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                        </label>
+                        <x-material.floating-textarea name="observacao" label="Observação" :value="old('observacao')" wrapper-class="md:col-span-2" required />
                     </x-donations.partials.form-shell>
                 @endif
 

@@ -41,11 +41,9 @@
 
         <div class="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.85fr)]">
             <x-chart.column-chart
-                title="Atendimentos mensais"
-                description="Comparativo entre realizados e meta operacional."
+                title="Atendimentos realizados por mês"
+                description="Quantidade de atendimentos realizados nos últimos seis meses."
                 :data="$monthlyAttendances"
-                subtitle-one="Realizado"
-                subtitle-two="Meta"
             />
 
             <x-chart.stock-distribution

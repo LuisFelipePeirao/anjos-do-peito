@@ -23,6 +23,48 @@ it('requires authentication for beneficiary management', function () {
     $this->get(route('beneficiaries.index'))->assertRedirect(route('login'));
 });
 
+it('does not show an edit action in beneficiary table', function () {
+    $user = User::factory()->create();
+    $beneficiaria = Beneficiaria::create([...beneficiaryPayload(), 'cpf' => '12345678909', 'situacao' => 'ativo']);
+
+    $this->actingAs($user)->get(route('beneficiaries.index'))
+        ->assertOk()
+        ->assertSee(route('beneficiaries.show', $beneficiaria), false)
+        ->assertDontSee(route('beneficiaries.edit', $beneficiaria), false);
+});
+
+it('shows a floating label for the full-name field when creating a beneficiary', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->get(route('beneficiaries.create'))
+        ->assertOk()
+        ->assertSee('name="nome"', false)
+        ->assertSee('id="cpf"', false)
+        ->assertSee('<span aria-hidden="true" data-required-indicator="nome" class="ml-0.5 text-[#c2414b]">*</span>', false)
+        ->assertSee('peer h-11 w-full rounded-[8px] border bg-white px-3 text-sm', false)
+        ->assertSee('class="pointer-events-none absolute left-3 top-0 flex h-11 items-center', false)
+        ->assertSee('peer-focus:-top-2.5', false)
+        ->assertSee('peer-not-placeholder-shown:-top-2.5', false);
+});
+
+it('uses floating controls for beneficiary editing and child management', function () {
+    $user = User::factory()->create();
+    $beneficiaria = Beneficiaria::create([...beneficiaryPayload(), 'cpf' => '12345678909', 'situacao' => 'ativo']);
+
+    $this->actingAs($user)->get(route('beneficiaries.edit', $beneficiaria))
+        ->assertOk()
+        ->assertSee('id="nome"', false)
+        ->assertSee('data-mask="cpf"', false);
+
+    $this->actingAs($user)->get(route('beneficiaries.show', $beneficiaria))
+        ->assertOk()
+        ->assertSee('name="nome"', false)
+        ->assertSee('name="data_nascimento"', false)
+        ->assertSee('name="sexo"', false)
+        ->assertSee('peer-focus:-top-2.5', false)
+        ->assertSee('data-select-required-asterisk', false);
+});
+
 it('creates an active beneficiary with an address', function () {
     $user = User::factory()->create();
 

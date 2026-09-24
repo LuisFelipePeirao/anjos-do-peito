@@ -4,6 +4,7 @@
     'name' => null,
     'value' => null,
     'wrapperClass' => '',
+    'passwordToggle' => false,
 ])
 
 <div @class(['mb-8', $wrapperClass])>
@@ -57,6 +58,20 @@
             <span slot="leading-icon" class="flex h-6 w-6 items-center justify-center text-2xl">
                 {{ $icon }}
             </span>
+        @endif
+
+        @if ($passwordToggle)
+            <button
+                type="button"
+                slot="trailing-icon"
+                data-password-toggle="{{ $name }}"
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-[4px] text-[#8590ad] transition hover:text-[#ef5b97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ef5b97]/30"
+                aria-label="Mostrar senha"
+                aria-pressed="false"
+            >
+                <x-lucide-eye class="h-5 w-5" data-password-visible-icon />
+                <x-lucide-eye-off class="hidden h-5 w-5" data-password-hidden-icon />
+            </button>
         @endif
     </md-filled-text-field>
 </div>

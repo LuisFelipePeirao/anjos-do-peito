@@ -4,6 +4,11 @@ namespace App\Http\Requests\Users;
 
 class UpdateUserRequest extends StoreUserRequest
 {
+    public function messages(): array
+    {
+        return parent::messages();
+    }
+
     protected function passwordRule(): string
     {
         return 'nullable';

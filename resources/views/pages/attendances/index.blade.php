@@ -17,7 +17,7 @@
                 'icon' => 'add',
             ]"
             :secondButton="[
-                'label' => 'Novo local',
+                'label' => 'Novo local de atendimento',
                 'link' => '#',
                 'icon' => 'add',
                 'dialog' => 'attendance-location-create-dialog',

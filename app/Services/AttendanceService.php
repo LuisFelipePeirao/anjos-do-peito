@@ -5,8 +5,12 @@ namespace App\Services;
 use App\Http\Requests\Attendances\StoreAttendanceRequest;
 use App\Models\Atendimento;
 use App\Models\Beneficiaria;
+use App\Models\CategoriaAtendimento;
+use App\Models\Cep;
 use App\Models\Crianca;
+use App\Models\Endereco;
 use App\Models\LocalAtendimento;
+use App\Models\Procedimento;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -55,6 +59,7 @@ class AttendanceService
             'search' => $search,
             'status' => $status,
             'modality' => $modality,
+            'allLocations' => LocalAtendimento::with('endereco.cep')->orderBy('nome')->get(),
         ];
     }
 
@@ -63,7 +68,7 @@ class AttendanceService
         return [
             'mode' => 'create',
             'attendanceData' => $this->emptyAttendanceData(),
-            ...$this->formOptions(),
+            ...$this->formOptions($this->emptyAttendanceData()),
         ];
     }
 
@@ -81,7 +86,7 @@ class AttendanceService
 
     public function showData(Atendimento $attendance, string $tab): array
     {
-        $attendance->load(['beneficiaria.criancas', 'crianca', 'usuario', 'local', 'detalhe']);
+        $attendance->load(['beneficiaria.criancas', 'crianca', 'usuario', 'local', 'detalhe', 'categoriaAtendimento', 'procedimento']);
         $tabs = ['overview', 'evolution', 'history'];
 
         return [
@@ -100,13 +105,13 @@ class AttendanceService
         abort_unless($this->canEdit($attendance), 403);
         abort_if($attendance->situacao === 'em_atendimento', 409);
 
-        $attendance->load(['detalhe', 'local', 'crianca']);
+        $attendance->load(['detalhe', 'local', 'crianca', 'categoriaAtendimento', 'procedimento']);
 
         return [
             'mode' => 'edit',
             'attendance' => $attendance,
             'attendanceData' => $this->attendanceData($attendance),
-            ...$this->formOptions(),
+            ...$this->formOptions($this->attendanceData($attendance)),
         ];
     }
 
@@ -134,11 +139,13 @@ class AttendanceService
     {
         abort_unless($attendance->situacao === 'em_atendimento', 409);
 
-        $attendance->load(['beneficiaria', 'crianca', 'usuario', 'local', 'detalhe']);
+        $attendance->load(['beneficiaria', 'crianca', 'usuario', 'local', 'detalhe', 'categoriaAtendimento', 'procedimento']);
 
         return [
             'attendance' => $attendance,
             'attendanceData' => $this->attendanceData($attendance),
+            'attendanceCategories' => $this->activeOptionsWithCurrent(CategoriaAtendimento::class, $attendance->id_categoria_atendimento),
+            'procedures' => $this->activeOptionsWithCurrent(Procedimento::class, $attendance->id_procedimento),
         ];
     }
 
@@ -150,6 +157,8 @@ class AttendanceService
             $attendance->update([
                 'situacao' => $data['save_as'] === 'final' ? 'realizado' : 'em_atendimento',
                 'rascunho' => $data['save_as'] === 'draft',
+                'id_categoria_atendimento' => $data['attendance_category'] ?? $attendance->id_categoria_atendimento,
+                'id_procedimento' => $data['procedure'] ?? $attendance->id_procedimento,
             ]);
             $attendance->detalhe()->updateOrCreate(['id_atendimento' => $attendance->id], $this->detailAttributes($data));
         });
@@ -170,9 +179,62 @@ class AttendanceService
         $attendance->delete();
     }
 
-    public function storeLocation(array $data): void
+    public function storeLocation(array $data): LocalAtendimento
     {
-        LocalAtendimento::create($data);
+        return DB::transaction(function () use ($data) {
+            return LocalAtendimento::create([
+                'nome' => $data['nome'],
+                'descricao' => $data['descricao'] ?? null,
+                'id_endereco' => $this->persistAddress($data),
+                'ativo' => true,
+            ]);
+        });
+    }
+
+    public function updateLocation(LocalAtendimento $location, array $data): void
+    {
+        DB::transaction(function () use ($location, $data) {
+            $location->update([
+                'nome' => $data['nome'],
+                'descricao' => $data['descricao'] ?? null,
+                'id_endereco' => $this->persistAddress($data, $location->endereco),
+            ]);
+        });
+    }
+
+    public function toggleLocation(LocalAtendimento $location): void
+    {
+        $location->update(['ativo' => ! $location->ativo]);
+    }
+
+    public function storeProcedure(array $data): Procedimento
+    {
+        return Procedimento::create([...$data, 'ativo' => true]);
+    }
+
+    public function updateProcedure(Procedimento $procedure, array $data): void
+    {
+        $procedure->update($data);
+    }
+
+    public function toggleProcedure(Procedimento $procedure): void
+    {
+        $procedure->update(['ativo' => ! $procedure->ativo]);
+    }
+
+    public function storeCategory(array $data): CategoriaAtendimento
+    {
+        return CategoriaAtendimento::create([...$data, 'ativo' => true]);
+    }
+
+    public function updateCategory(CategoriaAtendimento $category, array $data): void
+    {
+        $category->update($data);
+    }
+
+    public function toggleCategory(CategoriaAtendimento $category): void
+    {
+        $category->update(['ativo' => ! $category->ativo]);
     }
 
     private function attendanceAttributes(array $data): array
@@ -186,6 +248,8 @@ class AttendanceService
             'rascunho' => $data['save_as'] === 'draft',
             'id_beneficiaria' => $data['beneficiary'],
             'id_crianca' => $data['child'] ?? null,
+            'id_categoria_atendimento' => $data['attendance_category'] ?? null,
+            'id_procedimento' => $data['procedure'] ?? null,
             'id_usuario' => $data['professional'] ?? null,
         ];
     }
@@ -216,12 +280,17 @@ class AttendanceService
         return ! ($atendimento->situacao === 'realizado' && ! $atendimento->rascunho);
     }
 
-    private function formOptions(): array
+    private function formOptions(array $attendanceData): array
     {
         return [
             'beneficiaries' => $this->selectOptions(Beneficiaria::where('situacao', 'ativo')->orderBy('nome')->pluck('nome', 'id')->all()),
             'professionals' => $this->selectOptions(User::whereIn('perfil', ['administrador', 'enfermeira'])->orderBy('nome')->pluck('nome', 'id')->all()),
-            'locations' => $this->selectOptions(LocalAtendimento::orderBy('nome')->pluck('nome', 'id')->all()),
+            'locations' => $this->selectOptions(LocalAtendimento::where('ativo', true)->orderBy('nome')->pluck('nome', 'id')->all()),
+            'attendanceCategories' => $this->activeOptionsWithCurrent(CategoriaAtendimento::class, $attendanceData['attendance_category'] ? (int) $attendanceData['attendance_category'] : null),
+            'procedures' => $this->activeOptionsWithCurrent(Procedimento::class, $attendanceData['procedure'] ? (int) $attendanceData['procedure'] : null),
+            'allAttendanceCategories' => CategoriaAtendimento::orderBy('nome')->get(),
+            'allProcedures' => Procedimento::orderBy('nome')->get(),
+            'allLocations' => LocalAtendimento::with('endereco.cep')->orderBy('nome')->get(),
             'statuses' => $this->formStatuses(),
             'modalities' => StoreAttendanceRequest::modalities(),
             'durations' => StoreAttendanceRequest::durations(),
@@ -241,6 +310,8 @@ class AttendanceService
             'status' => 'agendado',
             'modality' => 'presencial',
             'location' => '',
+            'attendance_category' => '',
+            'procedure' => '',
             'summary' => '',
             'objective' => '',
             'complaint' => '',
@@ -276,6 +347,10 @@ class AttendanceService
             'modality_label' => $this->modalityLabel($atendimento->modalidade),
             'location' => $atendimento->id_local,
             'location_name' => $atendimento->local?->nome ?? 'Sem local informado',
+            'attendance_category' => $atendimento->id_categoria_atendimento,
+            'attendance_category_name' => $atendimento->categoriaAtendimento?->nome ?? '-',
+            'procedure' => $atendimento->id_procedimento,
+            'procedure_name' => $atendimento->procedimento?->nome ?? '-',
             'cpf' => $this->formatCpf($atendimento->beneficiaria?->cpf ?? ''),
             'phone' => $atendimento->beneficiaria?->telefone ?? '',
             'summary' => $detalhe?->resumo ?? '',
@@ -368,5 +443,54 @@ class AttendanceService
     private function selectOptions(array $options): array
     {
         return collect($options)->map(fn (string $label, int|string $value) => ['value' => $value, 'label' => $label])->values()->all();
+    }
+
+    private function persistAddress(array $data, ?Endereco $address = null): ?int
+    {
+        $addressFields = ['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'numero', 'complemento'];
+        $hasAddress = collect($addressFields)->contains(fn (string $field) => filled($data[$field] ?? null));
+
+        if (! $hasAddress) {
+            return null;
+        }
+
+        $cep = $address?->cep ?? new Cep();
+        $cep->fill([
+            'cep' => (int) $data['cep'],
+            'cidade' => $data['cidade'],
+            'uf' => $data['uf'],
+            'bairro' => $data['bairro'] ?? null,
+            'logradouro' => $data['logradouro'] ?? null,
+        ])->save();
+
+        $address ??= new Endereco();
+        $address->fill([
+            'id_cep' => $cep->id,
+            'numero' => $data['numero'] ?? null,
+            'complemento' => $data['complemento'] ?? null,
+        ])->save();
+
+        return $address->id;
+    }
+
+    private function activeOptionsWithCurrent(string $modelClass, ?int $currentId): array
+    {
+        $items = $modelClass::query()
+            ->where('ativo', true)
+            ->orderBy('nome')
+            ->get(['id', 'nome', 'ativo']);
+
+        if ($currentId && ! $items->contains('id', $currentId)) {
+            $current = $modelClass::find($currentId);
+
+            if ($current) {
+                $items->push($current);
+            }
+        }
+
+        return $items->map(fn ($item) => [
+            'value' => $item->id,
+            'label' => $item->nome.($item->ativo ? '' : ' (inativo)'),
+        ])->values()->all();
     }
 }

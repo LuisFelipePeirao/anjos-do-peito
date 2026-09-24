@@ -43,7 +43,6 @@ class BeneficiaryService
                     'view' => route('beneficiaries.show', $beneficiaria),
                     'items' => [
                         ['icon' => 'visibility-o', 'route' => route('beneficiaries.show', $beneficiaria), 'title' => 'Visualizar beneficiária'],
-                        ['icon' => 'edit-o', 'route' => route('beneficiaries.edit', $beneficiaria), 'title' => 'Editar beneficiária'],
                         ['icon' => 'delete-o', 'route' => route('beneficiaries.deactivate', $beneficiaria), 'title' => 'Inativar beneficiária'],
                     ],
                 ],

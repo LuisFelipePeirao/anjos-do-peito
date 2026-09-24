@@ -29,4 +29,14 @@ class UserFilterRequest extends FormRequest
             'profile' => $this->string('profile', 'all')->toString(),
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'q.string' => 'A busca deve ser um texto válido.',
+            'q.max' => 'A busca não pode ter mais de :max caracteres.',
+            'status.in' => 'Selecione uma situação válida.',
+            'profile.in' => 'Selecione um perfil válido.',
+        ];
+    }
 }

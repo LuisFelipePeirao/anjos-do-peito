@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Attendances;
 
+use App\Http\Requests\Beneficiaries\StoreBeneficiaryRequest;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,11 +15,46 @@ class StoreLocationRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'cep' => preg_replace('/\D/', '', (string) $this->input('cep')) ?: null,
+        ]);
+    }
+
     public function rules(): array
     {
+        $addressStarted = collect(['cep', 'logradouro', 'bairro', 'cidade', 'uf', 'numero', 'complemento'])
+            ->contains(fn (string $field) => filled($this->input($field)));
+
         return [
-            'nome' => ['required', 'string', 'max:255', Rule::unique('locais_atendimento', 'nome')],
+            'nome' => ['required', 'string', 'max:255', Rule::unique('locais_atendimento', 'nome')->ignore($this->route('location'))],
             'descricao' => ['nullable', 'string'],
+            'cep' => [Rule::requiredIf($addressStarted), 'nullable', 'string', 'regex:/^\d{8}$/'],
+            'logradouro' => ['nullable', 'string', 'max:255'],
+            'bairro' => ['nullable', 'string', 'max:255'],
+            'cidade' => [Rule::requiredIf($addressStarted), 'nullable', 'string', 'max:255'],
+            'uf' => [Rule::requiredIf($addressStarted), 'nullable', Rule::in(array_keys(StoreBeneficiaryRequest::states()))],
+            'numero' => ['nullable', 'string', 'max:255'],
+            'complemento' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nome.required' => 'O nome do local é obrigatório.',
+            'nome.string' => 'O nome do local deve ser um texto válido.',
+            'nome.max' => 'O nome do local não pode ter mais de :max caracteres.',
+            'nome.unique' => 'Já existe um local com este nome.',
+            'descricao.string' => 'A descrição deve ser um texto válido.',
+            'cep.required' => 'Informe o CEP para completar o endereço.',
+            'cep.regex' => 'O CEP deve conter 8 dígitos.',
+            'string' => 'Informe um texto válido.',
+            'max' => 'Este campo não pode ter mais de :max caracteres.',
+            'cidade.required' => 'Informe a cidade para completar o endereço.',
+            'uf.required' => 'Informe a UF para completar o endereço.',
+            'uf.in' => 'Selecione uma UF válida.',
         ];
     }
 }

@@ -21,35 +21,9 @@
     </div>
 
     <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
-        <label class="block xl:col-span-2">
-            <span class="{{ $labelClass }}">Nome completo</span>
-            <input
-                type="text"
-                name="nome"
-                value="{{ old('nome', $user?->nome) }}"
-                class="{{ $inputClass }}"
-                placeholder="Ex.: Maria da Silva"
-                required
-            >
-            @error('nome')
-                <span class="mt-2 block text-sm font-medium text-red-600">{{ $message }}</span>
-            @enderror
-        </label>
+        <x-material.floating-input name="nome" label="Nome completo" :value="old('nome', $user?->nome)" placeholder="Ex.: Maria da Silva" wrapper-class="xl:col-span-2" required />
 
-        <label class="block">
-            <span class="{{ $labelClass }}">E-mail</span>
-            <input
-                type="email"
-                name="email"
-                value="{{ old('email', $user?->email) }}"
-                class="{{ $inputClass }}"
-                placeholder="nome@email.com"
-                required
-            >
-            @error('email')
-                <span class="mt-2 block text-sm font-medium text-red-600">{{ $message }}</span>
-            @enderror
-        </label>
+        <x-material.floating-input type="email" name="email" label="E-mail" :value="old('email', $user?->email)" placeholder="nome@email.com" required />
     </div>
 </article>
 
@@ -99,29 +73,53 @@
     </div>
 
     <div class="grid gap-5 p-5 md:grid-cols-2">
-        <label class="block">
+        <label class="relative block">
             <span class="{{ $labelClass }}">Senha</span>
-            <input
-                type="password"
-                name="senha"
-                class="{{ $inputClass }}"
-                placeholder="Digite a senha"
-                @if (! $user) required @endif
-            >
+            <div class="relative mt-2" data-password-input-wrapper>
+                <input
+                    type="password"
+                    name="senha"
+                    class="{{ $inputClass }} !mt-0 pr-11"
+                    placeholder="Digite a senha"
+                    @if (! $user) required @endif
+                >
+                <button
+                    type="button"
+                    data-password-toggle="senha"
+                    class="absolute inset-y-0 right-2 inline-flex w-8 cursor-pointer items-center justify-center rounded-[4px] text-[#667085] transition hover:text-[#ef5b97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ef5b97]/30"
+                    aria-label="Mostrar senha"
+                    aria-pressed="false"
+                >
+                    <x-lucide-eye class="h-4 w-4" data-password-visible-icon />
+                    <x-lucide-eye-off class="hidden h-4 w-4" data-password-hidden-icon />
+                </button>
+            </div>
             @error('senha')
                 <span class="mt-2 block text-sm font-medium text-red-600">{{ $message }}</span>
             @enderror
         </label>
 
-        <label class="block">
+        <label class="relative block">
             <span class="{{ $labelClass }}">Confirmar senha</span>
-            <input
-                type="password"
-                name="senha_confirmation"
-                class="{{ $inputClass }}"
-                placeholder="Repita a senha"
-                @if (! $user) required @endif
-            >
+            <div class="relative mt-2" data-password-input-wrapper>
+                <input
+                    type="password"
+                    name="senha_confirmation"
+                    class="{{ $inputClass }} !mt-0 pr-11"
+                    placeholder="Repita a senha"
+                    @if (! $user) required @endif
+                >
+                <button
+                    type="button"
+                    data-password-toggle="senha_confirmation"
+                    class="absolute inset-y-0 right-2 inline-flex w-8 cursor-pointer items-center justify-center rounded-[4px] text-[#667085] transition hover:text-[#ef5b97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ef5b97]/30"
+                    aria-label="Mostrar senha"
+                    aria-pressed="false"
+                >
+                    <x-lucide-eye class="h-4 w-4" data-password-visible-icon />
+                    <x-lucide-eye-off class="hidden h-4 w-4" data-password-hidden-icon />
+                </button>
+            </div>
         </label>
     </div>
 </article>

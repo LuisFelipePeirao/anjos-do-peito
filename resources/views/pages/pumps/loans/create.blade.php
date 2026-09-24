@@ -108,23 +108,10 @@
                     </div>
                 </div>
 
-                <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Data de retirada</span>
-                        <input type="date" name="withdrawn_at" value="{{ old('withdrawn_at', now()->toDateString()) }}" class="{{ $inputClass }}" required>
-                        @error('withdrawn_at') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
+                <div class="grid gap-5 p-5 md:grid-cols-2">
+                    <x-material.floating-input type="date" name="withdrawn_at" label="Data de retirada" :value="old('withdrawn_at', now()->toDateString())" required />
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Devolução prevista</span>
-                        <input type="date" name="expected_return" value="{{ old('expected_return', now()->addDays(30)->toDateString()) }}" class="{{ $inputClass }}" required>
-                        @error('expected_return') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
-
-                    <div>
-                        <x-material.select name="renewal" label="Renovação" :options="$renewals" :selected="old('renewal', 'none')" />
-                        @error('renewal') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </div>
+                    <x-material.floating-input type="date" name="expected_return" label="Devolução prevista" :value="old('expected_return', now()->addDays(30)->toDateString())" required />
                 </div>
             </article>
 
@@ -142,35 +129,21 @@
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Mensalidade</span>
-                        <input type="text" name="monthly_fee" value="{{ old('monthly_fee') }}" class="{{ $inputClass }}" placeholder="Ex.: R$ 100,00" inputmode="decimal" data-pump-billing-field disabled>
-                        @error('monthly_fee') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
+                    <x-material.floating-input name="monthly_fee" label="Mensalidade" :value="old('monthly_fee')" placeholder="Ex.: R$ 100,00" inputmode="decimal" data-pump-billing-field disabled />
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Dia de vencimento</span>
-                        <input type="number" name="due_day" value="{{ old('due_day') }}" class="{{ $inputClass }}" placeholder="Ex.: 10" min="1" max="31" data-pump-billing-field disabled>
-                        @error('due_day') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
+                    <x-material.floating-input type="number" name="due_day" label="Dia de vencimento" :value="old('due_day')" placeholder="Ex.: 10" min="1" max="31" data-pump-billing-field disabled />
 
                     <div>
                         <x-material.select name="billing_method" label="Forma de cobrança" :options="$billingMethods" :selected="old('billing_method')" placeholder="Selecione" data-pump-billing-field disabled />
                         @error('billing_method') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </div>
 
-                    <label class="block">
-                        <span class="{{ $labelClass }}">Primeira cobrança</span>
-                        <input type="date" name="first_billing_at" value="{{ old('first_billing_at') }}" class="{{ $inputClass }}" data-pump-billing-field disabled>
-                        @error('first_billing_at') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
+                    <x-material.floating-input type="date" name="first_billing_at" label="Primeira cobrança" :value="old('first_billing_at')" data-pump-billing-field disabled />
 
-                    <label class="block md:col-span-2 xl:col-span-4">
-                        <span class="{{ $labelClass }}">Observações financeiras</span>
-                        <textarea name="billing_notes" class="{{ $textareaClass }}" placeholder="Registre combinações de pagamento, isenção parcial, atraso negociado ou orientação administrativa." data-pump-billing-field disabled>{{ old('billing_notes') }}</textarea>
+                    <div class="md:col-span-2 xl:col-span-4">
+                        <x-material.floating-textarea name="billing_notes" label="Observações financeiras" :value="old('billing_notes')" placeholder="Registre combinações de pagamento, isenção parcial, atraso negociado ou orientação administrativa." data-pump-billing-field disabled />
                         <span class="{{ $hintClass }}">Para remover o custo, selecione a opção "Empréstimo" no início do formulário.</span>
-                        @error('billing_notes') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
+                    </div>
                 </div>
             </article>
 
@@ -193,11 +166,7 @@
                         @error('term_signed') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                     </div>
 
-                    <label class="block md:col-span-2">
-                        <span class="{{ $labelClass }}">Observações do contrato</span>
-                        <textarea name="notes" class="{{ $textareaClass }}" placeholder="Registre cuidados combinados, restrições, contatos alternativos ou orientações para acompanhamento.">{{ old('notes') }}</textarea>
-                        @error('notes') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
-                    </label>
+                    <x-material.floating-textarea name="notes" label="Observações do contrato" :value="old('notes')" placeholder="Registre cuidados combinados, restrições, contatos alternativos ou orientações para acompanhamento." wrapper-class="md:col-span-2" />
                 </div>
             </article>
 

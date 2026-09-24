@@ -1,5 +1,85 @@
 const shell = document.getElementById('app-shell');
 
+const passwordToggleTarget = (button) => {
+    const field = button.closest('md-filled-text-field');
+
+    if (field) {
+        return field;
+    }
+
+    return button.closest('label')?.querySelector('input[type="password"], input[type="text"]');
+};
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-password-toggle]');
+
+    if (!button) {
+        return;
+    }
+
+    const field = passwordToggleTarget(button);
+
+    if (!field) {
+        return;
+    }
+
+    const isVisible = field.type === 'text';
+    field.type = isVisible ? 'password' : 'text';
+    button.setAttribute('aria-label', isVisible ? 'Mostrar senha' : 'Ocultar senha');
+    button.setAttribute('aria-pressed', String(!isVisible));
+    button.querySelector('[data-password-visible-icon]')?.classList.toggle('hidden', !isVisible);
+    button.querySelector('[data-password-hidden-icon]')?.classList.toggle('hidden', isVisible);
+});
+
+const syncSelectRequiredAsterisk = (select) => {
+    const wrapper = select.closest('[data-select-required]');
+    const asterisk = wrapper?.querySelector('[data-select-required-asterisk]');
+    const field = select.shadowRoot?.querySelector('[part="field"]');
+    const label = field?.shadowRoot?.querySelector('.label:not(.hidden)');
+
+    if (!wrapper || !asterisk || !label) {
+        return;
+    }
+
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const labelRect = label.getBoundingClientRect();
+    const labelStyle = window.getComputedStyle(label);
+
+    asterisk.style.left = `${labelRect.right - wrapperRect.left + 4}px`;
+    asterisk.style.top = `${labelRect.top - wrapperRect.top}px`;
+    asterisk.style.fontSize = labelStyle.fontSize;
+    asterisk.style.lineHeight = labelStyle.lineHeight;
+    asterisk.style.fontWeight = labelStyle.fontWeight;
+    asterisk.style.visibility = 'visible';
+};
+
+const scheduleSelectRequiredAsterisk = (select) => {
+    requestAnimationFrame(() => {
+        syncSelectRequiredAsterisk(select);
+        window.setTimeout(() => syncSelectRequiredAsterisk(select), 170);
+    });
+};
+
+const selectWithRequiredAsterisk = (target) => target instanceof Element
+    ? target.closest('md-outlined-select')?.closest('[data-select-required]')?.querySelector('md-outlined-select')
+    : null;
+
+document.querySelectorAll('[data-select-required] md-outlined-select').forEach(scheduleSelectRequiredAsterisk);
+
+['focusin', 'focusout', 'input', 'change'].forEach((eventName) => {
+    document.addEventListener(eventName, (event) => {
+        const select = selectWithRequiredAsterisk(event.target);
+
+        if (select) {
+            scheduleSelectRequiredAsterisk(select);
+        }
+    }, true);
+});
+
+window.addEventListener('resize', () => {
+    document.querySelectorAll('[data-select-required] md-outlined-select').forEach(syncSelectRequiredAsterisk);
+});
+
 if (shell) {
     const collapseButton = document.querySelector('[data-sidebar-collapse]');
     const mobileToggle = document.querySelector('[data-sidebar-mobile-toggle]');
@@ -152,6 +232,95 @@ document.querySelectorAll('[data-dialog-auto-open]').forEach((dialog) => {
     }
 });
 
+const locationForm = document.querySelector('[data-location-form]');
+
+if (locationForm) {
+    const methodInput = locationForm.querySelector('[data-location-method]');
+    const submitLabel = locationForm.querySelector('[data-location-submit-label]');
+    const storeAction = locationForm.dataset.locationStoreAction;
+
+    const locationFields = ['nome', 'descricao', 'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'cidade', 'uf'];
+
+    const setLocationField = (name, value = '') => {
+        const field = locationForm.querySelector(`[name="${name}"]`);
+
+        if (field) {
+            field.value = value;
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    };
+
+    const resetLocationForm = () => {
+        locationForm.action = storeAction;
+        if (methodInput) {
+            methodInput.disabled = true;
+        }
+        locationFields.forEach((field) => setLocationField(field, ''));
+        if (submitLabel) {
+            submitLabel.textContent = 'Salvar local';
+        }
+    };
+
+    document.querySelectorAll('[data-location-edit]').forEach((button) => {
+        button.addEventListener('click', () => {
+            locationForm.action = button.dataset.locationUpdateAction;
+            if (methodInput) {
+                methodInput.disabled = false;
+            }
+            locationFields.forEach((field) => setLocationField(field, button.dataset[`location${field.charAt(0).toUpperCase()}${field.slice(1)}`] || ''));
+            if (submitLabel) {
+                submitLabel.textContent = 'Salvar alterações';
+            }
+            locationForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            locationForm.querySelector('[name="nome"]')?.focus();
+        });
+    });
+
+    locationForm.querySelector('[data-location-reset]')?.addEventListener('click', resetLocationForm);
+}
+
+document.querySelectorAll('[data-entity-form]').forEach((entityForm) => {
+    const methodInput = entityForm.querySelector('[data-entity-method]');
+    const submitLabel = entityForm.querySelector('[data-entity-submit-label]');
+    const storeAction = entityForm.dataset.entityStoreAction;
+    const fields = (entityForm.dataset.entityFields || '').split(',').filter(Boolean);
+
+    const setField = (name, value = '') => {
+        const field = entityForm.querySelector(`[name="${name}"]`);
+
+        if (field) {
+            field.value = value;
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    };
+
+    const resetForm = () => {
+        entityForm.action = storeAction;
+        methodInput?.setAttribute('disabled', '');
+        fields.forEach((field) => setField(field));
+        if (submitLabel) {
+            submitLabel.textContent = `Salvar ${entityForm.closest('dialog')?.dataset.entityLabel || 'item'}`;
+        }
+    };
+
+    entityForm.closest('dialog')?.querySelectorAll('[data-entity-edit]').forEach((button) => {
+        button.addEventListener('click', () => {
+            entityForm.action = button.dataset.entityUpdateAction;
+            methodInput?.removeAttribute('disabled');
+            fields.forEach((field) => setField(field, button.dataset[`entity${field.charAt(0).toUpperCase()}${field.slice(1)}`] || ''));
+            if (submitLabel) {
+                submitLabel.textContent = 'Salvar alterações';
+            }
+            entityForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            entityForm.querySelector('[name="nome"]')?.focus();
+        });
+    });
+
+    entityForm.querySelector('[data-entity-reset]')?.addEventListener('click', resetForm);
+});
+
 const digitsOnly = (value, length) => value.replace(/\D/g, '').slice(0, length);
 const formatCpf = (value) => digitsOnly(value, 11)
     .replace(/(\d{3})(\d)/, '$1.$2')
@@ -241,7 +410,6 @@ if (attendanceStatusSelect && attendanceClinicalFields) {
 if (attendanceForm) {
     const beneficiarySelect = attendanceForm.querySelector('[data-attendance-beneficiary]');
     const childSelect = attendanceForm.querySelector('[data-attendance-child]');
-    const childPlaceholder = 'Nenhuma criança vinculada';
 
     const selectedValue = (select) => select?.value
         || select?.querySelector('md-select-option[selected]')?.getAttribute('value')
@@ -250,20 +418,22 @@ if (attendanceForm) {
     const setChildOptions = (children, selectedChild = '') => {
         if (!childSelect) return;
 
-        childSelect.replaceChildren();
-        const placeholder = document.createElement('md-select-option');
-        placeholder.value = '';
-        placeholder.innerHTML = `<div slot="headline" class="text-sm font-normal leading-5 text-[#111827]">${childPlaceholder}</div>`;
-        if (!selectedChild) placeholder.setAttribute('selected', '');
-        childSelect.append(placeholder);
-
-        children.forEach((child) => {
+        const options = children.map((child) => {
             const option = document.createElement('md-select-option');
             option.value = child.value;
-            option.innerHTML = `<div slot="headline" class="text-sm font-normal leading-5 text-[#111827]">${child.label}</div>`;
             if (String(child.value) === String(selectedChild)) option.setAttribute('selected', '');
-            childSelect.append(option);
+
+            const headline = document.createElement('div');
+            headline.slot = 'headline';
+            headline.className = 'text-sm font-normal leading-5 text-[#111827]';
+            headline.style.fontFamily = 'Instrument Sans, ui-sans-serif, system-ui, sans-serif';
+            headline.textContent = child.label;
+            option.append(headline);
+
+            return option;
         });
+
+        childSelect.replaceChildren(...options);
     };
 
     const loadChildren = async (preserveSelection = false) => {

@@ -26,6 +26,30 @@ class StoreDonationRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'id_doador.required' => 'O doador é obrigatório.',
+            'id_doador.integer' => 'Selecione um doador válido.',
+            'id_doador.exists' => 'O doador selecionado não existe.',
+            'data_doacao.required' => 'A data da doação é obrigatória.',
+            'data_doacao.date' => 'Informe uma data de doação válida.',
+            'situacao.required' => 'A situação da doação é obrigatória.',
+            'situacao.in' => 'Selecione uma situação de doação válida.',
+            'observacao.string' => 'A observação deve ser um texto válido.',
+            'items.required' => 'Inclua ao menos um item na doação.',
+            'items.array' => 'Os itens da doação são inválidos.',
+            'items.min' => 'Inclua ao menos um item na doação.',
+            'items.*.id_material.required' => 'Selecione o material do item.',
+            'items.*.id_material.integer' => 'Selecione um material válido.',
+            'items.*.id_material.exists' => 'O material selecionado não existe.',
+            'items.*.quantidade.required' => 'Informe a quantidade do item.',
+            'items.*.quantidade.integer' => 'A quantidade deve ser um número inteiro.',
+            'items.*.quantidade.min' => 'A quantidade deve ser no mínimo :min.',
+            'items.*.observacao.string' => 'A observação do item deve ser um texto válido.',
+        ];
+    }
+
     protected function prepareForValidation(): void
     {
         $this->merge([

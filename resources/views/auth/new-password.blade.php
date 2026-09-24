@@ -11,13 +11,13 @@
 
         <h1 class="mb-8 text-[2rem] font-medium md:text-[2.5rem]">Nova Senha</h1>
 
-        <x-material.input label="Senha" name="senha" type="password">
+        <x-material.input label="Senha" name="senha" type="password" :password-toggle="true">
             <x-slot:icon>
                 <x-gmdi-lock-o />
             </x-slot:icon>
         </x-material.input>
 
-        <x-material.input label="Confirmar senha" name="senha_confirmation" type="password">
+        <x-material.input label="Confirmar senha" name="senha_confirmation" type="password" :password-toggle="true">
             <x-slot:icon>
                 <x-gmdi-lock-o />
             </x-slot:icon>
@@ -35,6 +35,6 @@
             class="mb-8 block text-right text-base font-medium text-[#8590AD] transition duration-500 hover:text-[#ef5b97]">Acessar
             o sistema</a>
 
-        <x-login.login-button value="Redefinir Senha" />
+        <x-login.login-button value="Redefinir senha" />
     </form>
 @endsection

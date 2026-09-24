@@ -24,6 +24,24 @@ class SaveAttendanceContinuationRequest extends FormRequest
             'evaluation' => ['nullable', 'string'],
             'conduct' => ['nullable', 'string'],
             'notes' => ['nullable', 'string'],
+            'attendance_category' => ['nullable', 'integer', Rule::exists('categorias_atendimento', 'id')->where(fn ($query) => $query->where('ativo', true))],
+            'procedure' => ['nullable', 'integer', Rule::exists('procedimentos', 'id')->where(fn ($query) => $query->where('ativo', true))],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'save_as.required' => 'Informe como deseja salvar o atendimento.',
+            'save_as.in' => 'Selecione uma opção de salvamento válida.',
+            'confirmed_finalization.boolean' => 'A confirmação de finalização é inválida.',
+            'summary.string' => 'O resumo deve ser um texto válido.',
+            'summary.max' => 'O resumo não pode ter mais de :max caracteres.',
+            'string' => 'Informe um texto válido.',
+            'attendance_category.integer' => 'Selecione uma categoria de atendimento válida.',
+            'attendance_category.exists' => 'A categoria de atendimento selecionada não está disponível.',
+            'procedure.integer' => 'Selecione um procedimento válido.',
+            'procedure.exists' => 'O procedimento selecionado não está disponível.',
         ];
     }
 
@@ -40,7 +58,7 @@ class SaveAttendanceContinuationRequest extends FormRequest
                 ]);
             }
 
-            $requiredFields = ['summary', 'objective', 'complaint', 'evaluation', 'conduct'];
+            $requiredFields = ['summary', 'objective', 'complaint', 'evaluation', 'conduct', 'attendance_category', 'procedure'];
             $errors = [];
 
             foreach ($requiredFields as $field) {

@@ -12,7 +12,7 @@
             title="Bombas de leite"
             description="Acompanhe disponibilidade, empréstimos, devoluções e manutenção dos equipamentos da ONG."
             :firstButton="[
-                'label' => 'Nova bomba',
+                'label' => 'Nova bomba de leite',
                 'link' => route('pumps.create'),
                 'icon' => 'add',
             ]"
