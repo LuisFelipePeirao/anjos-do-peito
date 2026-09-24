@@ -15,14 +15,14 @@
 
 <div
     @class(['relative block', $wrapperClass])
-    @if ($showRequiredMarker) data-select-required @endif
+    @if ($requiredIndicator && ! $required) data-select-required @endif
 >
 
     <md-outlined-select
         name="{{ $name }}"
         label="{{ $label }}"
         aria-label="{{ $attributes->get('aria-label', $label) }}"
-        @if ($required) required no-asterisk @endif
+        @if ($required) required @endif
         {{ $attributes->class(['w-full'])->except(['aria-label', 'required', 'style']) }}
         style="
             height: 44px;
@@ -84,7 +84,7 @@
         @endforeach
     </md-outlined-select>
 
-    @if ($showRequiredMarker)
+    @if ($requiredIndicator && ! $required)
         <span
             aria-hidden="true"
             data-select-required-asterisk
