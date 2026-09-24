@@ -212,6 +212,10 @@ class PumpService
             'loanHistory' => $this->loanHistory($pump),
             'payments' => $this->payments($pump),
             'maintenanceHistory' => $this->maintenanceHistory($pump),
+            'maintenanceAction' => [
+                'enabled' => $pump->situacao === 'disponivel',
+                'reason' => $this->maintenanceUnavailableReason($pump->situacao),
+            ],
             'history' => $this->history($pump),
         ];
     }
@@ -376,11 +380,14 @@ class PumpService
         return $pump->manutencoes
             ->sortByDesc('data_inicio')
             ->map(fn (ManutencaoBomba $maintenance) => [
+                'id' => $maintenance->id,
                 'date' => $maintenance->data_inicio?->format('d/m/Y') ?? '-',
+                'started_at_input' => $maintenance->data_inicio?->format('Y-m-d\TH:i'),
                 'type' => $this->maintenanceTypeLabel($maintenance->tipo),
                 'description' => $maintenance->descricao,
                 'responsible' => $maintenance->usuario?->nome ?? '-',
                 'status' => $this->maintenanceStatusLabel($maintenance->situacao),
+                'is_open' => in_array($maintenance->situacao, ['aberta', 'em_andamento'], true),
             ])
             ->values()
             ->all();
@@ -496,6 +503,16 @@ class PumpService
     private function maintenanceStatusLabel(string $status): string
     {
         return ['aberta' => 'Agendado', 'em_andamento' => 'Em andamento', 'concluida' => 'Realizado', 'cancelada' => 'Cancelado'][$status] ?? $status;
+    }
+
+    private function maintenanceUnavailableReason(string $status): string
+    {
+        return match ($status) {
+            'alugada' => 'Esta bomba está emprestada ou alugada.',
+            'manutencao' => 'Esta bomba já está em manutenção.',
+            'baixada' => 'Esta bomba está inativa.',
+            default => 'Esta bomba não está disponível para manutenção.',
+        };
     }
 
     private function money(mixed $value): string

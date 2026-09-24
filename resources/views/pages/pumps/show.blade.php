@@ -40,10 +40,19 @@
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
-                <a href="#" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
-                    <x-lucide-wrench class="h-4 w-4" />
-                    Registrar manutenção
-                </a>
+                @if ($maintenanceAction['enabled'])
+                    <button type="button" data-dialog-open="pump-maintenance-modal" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
+                        <x-lucide-wrench class="h-4 w-4" />
+                        Registrar manutenção
+                    </button>
+                @else
+                    <span title="{{ $maintenanceAction['reason'] }}">
+                        <button type="button" disabled aria-disabled="true" class="inline-flex h-11 cursor-not-allowed items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-[#f9fafb] px-4 text-sm font-semibold text-[#98a2b3]">
+                            <x-lucide-wrench class="h-4 w-4" />
+                            Registrar manutenção
+                        </button>
+                    </span>
+                @endif
                 <a href="{{ route('pumps.edit', $pump) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                     <x-lucide-pencil class="h-4 w-4" />
                     Editar
@@ -95,10 +104,6 @@
                     <div>
                         <dt class="text-xs font-semibold uppercase text-[#667085]">Expiração</dt>
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['expires_at'] ?? '-' }}</dd>
-                    </div>
-                    <div>
-                        <dt class="text-xs font-semibold uppercase text-[#667085]">Última renovação</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['last_renewal'] ?? '-' }}</dd>
                     </div>
                     @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
                         <div class="sm:col-span-2 xl:col-span-4">
@@ -230,11 +235,49 @@
                 </article>
             @endif
         @elseif ($tab === 'maintenance')
-            <x-tables.datatable
-                :header="['Data', 'Tipo', 'Descrição', 'Responsável', 'Situação']"
-                :data="$maintenanceHistory"
-                :show-actions="false"
-            />
+            <div class="overflow-x-auto rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
+                <table class="w-full min-w-225 text-left text-sm">
+                    <thead class="border-b border-[#eadfe0] bg-[#fbfaf9] text-xs uppercase text-[#667085]">
+                        <tr>
+                            <th class="px-5 py-4">Data</th>
+                            <th class="px-5 py-4">Tipo</th>
+                            <th class="px-5 py-4">Descrição</th>
+                            <th class="px-5 py-4">Responsável</th>
+                            <th class="px-5 py-4">Situação</th>
+                            <th class="px-5 py-4 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#f0e7e8]">
+                        @forelse ($maintenanceHistory as $maintenance)
+                            @php
+                                $maintenanceStatusClass = match ($maintenance['status']) {
+                                    'Em andamento' => 'bg-[#e8f8ee] text-[#23845a]',
+                                    'Agendado' => 'bg-[#eef4ff] text-[#2f66d0]',
+                                    'Cancelado' => 'bg-[#fff1f1] text-[#c2414b]',
+                                    default => 'bg-[#f2f4f7] text-[#667085]',
+                                };
+                            @endphp
+                            <tr>
+                                <td class="px-5 py-4">{{ $maintenance['date'] }}</td>
+                                <td class="px-5 py-4">{{ $maintenance['type'] }}</td>
+                                <td class="px-5 py-4">{{ $maintenance['description'] }}</td>
+                                <td class="px-5 py-4">{{ $maintenance['responsible'] }}</td>
+                                <td class="px-5 py-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $maintenanceStatusClass }}">{{ $maintenance['status'] }}</span></td>
+                                <td class="px-5 py-4 text-right">
+                                    @if ($maintenance['is_open'])
+                                        <div class="inline-flex gap-2">
+                                            <button type="button" data-dialog-open="maintenance-finish-{{ $maintenance['id'] }}" title="Concluir manutenção" aria-label="Concluir manutenção" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d1eadb] text-[#23845a] transition hover:bg-[#e8f8ee]"><x-gmdi-check-circle-o class="h-4 w-4" /></button>
+                                            <button type="button" data-dialog-open="maintenance-cancel-{{ $maintenance['id'] }}" title="Cancelar manutenção" aria-label="Cancelar manutenção" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#f2c7cb] text-[#c2414b] transition hover:bg-[#fff1f1]"><x-gmdi-cancel-o class="h-4 w-4" /></button>
+                                        </div>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="6" class="px-5 py-12 text-center text-sm text-[#667085]">Nenhuma manutenção registrada para esta bomba.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         @elseif ($tab === 'history')
             <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
@@ -278,6 +321,65 @@
             :action="route('pumps.destroy', $pump)"
             method="DELETE"
         />
+
+        <dialog
+            id="pump-maintenance-modal"
+            aria-labelledby="pump-maintenance-modal-title"
+            data-dialog-modal
+            @if ($errors->hasAny(['type', 'started_at', 'status', 'description'])) data-dialog-auto-open @endif
+            class="m-auto w-[calc(100%-2rem)] max-w-2xl rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45 backdrop:backdrop-blur-[2px]"
+        >
+            <form method="POST" action="{{ route('pumps.maintenance.store', $pump) }}" class="p-5 sm:p-6">
+                @csrf
+
+                <div class="flex items-start gap-4">
+                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#fff1f1] text-[#bf5d6f]">
+                        <x-lucide-wrench class="h-5 w-5" />
+                    </span>
+                    <div class="min-w-0 flex-1 pt-0.5">
+                        <h2 id="pump-maintenance-modal-title" class="text-base font-semibold text-[#111827]">Registrar manutenção</h2>
+                        <p class="mt-1.5 text-sm leading-6 text-[#667085]">A bomba ficará indisponível até a conclusão ou o cancelamento da manutenção.</p>
+                    </div>
+                    <button type="button" data-dialog-close class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#98a2b3] transition hover:bg-[#f7edef] hover:text-[#667085]" aria-label="Fechar"><x-gmdi-close-o class="h-5 w-5" /></button>
+                </div>
+
+                <div class="mt-6 grid gap-5 sm:grid-cols-2">
+                    <div><x-material.select name="type" label="Tipo" :options="['preventiva' => 'Preventiva', 'corretiva' => 'Corretiva', 'higienizacao' => 'Higienização']" :selected="old('type', 'preventiva')" required />@error('type') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="status" label="Situação inicial" :options="['aberta' => 'Aberta', 'em_andamento' => 'Em andamento']" :selected="old('status', 'aberta')" required />@error('status') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div class="sm:col-span-2"><x-material.floating-input type="datetime-local" name="started_at" label="Data e hora de início" :value="old('started_at', now()->format('Y-m-d\TH:i'))" required /></div>
+                    <div class="sm:col-span-2"><x-material.floating-textarea name="description" label="Descrição" :value="old('description')" required /></div>
+                    <div class="sm:col-span-2"><x-material.floating-textarea name="notes" label="Observações" :value="old('notes')" /></div>
+                </div>
+
+                <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                    <button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] transition hover:bg-[#fbfaf9]">Cancelar</button>
+                    <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white transition hover:bg-[#a94f60]">Registrar manutenção</button>
+                </div>
+            </form>
+        </dialog>
+
+        @foreach ($maintenanceHistory as $maintenance)
+            @if ($maintenance['is_open'])
+                <dialog id="maintenance-finish-{{ $maintenance['id'] }}" data-dialog-modal @error('finished_at') data-dialog-auto-open @enderror class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45">
+                    <form method="POST" action="{{ route('pumps.maintenance.finish', [$pump, $maintenance['id']]) }}" class="space-y-5">
+                        @csrf @method('PATCH')
+                        <h2 class="text-lg font-bold">Concluir manutenção</h2>
+                        <x-material.floating-input :id="'finished_at-'.$maintenance['id']" type="datetime-local" name="finished_at" label="Data e hora da conclusão" :min="$maintenance['started_at_input']" :value="old('finished_at', now()->format('Y-m-d\TH:i'))" required />
+                        <x-material.floating-textarea :id="'finish_notes-'.$maintenance['id']" name="notes" label="Observações finais" :value="old('notes')" />
+                        <div class="flex justify-end gap-3"><button type="button" data-dialog-close class="rounded-lg border px-4 py-2">Cancelar</button><button class="rounded-lg bg-[#23845a] px-4 py-2 font-semibold text-white">Concluir</button></div>
+                    </form>
+                </dialog>
+
+                <dialog id="maintenance-cancel-{{ $maintenance['id'] }}" data-dialog-modal class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45">
+                    <form method="POST" action="{{ route('pumps.maintenance.cancel', [$pump, $maintenance['id']]) }}" class="space-y-5">
+                        @csrf @method('PATCH')
+                        <h2 class="text-lg font-bold">Cancelar manutenção</h2>
+                        <x-material.floating-textarea :id="'cancel_notes-'.$maintenance['id']" name="notes" label="Observações" :value="old('notes')" />
+                        <div class="flex justify-end gap-3"><button type="button" data-dialog-close class="rounded-lg border px-4 py-2">Voltar</button><button class="rounded-lg bg-[#c2414b] px-4 py-2 font-semibold text-white">Cancelar manutenção</button></div>
+                    </form>
+                </dialog>
+            @endif
+        @endforeach
 
         @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
             <dialog

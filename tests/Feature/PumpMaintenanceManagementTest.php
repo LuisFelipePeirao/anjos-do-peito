@@ -136,3 +136,29 @@ it('does not finish maintenance through another pump url', function () {
     $this->assertDatabaseHas('manutencoes_bombas', ['id' => $maintenance->id, 'situacao' => 'em_andamento']);
     $this->assertDatabaseHas('bomba_leite', ['id' => $pump->id, 'situacao' => 'manutencao']);
 });
+
+it('shows enabled maintenance action only for available pumps', function () {
+    $user = User::factory()->administrador()->create();
+    $available = maintenancePump(['codigo' => 'BL-FREE']);
+    $borrowed = maintenancePump(['codigo' => 'BL-LOAN', 'situacao' => 'alugada']);
+
+    $this->actingAs($user)->get(route('pumps.show', $available))
+        ->assertOk()
+        ->assertSee('data-dialog-open="pump-maintenance-modal"', false);
+    $this->actingAs($user)->get(route('pumps.show', $borrowed))
+        ->assertOk()
+        ->assertSee('disabled', false)
+        ->assertSee('Esta bomba está emprestada ou alugada.', false);
+});
+
+it('shows maintenance form and actions for an open maintenance record', function () {
+    [$user, $pump] = maintenanceInProgress();
+
+    $this->actingAs($user)->get(route('pumps.show', ['pump' => $pump, 'tab' => 'maintenance']))
+        ->assertOk()
+        ->assertSee('name="type"', false)
+        ->assertSee('name="started_at"', false)
+        ->assertSee('name="finished_at"', false)
+        ->assertSee('Concluir')
+        ->assertSee('Cancelar manutenção');
+});
