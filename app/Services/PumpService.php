@@ -109,6 +109,27 @@ class PumpService
         });
     }
 
+    public function openMaintenance(BombaLeite $pump, array $data, int $userId): ManutencaoBomba
+    {
+        return DB::transaction(function () use ($pump, $data, $userId) {
+            $lockedPump = BombaLeite::query()->lockForUpdate()->findOrFail($pump->id);
+
+            abort_unless($lockedPump->situacao === 'disponivel', 409);
+
+            $maintenance = $lockedPump->manutencoes()->create([
+                'id_usuario' => $userId,
+                'data_inicio' => $data['started_at'],
+                'tipo' => $data['type'],
+                'descricao' => $data['description'],
+                'situacao' => $data['status'],
+                'observacao' => $data['notes'] ?? null,
+            ]);
+            $lockedPump->update(['situacao' => 'manutencao']);
+
+            return $maintenance;
+        });
+    }
+
     public function destroy(BombaLeite $pump): bool
     {
         if ($pump->cessoes()->exists() || $pump->manutencoes()->exists()) {

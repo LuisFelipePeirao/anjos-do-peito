@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Pumps\RegisterRentalPaymentRequest;
 use App\Http\Requests\Pumps\RenewPumpLoanRequest;
 use App\Http\Requests\Pumps\ReturnPumpLoanRequest;
+use App\Http\Requests\Pumps\StorePumpMaintenanceRequest;
 use App\Http\Requests\Pumps\StorePumpRequest;
 use App\Http\Requests\Pumps\UpdatePumpRequest;
 use App\Models\BombaLeite;
@@ -91,6 +92,13 @@ class PumpController extends Controller
         $this->pumps->returnLoan($pump, $request->validated(), $request->user()->id);
 
         return redirect()->route('pumps.show', $pump)->with('status', 'Devolução da bomba registrada com sucesso.');
+    }
+
+    public function storeMaintenance(StorePumpMaintenanceRequest $request, BombaLeite $pump): RedirectResponse
+    {
+        $this->pumps->openMaintenance($pump, $request->validated(), $request->user()->id);
+
+        return redirect()->route('pumps.show', ['pump' => $pump, 'tab' => 'maintenance'])->with('status', 'Manutenção registrada com sucesso.');
     }
 
     public function registerPayment(RegisterRentalPaymentRequest $request, BombaLeite $pump, PagamentoAluguel $payment): RedirectResponse
