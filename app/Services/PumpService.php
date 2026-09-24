@@ -130,6 +130,43 @@ class PumpService
         });
     }
 
+    public function finishMaintenance(BombaLeite $pump, ManutencaoBomba $maintenance, array $data): ManutencaoBomba
+    {
+        return DB::transaction(function () use ($pump, $maintenance, $data) {
+            $lockedPump = BombaLeite::query()->lockForUpdate()->findOrFail($pump->id);
+            $lockedMaintenance = ManutencaoBomba::query()->lockForUpdate()->findOrFail($maintenance->id);
+
+            abort_unless($lockedMaintenance->id_bomba === $lockedPump->id && in_array($lockedMaintenance->situacao, ['aberta', 'em_andamento'], true), 404);
+
+            $lockedMaintenance->update([
+                'situacao' => 'concluida',
+                'data_fim' => $data['finished_at'],
+                'observacao' => filled($data['notes'] ?? null) ? $data['notes'] : $lockedMaintenance->observacao,
+            ]);
+            $lockedPump->update(['situacao' => 'disponivel']);
+
+            return $lockedMaintenance->refresh();
+        });
+    }
+
+    public function cancelMaintenance(BombaLeite $pump, ManutencaoBomba $maintenance, array $data): ManutencaoBomba
+    {
+        return DB::transaction(function () use ($pump, $maintenance, $data) {
+            $lockedPump = BombaLeite::query()->lockForUpdate()->findOrFail($pump->id);
+            $lockedMaintenance = ManutencaoBomba::query()->lockForUpdate()->findOrFail($maintenance->id);
+
+            abort_unless($lockedMaintenance->id_bomba === $lockedPump->id && in_array($lockedMaintenance->situacao, ['aberta', 'em_andamento'], true), 404);
+
+            $lockedMaintenance->update([
+                'situacao' => 'cancelada',
+                'observacao' => filled($data['notes'] ?? null) ? $data['notes'] : $lockedMaintenance->observacao,
+            ]);
+            $lockedPump->update(['situacao' => 'disponivel']);
+
+            return $lockedMaintenance->refresh();
+        });
+    }
+
     public function destroy(BombaLeite $pump): bool
     {
         if ($pump->cessoes()->exists() || $pump->manutencoes()->exists()) {

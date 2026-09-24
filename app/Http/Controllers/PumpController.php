@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Pumps\RegisterRentalPaymentRequest;
+use App\Http\Requests\Pumps\CancelPumpMaintenanceRequest;
+use App\Http\Requests\Pumps\FinishPumpMaintenanceRequest;
 use App\Http\Requests\Pumps\RenewPumpLoanRequest;
 use App\Http\Requests\Pumps\ReturnPumpLoanRequest;
 use App\Http\Requests\Pumps\StorePumpMaintenanceRequest;
 use App\Http\Requests\Pumps\StorePumpRequest;
 use App\Http\Requests\Pumps\UpdatePumpRequest;
 use App\Models\BombaLeite;
+use App\Models\ManutencaoBomba;
 use App\Models\PagamentoAluguel;
 use App\Services\PumpService;
 use Illuminate\Http\RedirectResponse;
@@ -99,6 +102,20 @@ class PumpController extends Controller
         $this->pumps->openMaintenance($pump, $request->validated(), $request->user()->id);
 
         return redirect()->route('pumps.show', ['pump' => $pump, 'tab' => 'maintenance'])->with('status', 'Manutenção registrada com sucesso.');
+    }
+
+    public function finishMaintenance(FinishPumpMaintenanceRequest $request, BombaLeite $pump, ManutencaoBomba $maintenance): RedirectResponse
+    {
+        $this->pumps->finishMaintenance($pump, $maintenance, $request->validated());
+
+        return redirect()->route('pumps.show', ['pump' => $pump, 'tab' => 'maintenance'])->with('status', 'Manutenção concluída com sucesso.');
+    }
+
+    public function cancelMaintenance(CancelPumpMaintenanceRequest $request, BombaLeite $pump, ManutencaoBomba $maintenance): RedirectResponse
+    {
+        $this->pumps->cancelMaintenance($pump, $maintenance, $request->validated());
+
+        return redirect()->route('pumps.show', ['pump' => $pump, 'tab' => 'maintenance'])->with('status', 'Manutenção cancelada com sucesso.');
     }
 
     public function registerPayment(RegisterRentalPaymentRequest $request, BombaLeite $pump, PagamentoAluguel $payment): RedirectResponse
