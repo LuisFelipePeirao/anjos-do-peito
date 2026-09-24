@@ -252,6 +252,12 @@ class PumpService
     private function contractData(CessaoBomba $contract): array
     {
         $isOverdue = $contract->data_prevista_devolucao?->isPast() && ! $contract->data_devolucao;
+        $renewals = collect(preg_split('/\R/', $contract->observacao_retirada ?? ''))
+            ->filter(fn (string $line) => str_starts_with($line, 'Renovado em '));
+        $baseNotes = collect(preg_split('/\R/', $contract->observacao_retirada ?? ''))
+            ->reject(fn (string $line) => str_starts_with($line, 'Renovado em '))
+            ->filter()
+            ->join("\n");
 
         return [
             'id' => $contract->id,
@@ -262,12 +268,12 @@ class PumpService
             'expires_at' => $contract->data_prevista_devolucao?->format('d/m/Y') ?? '-',
             'expires_at_input' => $contract->data_prevista_devolucao?->toDateString(),
             'renewal_min_date' => ($contract->data_prevista_devolucao?->isFuture() ? $contract->data_prevista_devolucao : now())->copy()->addDay()->toDateString(),
-            'next_renewal_at' => $contract->data_prevista_devolucao?->copy()->subDays(3)->format('d/m/Y') ?? '-',
+            'last_renewal' => $renewals->last() ?? '-',
             'monthly_fee' => $contract->tipo === 'aluguel' ? $this->money($contract->valor_mensalidade) : 'Sem custo',
             'billing_due_day' => $contract->tipo === 'aluguel' ? 'Conforme vencimentos cadastrados' : '-',
             'responsible' => $contract->usuarioRetirada?->nome ?? '-',
             'term_status' => 'Registrado',
-            'notes' => $contract->observacao_retirada ?: 'Bomba em uso por beneficiária.',
+            'notes' => collect([$baseNotes, $renewals->last()])->filter()->join("\n") ?: 'Bomba em uso por beneficiária.',
             'is_overdue' => $isOverdue,
             'is_renewable' => in_array($contract->situacao, ['ativa', 'atrasada'], true),
         ];
@@ -344,9 +350,18 @@ class PumpService
             'icon' => $maintenance->tipo === 'higienizacao' ? 'sparkles' : 'wrench',
         ]);
 
+        $returns = $pump->cessoes->filter(fn (CessaoBomba $loan) => $loan->data_devolucao)->map(fn (CessaoBomba $loan) => [
+            'date' => $loan->data_devolucao,
+            'type' => 'Devolução registrada',
+            'description' => $loan->observacao_devolucao ?: 'Bomba devolvida e disponibilizada para novo uso.',
+            'responsible' => $loan->usuarioRetirada?->nome ?? '-',
+            'icon' => 'undo-2',
+        ]);
+
         return $items
             ->merge($loans)
             ->merge($maintenances)
+            ->merge($returns)
             ->filter(fn (array $item) => $item['date'])
             ->sortByDesc('date')
             ->map(fn (array $item) => [

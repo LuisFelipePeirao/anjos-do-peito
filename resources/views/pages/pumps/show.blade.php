@@ -97,8 +97,8 @@
                         <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['expires_at'] ?? '-' }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase text-[#667085]">Renovação em</dt>
-                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['next_renewal_at'] ?? '-' }}</dd>
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">Última renovação</dt>
+                        <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $currentContract['last_renewal'] ?? '-' }}</dd>
                     </div>
                     @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
                         <div class="sm:col-span-2 xl:col-span-4">

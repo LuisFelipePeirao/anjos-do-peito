@@ -188,6 +188,10 @@ it('shows renewal only for borrowed pumps and renews the current loan', function
         'data_prevista_devolucao' => now()->addDays(20)->toDateString().' 00:00:00',
         'situacao' => 'ativa',
     ]);
+
+    $this->actingAs($user)->get(route('pumps.show', $borrowedPump))
+        ->assertOk()
+        ->assertSee('Última renovação');
 });
 
 it('warns before renewing overdue loans and normalizes their status', function () {
