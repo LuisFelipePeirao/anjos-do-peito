@@ -15,4 +15,13 @@ class RegisterRentalPaymentRequest extends FormRequest
     {
         return ['paid_at' => ['required', 'date'], 'notes' => ['nullable', 'string']];
     }
+
+    public function messages(): array
+    {
+        return [
+            'paid_at.required' => 'Informe a data do pagamento.',
+            'paid_at.date' => 'Informe uma data de pagamento válida.',
+            'notes.string' => 'As observações devem ser um texto válido.',
+        ];
+    }
 }
