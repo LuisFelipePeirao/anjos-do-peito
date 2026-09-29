@@ -130,7 +130,7 @@
                         <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
                         <div>
-                            <x-material.select name="situacao" label="Situação" :options="['entregue' => 'Entregue', 'pendente' => 'Pendente', 'cancelada' => 'Cancelada']" :selected="old('situacao', 'entregue')" required />
+                            <x-material.select name="situacao" label="Situação" :options="['entregue' => 'Entregue', 'pendente' => 'Pendente']" :selected="old('situacao', 'entregue')" required />
                             @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 

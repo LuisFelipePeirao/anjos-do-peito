@@ -332,6 +332,31 @@ it('creates exit movements and prevents negative stock', function () {
         ->assertSessionHasErrors('items');
 });
 
+it('only allows delivered or pending status when creating an exit', function () {
+    $user = User::factory()->administrador()->create();
+    $material = movementMaterial();
+    $beneficiary = movementBeneficiary();
+
+    $this->actingAs($user)
+        ->get(route('movements.create', ['tipo' => 'saida']))
+        ->assertOk()
+        ->assertSee('Entregue')
+        ->assertSee('Pendente')
+        ->assertDontSee('Cancelada');
+
+    $this->actingAs($user)
+        ->from(route('movements.create', ['tipo' => 'saida']))
+        ->post(route('movements.store'), [
+            'tipo' => 'saida',
+            'id_beneficiaria' => $beneficiary->id,
+            'data_hora' => '2026-09-28 09:00:00',
+            'situacao' => 'cancelada',
+            'items' => [['id_material' => $material->id, 'quantidade' => 1]],
+        ])
+        ->assertRedirect(route('movements.create', ['tipo' => 'saida']))
+        ->assertSessionHasErrors('situacao');
+});
+
 it('does not count pending exits as real stock consumption', function () {
     $user = User::factory()->administrador()->create();
     $material = movementMaterial();
