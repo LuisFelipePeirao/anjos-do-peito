@@ -6,9 +6,10 @@ use App\Models\BombaLeite;
 use App\Models\CategoriaAtendimento;
 use App\Models\Cep;
 use App\Models\CessaoBomba;
-use App\Models\Doador;
+use App\Models\Distribuicao;
 use App\Models\Doacao;
 use App\Models\DoacaoItem;
+use App\Models\Doador;
 use App\Models\Endereco;
 use App\Models\EstoqueMovimentacao;
 use App\Models\LocalAtendimento;
@@ -17,6 +18,7 @@ use App\Models\ModeloBomba;
 use App\Models\PagamentoAluguel;
 use App\Models\Procedimento;
 use App\Models\User;
+use App\Services\ReportService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -163,6 +165,65 @@ it('validates report filter dates', function () {
             'end_date' => '2026-08-01',
         ]))
         ->assertSessionHasErrors('end_date');
+});
+
+it('excludes pending exits from stock coverage and professional distributions', function () {
+    $user = User::factory()->administrador()->create();
+    $beneficiary = reportBeneficiary();
+    $material = Material::create([
+        'nome' => 'Kit Reservado',
+        'id_categoria' => DB::table('categorias_materiais')->insertGetId(['nome' => 'Estoque', 'ativo' => true]),
+        'unidade_medida' => 'kit',
+        'estoque_minimo' => 1,
+    ]);
+
+    Atendimento::create([
+        'data_hora' => '2026-09-28 09:00:00',
+        'modalidade' => 'presencial',
+        'situacao' => 'realizado',
+        'rascunho' => false,
+        'id_beneficiaria' => $beneficiary->id,
+        'id_usuario' => $user->id,
+    ]);
+    EstoqueMovimentacao::create([
+        'id_material' => $material->id,
+        'tipo' => 'entrada',
+        'quantidade' => 10,
+        'data_hora' => '2026-09-28 08:00:00',
+        'id_usuario' => $user->id,
+    ]);
+
+    foreach ([['pendente', 4], ['entregue', 2]] as [$status, $quantity]) {
+        $distribution = Distribuicao::create([
+            'id_beneficiaria' => $beneficiary->id,
+            'id_usuario' => $user->id,
+            'data_hora' => '2026-09-28 10:00:00',
+            'situacao' => $status,
+        ]);
+        $item = $distribution->itens()->create(['id_material' => $material->id, 'quantidade' => $quantity]);
+
+        EstoqueMovimentacao::create([
+            'id_material' => $material->id,
+            'tipo' => 'saida',
+            'quantidade' => $quantity,
+            'data_hora' => '2026-09-28 10:00:00',
+            'id_usuario' => $user->id,
+            'id_distribuicao_item' => $item->id,
+        ]);
+    }
+
+    $report = app(ReportService::class)->indexData([
+        'start_date' => '2026-09-28',
+        'end_date' => '2026-09-28',
+        'section' => 'all',
+        'location' => 'all',
+    ]);
+    $coverage = collect($report['stockCoverageChart'])->firstWhere('label', 'Kit Reservado');
+    $professional = collect($report['professionalChart'])->firstWhere('label', $user->nome);
+
+    expect($coverage['description'])->toBe('8 kit em Estoque.')
+        ->and($coverage['details']['Consumo médio'])->toBe('2/período')
+        ->and($professional['details']['Distribuições'])->toBe(1);
 });
 
 it('shows activity report export button with current filters', function () {
