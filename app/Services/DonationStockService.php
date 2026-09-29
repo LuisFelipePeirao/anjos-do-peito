@@ -437,7 +437,7 @@ class DonationStockService
 
     private function quantity(int $amount, string $unit): string
     {
-        return $amount.' '.$unit.($amount === 1 || str_ends_with($unit, 's') ? '' : 's');
+        return $amount.' '.$unit.($amount === 1 || str_ends_with($unit, 's') || str_ends_with($unit, '(s)') ? '' : 's');
     }
 
     private function movementTypeLabel(string $type): string

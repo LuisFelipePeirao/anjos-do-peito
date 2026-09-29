@@ -91,6 +91,21 @@ it('shows stock items as a separate stock item surface', function () {
         ->assertSee('Registrar movimentação');
 });
 
+it('does not duplicate plural marker in stock item cards', function () {
+    $user = User::factory()->atendente()->create();
+    $material = stockMaterial([
+        'unidade_medida' => 'caixa(s)',
+        'estoque_minimo' => 8,
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('donations.show', $material))
+        ->assertOk()
+        ->assertSee('8 caixa(s)', false)
+        ->assertSee('0 caixa(s)', false)
+        ->assertDontSee('caixa(s)s', false);
+});
+
 it('uses floating controls for materials, donors and distribution items', function () {
     $user = User::factory()->administrador()->create();
     stockCategory();
@@ -112,6 +127,20 @@ it('uses floating controls for materials, donors and distribution items', functi
         ->assertOk()
         ->assertSee('name="items[0][quantidade]"', false)
         ->assertSee('id="items[0][quantidade]"', false);
+});
+
+it('renders available distribution quantity as a disabled floating input', function () {
+    $user = User::factory()->administrador()->create();
+    stockCategory();
+    stockMaterial();
+    stockBeneficiary();
+
+    $response = $this->actingAs($user)->get(route('donations.distributions.create'));
+
+    $response->assertOk();
+
+    expect(preg_match_all('/<input(?=[^>]*data-available-display)(?=[^>]*disabled)[^>]*>/', $response->getContent()))
+        ->toBe(2);
 });
 
 it('creates materials donors and donations through layered requests and service', function () {

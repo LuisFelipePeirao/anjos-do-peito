@@ -61,6 +61,12 @@ const scheduleSelectRequiredAsterisk = (select) => {
     });
 };
 
+const scheduleDialogSelectRequiredAsterisks = (dialog) => {
+    dialog.querySelectorAll('[data-select-required] md-outlined-select').forEach((select) => {
+        scheduleSelectRequiredAsterisk(select);
+    });
+};
+
 const selectWithRequiredAsterisk = (target) => target instanceof Element
     ? target.closest('md-outlined-select')?.closest('[data-select-required]')?.querySelector('md-outlined-select')
     : null;
@@ -211,7 +217,12 @@ document.addEventListener('click', (event) => {
     const openButton = event.target.closest('[data-dialog-open]');
 
     if (openButton) {
-        document.getElementById(openButton.dataset.dialogOpen)?.showModal();
+        const dialog = document.getElementById(openButton.dataset.dialogOpen);
+
+        if (dialog instanceof HTMLDialogElement) {
+            dialog.showModal();
+            scheduleDialogSelectRequiredAsterisks(dialog);
+        }
         return;
     }
 
@@ -233,6 +244,7 @@ document.querySelectorAll('[data-dialog-modal]').forEach((dialog) => {
 document.querySelectorAll('[data-dialog-auto-open]').forEach((dialog) => {
     if (dialog instanceof HTMLDialogElement) {
         dialog.showModal();
+        scheduleDialogSelectRequiredAsterisks(dialog);
     }
 });
 
