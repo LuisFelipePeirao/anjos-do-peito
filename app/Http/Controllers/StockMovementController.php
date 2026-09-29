@@ -42,4 +42,22 @@ class StockMovementController extends Controller
     {
         return view('pages.movements.show', $this->movements->showData($movement));
     }
+
+    public function confirm(Request $request, EstoqueMovimentacao $movement): RedirectResponse
+    {
+        abort_unless($request->user()?->canManageAttendances(), 403);
+
+        $this->movements->confirmPending($movement);
+
+        return redirect()->route('movements.show', $movement)->with('status', 'Retirada confirmada com sucesso.');
+    }
+
+    public function cancel(Request $request, EstoqueMovimentacao $movement): RedirectResponse
+    {
+        abort_unless($request->user()?->canManageAttendances(), 403);
+
+        $this->movements->cancelPending($movement);
+
+        return redirect()->route('movements.show', $movement)->with('status', 'Reserva cancelada com sucesso.');
+    }
 }

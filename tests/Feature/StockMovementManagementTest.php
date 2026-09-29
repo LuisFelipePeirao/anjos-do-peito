@@ -8,6 +8,7 @@ use App\Models\Material;
 use App\Models\User;
 use App\Services\DonationStockService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 
 uses(RefreshDatabase::class);
 
@@ -357,4 +358,95 @@ it('does not count pending exits as real stock consumption', function () {
 
     expect($stock['stockItem']['quantity'])->toBe('8 pacotes')
         ->and($stock['stockItem']['monthly_demand'])->toBe('0 pacotes');
+});
+
+it('confirms a pending exit at pickup time and shows its observation', function () {
+    $user = User::factory()->administrador()->create();
+    $material = movementMaterial();
+    $donor = movementDonor();
+    $beneficiary = movementBeneficiary();
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'entrada',
+        'id_doador' => $donor->id,
+        'data_hora' => '2026-09-28 09:00:00',
+        'situacao' => 'recebida',
+        'items' => [['id_material' => $material->id, 'quantidade' => 8]],
+    ]);
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'saida',
+        'id_beneficiaria' => $beneficiary->id,
+        'data_hora' => '2026-09-28 10:00:00',
+        'situacao' => 'pendente',
+        'observacao' => 'Retirada agendada.',
+        'items' => [['id_material' => $material->id, 'quantidade' => 5]],
+    ]);
+
+    $movement = EstoqueMovimentacao::where('tipo', 'saida')->firstOrFail();
+
+    $this->actingAs($user)->get(route('movements.show', $movement))
+        ->assertOk()
+        ->assertSee('Pendente')
+        ->assertSee('Saída por movimentação.')
+        ->assertSee('Retirada agendada.')
+        ->assertSee('Dar baixa')
+        ->assertSee('Cancelar');
+
+    Carbon::setTestNow('2026-09-28 15:30:00');
+
+    try {
+        $this->actingAs($user)
+            ->patch(route('movements.confirm', $movement))
+            ->assertRedirect(route('movements.show', $movement));
+    } finally {
+        Carbon::setTestNow();
+    }
+
+    $this->assertDatabaseHas('distribuicoes', [
+        'id' => $movement->distribuicaoItem->id_distribuicao,
+        'situacao' => 'entregue',
+        'data_hora' => '2026-09-28 15:30:00',
+    ]);
+    $this->assertDatabaseHas('estoque_movimentacoes', [
+        'id' => $movement->id,
+        'data_hora' => '2026-09-28 15:30:00',
+    ]);
+
+    $this->actingAs($user)->patch(route('movements.cancel', $movement))->assertStatus(409);
+});
+
+it('cancels a pending exit and rejects repeated cancellation', function () {
+    $user = User::factory()->administrador()->create();
+    $material = movementMaterial();
+    $donor = movementDonor();
+    $beneficiary = movementBeneficiary();
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'entrada',
+        'id_doador' => $donor->id,
+        'data_hora' => '2026-09-28 09:00:00',
+        'situacao' => 'recebida',
+        'items' => [['id_material' => $material->id, 'quantidade' => 8]],
+    ]);
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'saida',
+        'id_beneficiaria' => $beneficiary->id,
+        'data_hora' => '2026-09-28 10:00:00',
+        'situacao' => 'pendente',
+        'items' => [['id_material' => $material->id, 'quantidade' => 5]],
+    ]);
+
+    $movement = EstoqueMovimentacao::where('tipo', 'saida')->firstOrFail();
+
+    $this->actingAs($user)->patch(route('movements.cancel', $movement))
+        ->assertRedirect(route('movements.show', $movement));
+
+    $this->assertDatabaseHas('distribuicoes', [
+        'id' => $movement->distribuicaoItem->id_distribuicao,
+        'situacao' => 'cancelada',
+    ]);
+
+    $this->actingAs($user)->patch(route('movements.cancel', $movement))->assertStatus(409);
 });

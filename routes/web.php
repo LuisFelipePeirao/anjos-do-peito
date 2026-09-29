@@ -106,6 +106,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/movimentacoes', [StockMovementController::class, 'index'])->name('movements.index');
     Route::get('/movimentacoes/nova', [StockMovementController::class, 'create'])->name('movements.create');
     Route::post('/movimentacoes', [StockMovementController::class, 'store'])->name('movements.store');
+    Route::patch('/movimentacoes/{movement}/dar-baixa', [StockMovementController::class, 'confirm'])->name('movements.confirm');
+    Route::patch('/movimentacoes/{movement}/cancelar', [StockMovementController::class, 'cancel'])->name('movements.cancel');
     Route::get('/movimentacoes/{movement}', [StockMovementController::class, 'show'])->name('movements.show');
 
     Route::get('/relatorios/exportar', [ReportController::class, 'export'])->name('reports.export');
