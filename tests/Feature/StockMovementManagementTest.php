@@ -6,6 +6,7 @@ use App\Models\Doador;
 use App\Models\EstoqueMovimentacao;
 use App\Models\Material;
 use App\Models\User;
+use App\Services\DonationStockService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -328,4 +329,32 @@ it('creates exit movements and prevents negative stock', function () {
         ])
         ->assertRedirect(route('movements.create', ['tipo' => 'saida']))
         ->assertSessionHasErrors('items');
+});
+
+it('does not count pending exits as real stock consumption', function () {
+    $user = User::factory()->administrador()->create();
+    $material = movementMaterial();
+    $donor = movementDonor();
+    $beneficiary = movementBeneficiary();
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'entrada',
+        'id_doador' => $donor->id,
+        'data_hora' => '2026-09-28 09:00:00',
+        'situacao' => 'recebida',
+        'items' => [['id_material' => $material->id, 'quantidade' => 8]],
+    ]);
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'saida',
+        'id_beneficiaria' => $beneficiary->id,
+        'data_hora' => '2026-09-28 10:00:00',
+        'situacao' => 'pendente',
+        'items' => [['id_material' => $material->id, 'quantidade' => 5]],
+    ]);
+
+    $stock = app(DonationStockService::class)->showData($material->fresh());
+
+    expect($stock['stockItem']['quantity'])->toBe('8 pacotes')
+        ->and($stock['stockItem']['monthly_demand'])->toBe('0 pacotes');
 });

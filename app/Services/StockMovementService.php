@@ -103,7 +103,7 @@ class StockMovementService
             'materialBalances' => $materials
                 ->mapWithKeys(fn (Material $material) => [
                     $material->id => [
-                        'available' => $material->movimentacoes()->get()->sum(fn (EstoqueMovimentacao $movement) => $this->balanceImpact($movement)),
+                        'available' => $material->movimentacoes()->get()->sum(fn (EstoqueMovimentacao $movement) => $this->reservationImpact($movement)),
                         'unit' => $material->unidade_medida,
                     ],
                 ])
@@ -379,11 +379,11 @@ class StockMovementService
         return $absolute.' '.$unit.($absolute === 1 || str_ends_with($unit, 's') ? '' : 's');
     }
 
-    private function balanceImpact(EstoqueMovimentacao $movement): int
+    private function reservationImpact(EstoqueMovimentacao $movement): int
     {
         return match ($movement->tipo) {
             'entrada' => $movement->quantidade,
-            'saida' => $this->movementAffectsStock($movement) ? -$movement->quantidade : 0,
+            'saida' => $this->movementBlocksStockReservation($movement) ? -$movement->quantidade : 0,
             'ajuste' => $movement->quantidade,
             default => 0,
         };
@@ -391,10 +391,10 @@ class StockMovementService
 
     private function balance(Material $material): int
     {
-        return $material->movimentacoes->sum(fn (EstoqueMovimentacao $movement) => $this->balanceImpact($movement));
+        return $material->movimentacoes->sum(fn (EstoqueMovimentacao $movement) => $this->reservationImpact($movement));
     }
 
-    private function movementAffectsStock(EstoqueMovimentacao $movement): bool
+    private function movementBlocksStockReservation(EstoqueMovimentacao $movement): bool
     {
         return $movement->distribuicaoItem?->distribuicao?->situacao !== 'cancelada';
     }
