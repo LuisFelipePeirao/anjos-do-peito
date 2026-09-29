@@ -118,6 +118,37 @@ it('creates entry movements with donor and received items', function () {
     $this->assertDatabaseHas('estoque_movimentacoes', ['id_material' => $material->id, 'tipo' => 'entrada', 'quantidade' => 7]);
 });
 
+it('requires received status when creating an entry', function () {
+    $user = User::factory()->administrador()->create();
+    $material = movementMaterial();
+    $donor = movementDonor();
+
+    $this->actingAs($user)
+        ->get(route('movements.create', ['tipo' => 'entrada']))
+        ->assertOk()
+        ->assertSee('Recebida')
+        ->assertDontSee('Cancelada');
+
+    foreach ([null, 'cancelada'] as $status) {
+        $payload = [
+            'tipo' => 'entrada',
+            'id_doador' => $donor->id,
+            'data_hora' => '2026-09-28 09:00:00',
+            'items' => [['id_material' => $material->id, 'quantidade' => 1]],
+        ];
+
+        if ($status !== null) {
+            $payload['situacao'] = $status;
+        }
+
+        $this->actingAs($user)
+            ->from(route('movements.create', ['tipo' => 'entrada']))
+            ->post(route('movements.store'), $payload)
+            ->assertRedirect(route('movements.create', ['tipo' => 'entrada']))
+            ->assertSessionHasErrors('situacao');
+    }
+});
+
 it('creates entry movements without a donor for non-donation acquisitions', function () {
     $user = User::factory()->administrador()->create();
     $material = movementMaterial();

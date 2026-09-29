@@ -23,7 +23,7 @@ class StoreStockMovementRequest extends FormRequest
             'id_material' => [Rule::requiredIf($type === 'ajuste'), 'nullable', 'integer', 'exists:materiais,id'],
             'operacao' => [Rule::requiredIf($type === 'ajuste'), 'nullable', Rule::in(['adicionar', 'subtrair'])],
             'data_hora' => ['required', 'date'],
-            'situacao' => ['nullable', 'string', Rule::when($type === 'entrada', Rule::in(['recebida', 'cancelada'])), Rule::when($type === 'saida', Rule::in(['pendente', 'entregue']))],
+            'situacao' => [Rule::requiredIf($type === 'entrada'), 'nullable', 'string', Rule::when($type === 'entrada', Rule::in(['recebida'])), Rule::when($type === 'saida', Rule::in(['pendente', 'entregue']))],
             'observacao' => [Rule::requiredIf($type === 'ajuste'), 'nullable', 'string'],
             'items' => [Rule::requiredIf(in_array($type, ['entrada', 'saida'], true)), 'array', 'min:1'],
             'items.*.id_material' => ['required_with:items', 'integer', 'exists:materiais,id'],
