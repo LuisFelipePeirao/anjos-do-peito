@@ -55,7 +55,7 @@
                 <p class="mt-2 text-sm text-[#667085]">Os campos serão adaptados conforme entrada, saída ou ajuste.</p>
             </article>
         @else
-            <form method="POST" action="{{ route('movements.store') }}" class="space-y-6">
+            <form method="POST" action="{{ route('movements.store') }}" class="space-y-6" data-unsaved-form>
                 @csrf
                 <input type="hidden" name="tipo" value="{{ $movementType }}">
 

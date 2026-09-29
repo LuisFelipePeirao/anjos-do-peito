@@ -54,6 +54,15 @@
         method="POST"
     />
 
+    <x-app.confirm-modal
+        id="unsaved-form-confirmation"
+        title="Sair sem salvar?"
+        message="Os dados não salvos serão perdidos. Deseja abandonar esta tela?"
+        confirm-label="Sair sem salvar"
+        cancel-label="Continuar editando"
+        variant="warning"
+    />
+
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
     @stack('scripts')
 </body>

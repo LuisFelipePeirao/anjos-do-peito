@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/usuarios/{usuario}/editar', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/usuarios/{usuario}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/usuarios/{usuario}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::patch('/usuarios/{usuario}/ativar', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
     });
 
     Route::get('/beneficiarias', [BeneficiaryController::class, 'index'])->name('beneficiaries.index');

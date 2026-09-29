@@ -13,7 +13,7 @@
             description="Atualize identificação, origem e acessórios do equipamento."
             :firstButton="['label' => 'Voltar para detalhes', 'link' => route('pumps.show', $pump), 'icon' => 'arrow-left']" />
 
-        <form method="POST" action="{{ route('pumps.update', $pump) }}" class="space-y-6">
+        <form method="POST" action="{{ route('pumps.update', $pump) }}" class="space-y-6" data-unsaved-form>
             @csrf
             @method('PUT')
             @include('pages.pumps.partials.form')

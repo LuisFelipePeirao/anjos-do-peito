@@ -15,7 +15,7 @@
 
 <x-app.modal-shell :dialog-id="$dialogId" :title="$title" :description="$description" :entity-label="$entityLabel">
 
-        <form action="{{ $storeAction }}" method="POST" class="mt-5 space-y-4 rounded-lg border border-[#f0e7e8] p-4" data-entity-form data-entity-store-action="{{ $storeAction }}" data-entity-fields="nome,descricao">
+        <form action="{{ $storeAction }}" method="POST" class="mt-5 space-y-4 rounded-lg border border-[#f0e7e8] p-4" data-entity-form data-entity-store-action="{{ $storeAction }}" data-entity-fields="nome,descricao" data-unsaved-form>
             @csrf
             <input type="hidden" name="_method" value="PUT" data-entity-method disabled>
             <div class="grid gap-4 md:grid-cols-2">

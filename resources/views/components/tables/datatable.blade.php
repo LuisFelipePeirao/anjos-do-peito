@@ -87,9 +87,9 @@
                             @elseif ($key === 'status')
                                 @php
                                     $statusClass = match ($value) {
-                                        'Ativa', 'Realizado', 'Em andamento', 'Disponível', 'Pago', 'Entrada', 'Normal' => 'bg-[#e8f8ee] text-[#23845a]',
-                                        'Agendado', 'Emprestada', 'Distribuído' => 'bg-[#eef4ff] text-[#2f66d0]',
-                                        'Manutenção' => 'bg-[#f2f4f7] text-[#667085]',
+                                        'Ativa', 'Em andamento', 'Disponível', 'Pago', 'Entrada', 'Normal', 'Entregue' => 'bg-[#e8f8ee] text-[#23845a]',
+                                        'Agendado', 'Emprestada', 'Distribuído', 'Realizado', 'Recebida' => 'bg-[#eef4ff] text-[#2f66d0]',
+                                        'Manutenção', 'Ajuste' => 'bg-[#f2f4f7] text-[#667085]',
                                         'Em atraso', 'Pendente', 'Baixo', 'Saída' => 'bg-[#fff7e6] text-[#b76b00]',
                                         'Cancelado', 'Inativa', 'Crítico' => 'bg-[#fff1f1] text-[#c2414b]',
                                         default => 'bg-[#f2f4f7] text-[#667085]',

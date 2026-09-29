@@ -34,7 +34,17 @@ class UserService
                 'perfil' => ucfirst($user->perfil),
                 'status' => $user->trashed() ? 'Inativa' : 'Ativa',
                 '_actions' => [
-                    'items' => $user->trashed() ? [] : [
+                    'items' => $user->trashed() ? [[
+                        'icon' => 'check-o',
+                        'route' => route('users.restore', $user),
+                        'title' => 'Ativar usuário',
+                        'confirmation' => [
+                            'title' => 'Ativar usuário?',
+                            'message' => 'O usuário poderá acessar o sistema novamente. Deseja continuar?',
+                            'confirmLabel' => 'Ativar usuário',
+                            'method' => 'PATCH',
+                        ],
+                    ]] : [
                         [
                             'icon' => 'edit-o',
                             'route' => route('users.edit', $user),
@@ -94,5 +104,10 @@ class UserService
         }
 
         $user->delete();
+    }
+
+    public function restore(User $user): void
+    {
+        $user->restore();
     }
 }

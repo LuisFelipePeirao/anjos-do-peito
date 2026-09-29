@@ -227,7 +227,7 @@
             @if (count($payments))
                 <div class="overflow-x-auto rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]"><table class="w-full min-w-225 text-left text-sm"><thead class="border-b border-[#eadfe0] bg-[#fbfaf9] text-xs uppercase text-[#667085]"><tr><th class="px-5 py-4">Beneficiária</th><th class="px-5 py-4">Data</th><th class="px-5 py-4">Referência</th><th class="px-5 py-4">Forma</th><th class="px-5 py-4">Valor</th><th class="px-5 py-4">Situação</th><th class="px-5 py-4 text-right">Ações</th></tr></thead><tbody class="divide-y divide-[#f0e7e8]">@foreach ($payments as $payment)<tr><th class="px-5 py-4 font-semibold text-[#111827]">{{ $payment['beneficiary'] }}</th><td class="px-5 py-4">{{ $payment['date'] }}</td><td class="px-5 py-4">{{ $payment['reference'] }}</td><td class="px-5 py-4">{{ $payment['method'] }}</td><td class="px-5 py-4">{{ $payment['value'] }}</td><td class="px-5 py-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ match ($payment['status']) { 'Pago' => 'bg-[#e8f8ee] text-[#23845a]', 'Pendente', 'Em atraso' => 'bg-[#fff7e6] text-[#b76b00]', 'Cancelado' => 'bg-[#fff1f1] text-[#c2414b]', default => 'bg-[#f2f4f7] text-[#667085]' } }}">{{ $payment['status'] }}</span></td><td class="px-5 py-4 text-right">@if ($payment['can_register'])<button type="button" data-dialog-open="payment-{{ $payment['id'] }}" title="Registrar pagamento" aria-label="Registrar pagamento" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d1eadb] text-[#23845a] transition hover:bg-[#e8f8ee]"><x-gmdi-payments-o class="h-4 w-4" /></button>@endif</td></tr>@endforeach</tbody></table></div>
                 @foreach ($payments as $payment)
-                    @if ($payment['can_register'])<dialog id="payment-{{ $payment['id'] }}" data-dialog-modal class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5"><form method="POST" action="{{ route('pumps.payments.pay', [$pump, $payment['id']]) }}" class="space-y-5">@csrf @method('PATCH')<h2 class="text-lg font-bold">Registrar pagamento</h2><x-material.floating-input type="date" name="paid_at" label="Data do pagamento" :value="old('paid_at', now()->toDateString())" required /><x-material.floating-textarea name="notes" label="Observações" :value="old('notes')" /><div class="flex justify-end gap-3"><button type="button" data-dialog-close class="rounded-lg border px-4 py-2">Cancelar</button><button class="rounded-lg bg-[#23845a] px-4 py-2 font-semibold text-white">Confirmar pagamento</button></div></form></dialog>@endif
+                    @if ($payment['can_register'])<dialog id="payment-{{ $payment['id'] }}" data-dialog-modal class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5"><form method="POST" action="{{ route('pumps.payments.pay', [$pump, $payment['id']]) }}" class="space-y-5" data-unsaved-form>@csrf @method('PATCH')<h2 class="text-lg font-bold">Registrar pagamento</h2><x-material.floating-input type="date" name="paid_at" label="Data do pagamento" :value="old('paid_at', now()->toDateString())" required /><x-material.floating-textarea name="notes" label="Observações" :value="old('notes')" /><div class="flex justify-end gap-3"><button type="button" data-dialog-close class="rounded-lg border px-4 py-2">Cancelar</button><button class="rounded-lg bg-[#23845a] px-4 py-2 font-semibold text-white">Confirmar pagamento</button></div></form></dialog>@endif
                 @endforeach
             @else
                 <article class="rounded-[8px] border border-[#eadfe0] bg-white p-8 text-center shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
@@ -333,7 +333,7 @@
             @if ($errors->hasAny(['type', 'started_at', 'status', 'description'])) data-dialog-auto-open @endif
             class="m-auto w-[calc(100%-2rem)] max-w-2xl rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45 backdrop:backdrop-blur-[2px]"
         >
-            <form method="POST" action="{{ route('pumps.maintenance.store', $pump) }}" class="p-5 sm:p-6">
+            <form method="POST" action="{{ route('pumps.maintenance.store', $pump) }}" class="p-5 sm:p-6" data-unsaved-form>
                 @csrf
 
                 <div class="flex items-start gap-4">
@@ -365,7 +365,7 @@
         @foreach ($maintenanceHistory as $maintenance)
             @if ($maintenance['is_open'])
                 <dialog id="maintenance-finish-{{ $maintenance['id'] }}" data-dialog-modal @error('finished_at') data-dialog-auto-open @enderror class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45">
-                    <form method="POST" action="{{ route('pumps.maintenance.finish', [$pump, $maintenance['id']]) }}" class="space-y-5">
+                    <form method="POST" action="{{ route('pumps.maintenance.finish', [$pump, $maintenance['id']]) }}" class="space-y-5" data-unsaved-form>
                         @csrf @method('PATCH')
                         <h2 class="text-lg font-bold">Concluir manutenção</h2>
                         <x-material.floating-input :id="'finished_at-'.$maintenance['id']" type="datetime-local" name="finished_at" label="Data e hora da conclusão" :min="$maintenance['started_at_input']" :value="old('finished_at', now()->format('Y-m-d\TH:i'))" required />
@@ -375,7 +375,7 @@
                 </dialog>
 
                 <dialog id="maintenance-cancel-{{ $maintenance['id'] }}" data-dialog-modal class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45">
-                    <form method="POST" action="{{ route('pumps.maintenance.cancel', [$pump, $maintenance['id']]) }}" class="space-y-5">
+                    <form method="POST" action="{{ route('pumps.maintenance.cancel', [$pump, $maintenance['id']]) }}" class="space-y-5" data-unsaved-form>
                         @csrf @method('PATCH')
                         <h2 class="text-lg font-bold">Cancelar manutenção</h2>
                         <x-material.floating-textarea :id="'cancel_notes-'.$maintenance['id']" name="notes" label="Observações" :value="old('notes')" />
@@ -393,7 +393,7 @@
                 @error('returned_at') data-dialog-auto-open @enderror
                 class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45 backdrop:backdrop-blur-[2px]"
             >
-                <form method="POST" action="{{ route('pumps.loans.return', $pump) }}" class="p-5 sm:p-6">
+                <form method="POST" action="{{ route('pumps.loans.return', $pump) }}" class="p-5 sm:p-6" data-unsaved-form>
                     @csrf
                     @method('PATCH')
 
@@ -429,7 +429,7 @@
                 @error('expires_at') data-dialog-auto-open @enderror
                 class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45 backdrop:backdrop-blur-[2px]"
             >
-                <form method="POST" action="{{ route('pumps.loans.renew', $pump) }}" class="p-5 sm:p-6">
+                <form method="POST" action="{{ route('pumps.loans.renew', $pump) }}" class="p-5 sm:p-6" data-unsaved-form>
                     @csrf
                     @method('PATCH')
 

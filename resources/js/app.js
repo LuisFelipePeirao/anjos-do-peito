@@ -1,3 +1,5 @@
+import { shouldConfirmFormDismissal, shouldConfirmUnsavedNavigation } from './unsaved-form-guard.js';
+
 const shell = document.getElementById('app-shell');
 
 const passwordToggleTarget = (button) => {
@@ -210,7 +212,136 @@ document.addEventListener('keydown', (event) => {
         return;
     }
 
-    document.querySelector('[data-confirm-dialog-modal][open]')?.close();
+    const confirmationDialog = document.querySelector('[data-confirm-dialog-modal][open]');
+
+    if (confirmationDialog) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        confirmationDialog.close();
+    }
+});
+
+const unsavedForms = Array.from(document.querySelectorAll('form[data-unsaved-form]'));
+const unsavedFormSnapshots = new WeakMap();
+let pendingAbandonment = null;
+let isSubmittingProtectedForm = false;
+let allowsProtectedFormDismissal = false;
+
+const serializeForm = (form) => Array.from(new FormData(form).entries())
+    .map(([name, value]) => [name, value instanceof File ? `${value.name}:${value.size}:${value.lastModified}` : value]);
+
+const sameFormData = (first, second) => JSON.stringify(first) === JSON.stringify(second);
+const isProtectedFormDirty = (form) => !sameFormData(unsavedFormSnapshots.get(form), serializeForm(form));
+const isAnyProtectedFormDirty = () => unsavedForms.some((form) => !sameFormData(unsavedFormSnapshots.get(form), serializeForm(form)));
+const resetUnsavedFormSnapshot = (form) => unsavedFormSnapshots.set(form, serializeForm(form));
+
+unsavedForms.forEach((form) => {
+    resetUnsavedFormSnapshot(form);
+    form.addEventListener('unsaved-form:reset', () => resetUnsavedFormSnapshot(form));
+    form.addEventListener('submit', (event) => {
+        queueMicrotask(() => {
+            if (!event.defaultPrevented) {
+                isSubmittingProtectedForm = true;
+            }
+        });
+    });
+});
+
+const abandonmentDialog = document.getElementById('unsaved-form-confirmation');
+const openAbandonmentDialog = (action, permitsUnload = false) => {
+    pendingAbandonment = { action, permitsUnload };
+    abandonmentDialog?.showModal();
+};
+
+document.addEventListener('click', (event) => {
+    if (allowsProtectedFormDismissal) {
+        return;
+    }
+
+    if (!isAnyProtectedFormDirty()) {
+        return;
+    }
+
+    const link = event.target.closest('a[href]');
+
+    if (link && shouldConfirmUnsavedNavigation({
+        isDirty: true,
+        href: link.href,
+        currentHref: window.location.href,
+        target: link.target,
+        hasModifier: event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0,
+        download: link.hasAttribute('download'),
+        isConfirmationOpener: link.hasAttribute('data-confirm-dialog-open'),
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => window.location.assign(link.href), true);
+        return;
+    }
+
+    const dismissControl = event.target.closest('[data-dialog-close], [data-entity-reset], [data-location-reset]');
+    const form = dismissControl?.closest('form[data-unsaved-form]');
+
+    if (form && shouldConfirmFormDismissal({
+        isDirty: isProtectedFormDirty(form),
+        isAbandonmentDialogOpen: abandonmentDialog?.open,
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => {
+            allowsProtectedFormDismissal = true;
+            dismissControl.click();
+            allowsProtectedFormDismissal = false;
+        });
+    }
+
+    const dialog = event.target instanceof HTMLDialogElement ? event.target : null;
+    const dialogForm = dialog?.querySelector('form[data-unsaved-form]');
+
+    if (dialogForm && shouldConfirmFormDismissal({
+        isDirty: isProtectedFormDirty(dialogForm),
+        isAbandonmentDialogOpen: abandonmentDialog?.open,
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => dialog.close());
+    }
+}, true);
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !isAnyProtectedFormDirty()) {
+        return;
+    }
+
+    const dialog = document.querySelector('[data-dialog-modal][open]');
+    const form = dialog?.querySelector('form[data-unsaved-form]');
+
+    if (form && shouldConfirmFormDismissal({
+        isDirty: isProtectedFormDirty(form),
+        isAbandonmentDialogOpen: abandonmentDialog?.open,
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => dialog.close());
+    }
+}, true);
+
+abandonmentDialog?.addEventListener('confirm-dialog:confirmed', () => {
+    const pendingAction = pendingAbandonment;
+    pendingAbandonment = null;
+    isSubmittingProtectedForm = pendingAction?.permitsUnload ?? false;
+    pendingAction?.action?.();
+});
+
+abandonmentDialog?.addEventListener('close', () => {
+    pendingAbandonment = null;
+});
+
+window.addEventListener('beforeunload', (event) => {
+    if (!isSubmittingProtectedForm && isAnyProtectedFormDirty()) {
+        event.preventDefault();
+        event.returnValue = '';
+    }
 });
 
 document.addEventListener('click', (event) => {
@@ -276,6 +407,7 @@ if (locationForm) {
         if (submitLabel) {
             submitLabel.textContent = 'Salvar local';
         }
+        locationForm.dispatchEvent(new Event('unsaved-form:reset'));
     };
 
     document.querySelectorAll('[data-location-edit]').forEach((button) => {
@@ -288,6 +420,7 @@ if (locationForm) {
             if (submitLabel) {
                 submitLabel.textContent = 'Salvar alterações';
             }
+            locationForm.dispatchEvent(new Event('unsaved-form:reset'));
             locationForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
             locationForm.querySelector('[name="nome"]')?.focus();
         });
@@ -319,6 +452,7 @@ document.querySelectorAll('[data-entity-form]').forEach((entityForm) => {
         if (submitLabel) {
             submitLabel.textContent = `Salvar ${entityForm.closest('dialog')?.dataset.entityLabel || 'item'}`;
         }
+        entityForm.dispatchEvent(new Event('unsaved-form:reset'));
     };
 
     entityForm.closest('dialog')?.querySelectorAll('[data-entity-edit]').forEach((button) => {
@@ -329,6 +463,7 @@ document.querySelectorAll('[data-entity-form]').forEach((entityForm) => {
             if (submitLabel) {
                 submitLabel.textContent = 'Salvar alterações';
             }
+            entityForm.dispatchEvent(new Event('unsaved-form:reset'));
             entityForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
             entityForm.querySelector('[name="nome"]')?.focus();
         });

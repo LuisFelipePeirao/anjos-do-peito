@@ -77,6 +77,27 @@ it('lists stock movements and opens movement detail', function () {
         ->assertSee('4 pacotes');
 });
 
+it('renders movement status badges with their intended colors', function () {
+    $html = view('components.tables.datatable', [
+        'header' => ['Situação'],
+        'data' => [
+            ['name' => 'Entrega', 'status' => 'Entregue'],
+            ['name' => 'Entrada', 'status' => 'Recebida'],
+            ['name' => 'Correção', 'status' => 'Ajuste'],
+            ['name' => 'Cancelamento', 'status' => 'Cancelado'],
+            ['name' => 'Aguardando', 'status' => 'Pendente'],
+        ],
+        'showActions' => false,
+    ])->render();
+
+    expect($html)
+        ->toMatch('/bg-\\[#e8f8ee\\] text-\\[#23845a\\][^>]*>\\s*Entregue/')
+        ->toMatch('/bg-\\[#eef4ff\\] text-\\[#2f66d0\\][^>]*>\\s*Recebida/')
+        ->toMatch('/bg-\\[#f2f4f7\\] text-\\[#667085\\][^>]*>\\s*Ajuste/')
+        ->toMatch('/bg-\\[#fff1f1\\] text-\\[#c2414b\\][^>]*>\\s*Cancelado/')
+        ->toMatch('/bg-\\[#fff7e6\\] text-\\[#b76b00\\][^>]*>\\s*Pendente/');
+});
+
 it('shows movement type chooser before showing a form', function () {
     $user = User::factory()->administrador()->create();
 

@@ -17,7 +17,7 @@
                 'icon' => 'arrow-left',
             ]" />
 
-        <form action="{{ route('users.update', $user) }}" method="POST" class="space-y-6">
+        <form action="{{ route('users.update', $user) }}" method="POST" class="space-y-6" data-unsaved-form>
             @csrf
             @method('PUT')
 

@@ -8,7 +8,7 @@
 @section('content')
     <section class="space-y-6">
         <x-app.page-info subheading="Cadastro de beneficiárias" title="Editar beneficiária" description="Atualize os dados de identificação, contato e endereço." :firstButton="['label' => 'Voltar para perfil', 'link' => route('beneficiaries.show', $beneficiaria), 'icon' => 'arrow-left']" />
-        <form action="{{ route('beneficiaries.update', $beneficiaria) }}" method="POST" class="space-y-6">
+        <form action="{{ route('beneficiaries.update', $beneficiaria) }}" method="POST" class="space-y-6" data-unsaved-form>
             @csrf
             @method('PUT')
             @include('pages.beneficiaries.partials.form', ['beneficiaria' => $beneficiaria])

@@ -25,7 +25,7 @@
             :description="$isEdit ? 'Atualize os dados deste rascunho ou agendamento.' : 'Registre a agenda ou inclua um atendimento já realizado.'"
             :firstButton="['label' => 'Voltar para lista', 'link' => route('attendances.index'), 'icon' => 'arrow-left']" />
 
-        <form method="POST" action="{{ $formAction }}" class="space-y-6" data-attendance-form data-children-endpoint="{{ $childEndpoint }}">
+        <form method="POST" action="{{ $formAction }}" class="space-y-6" data-attendance-form data-children-endpoint="{{ $childEndpoint }}" data-unsaved-form>
             @csrf
             @if ($isEdit) @method('PUT') @endif
             <input type="hidden" name="confirmed_finalization" value="0" data-attendance-finalization-confirmation>

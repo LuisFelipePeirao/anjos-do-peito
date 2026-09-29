@@ -13,7 +13,7 @@
             description="Registre identificação, origem e acessórios do equipamento."
             :firstButton="['label' => 'Voltar para lista', 'link' => route('pumps.index'), 'icon' => 'arrow-left']" />
 
-        <form method="POST" action="{{ route('pumps.store') }}" class="space-y-6">
+        <form method="POST" action="{{ route('pumps.store') }}" class="space-y-6" data-unsaved-form>
             @csrf
             @include('pages.pumps.partials.form')
             @include('pages.pumps.partials.actions', ['cancelRoute' => route('pumps.index'), 'submitLabel' => 'Salvar bomba de leite'])

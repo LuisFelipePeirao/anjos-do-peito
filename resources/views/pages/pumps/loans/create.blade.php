@@ -20,7 +20,7 @@
             description="Escolha se a bomba será emprestada sem custo ou alugada com cobrança mensal."
             :firstButton="['label' => 'Voltar para lista', 'link' => route('pumps.index'), 'icon' => 'arrow-left']" />
 
-        <form method="POST" action="{{ route('pumps.loans.store') }}" class="space-y-6">
+        <form method="POST" action="{{ route('pumps.loans.store') }}" class="space-y-6" data-unsaved-form>
             @csrf
 
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
