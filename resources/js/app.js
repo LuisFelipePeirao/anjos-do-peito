@@ -1,3 +1,5 @@
+import { shouldConfirmFormDismissal, shouldConfirmUnsavedNavigation } from './unsaved-form-guard.js';
+
 const shell = document.getElementById('app-shell');
 
 const passwordToggleTarget = (button) => {
@@ -34,8 +36,8 @@ document.addEventListener('click', (event) => {
 const syncSelectRequiredAsterisk = (select) => {
     const wrapper = select.closest('[data-select-required]');
     const asterisk = wrapper?.querySelector('[data-select-required-asterisk]');
-    const field = select.shadowRoot?.querySelector('[part="field"]');
-    const label = field?.shadowRoot?.querySelector('.label:not(.hidden)');
+    const field = select.shadowRoot?.querySelector('md-outlined-field, [part="field"]');
+    const label = field?.shadowRoot?.querySelector('[part="label"], .label:not(.hidden), label:not(.hidden)');
 
     if (!wrapper || !asterisk || !label) {
         return;
@@ -57,6 +59,13 @@ const scheduleSelectRequiredAsterisk = (select) => {
     requestAnimationFrame(() => {
         syncSelectRequiredAsterisk(select);
         window.setTimeout(() => syncSelectRequiredAsterisk(select), 170);
+        window.setTimeout(() => syncSelectRequiredAsterisk(select), 500);
+    });
+};
+
+const scheduleDialogSelectRequiredAsterisks = (dialog) => {
+    dialog.querySelectorAll('[data-select-required] md-outlined-select').forEach((select) => {
+        scheduleSelectRequiredAsterisk(select);
     });
 };
 
@@ -64,7 +73,10 @@ const selectWithRequiredAsterisk = (target) => target instanceof Element
     ? target.closest('md-outlined-select')?.closest('[data-select-required]')?.querySelector('md-outlined-select')
     : null;
 
-document.querySelectorAll('[data-select-required] md-outlined-select').forEach(scheduleSelectRequiredAsterisk);
+document.querySelectorAll('[data-select-required] md-outlined-select').forEach((select) => {
+    scheduleSelectRequiredAsterisk(select);
+    customElements.whenDefined('md-outlined-select').then(() => scheduleSelectRequiredAsterisk(select));
+});
 
 ['focusin', 'focusout', 'input', 'change'].forEach((eventName) => {
     document.addEventListener(eventName, (event) => {
@@ -200,14 +212,154 @@ document.addEventListener('keydown', (event) => {
         return;
     }
 
-    document.querySelector('[data-confirm-dialog-modal][open]')?.close();
+    const confirmationDialog = document.querySelector('[data-confirm-dialog-modal][open]');
+
+    if (confirmationDialog) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        confirmationDialog.close();
+    }
+});
+
+const unsavedForms = Array.from(document.querySelectorAll('form[data-unsaved-form]'));
+const unsavedFormSnapshots = new WeakMap();
+let pendingAbandonment = null;
+let isSubmittingProtectedForm = false;
+let allowsProtectedFormDismissal = false;
+
+const serializeForm = (form) => Array.from(new FormData(form).entries())
+    .map(([name, value]) => [name, value instanceof File ? `${value.name}:${value.size}:${value.lastModified}` : value]);
+
+const sameFormData = (first, second) => JSON.stringify(first) === JSON.stringify(second);
+const isProtectedFormDirty = (form) => !sameFormData(unsavedFormSnapshots.get(form), serializeForm(form));
+const isAnyProtectedFormDirty = () => unsavedForms.some((form) => !sameFormData(unsavedFormSnapshots.get(form), serializeForm(form)));
+const isAnyNavigableProtectedFormDirty = () => unsavedForms.some((form) => {
+    const dialog = form.closest('dialog');
+
+    return isProtectedFormDirty(form) && (!dialog || dialog.open);
+});
+const resetUnsavedFormSnapshot = (form) => unsavedFormSnapshots.set(form, serializeForm(form));
+
+unsavedForms.forEach((form) => {
+    resetUnsavedFormSnapshot(form);
+    form.addEventListener('unsaved-form:reset', () => resetUnsavedFormSnapshot(form));
+    form.addEventListener('submit', (event) => {
+        queueMicrotask(() => {
+            if (!event.defaultPrevented) {
+                isSubmittingProtectedForm = true;
+            }
+        });
+    });
+});
+
+const abandonmentDialog = document.getElementById('unsaved-form-confirmation');
+const openAbandonmentDialog = (action, permitsUnload = false) => {
+    pendingAbandonment = { action, permitsUnload };
+    abandonmentDialog?.showModal();
+};
+
+document.addEventListener('click', (event) => {
+    if (allowsProtectedFormDismissal) {
+        return;
+    }
+
+    if (!isAnyProtectedFormDirty()) {
+        return;
+    }
+
+    const link = event.target.closest('a[href]');
+
+    if (link && shouldConfirmUnsavedNavigation({
+        isDirty: true,
+        href: link.href,
+        currentHref: window.location.href,
+        target: link.target,
+        hasModifier: event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0,
+        download: link.hasAttribute('download'),
+        isConfirmationOpener: link.hasAttribute('data-confirm-dialog-open'),
+        isInClosedDialog: !isAnyNavigableProtectedFormDirty(),
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => window.location.assign(link.href), true);
+        return;
+    }
+
+    const dismissControl = event.target.closest('[data-dialog-close], [data-entity-reset], [data-location-reset]');
+    const form = dismissControl?.closest('form[data-unsaved-form]');
+
+    if (form && shouldConfirmFormDismissal({
+        isDirty: isProtectedFormDirty(form),
+        isAbandonmentDialogOpen: abandonmentDialog?.open,
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => {
+            allowsProtectedFormDismissal = true;
+            dismissControl.click();
+            allowsProtectedFormDismissal = false;
+        });
+    }
+
+    const dialog = event.target instanceof HTMLDialogElement ? event.target : null;
+    const dialogForm = dialog?.querySelector('form[data-unsaved-form]');
+
+    if (dialogForm && shouldConfirmFormDismissal({
+        isDirty: isProtectedFormDirty(dialogForm),
+        isAbandonmentDialogOpen: abandonmentDialog?.open,
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => dialog.close());
+    }
+}, true);
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !isAnyProtectedFormDirty()) {
+        return;
+    }
+
+    const dialog = document.querySelector('[data-dialog-modal][open]');
+    const form = dialog?.querySelector('form[data-unsaved-form]');
+
+    if (form && shouldConfirmFormDismissal({
+        isDirty: isProtectedFormDirty(form),
+        isAbandonmentDialogOpen: abandonmentDialog?.open,
+    })) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openAbandonmentDialog(() => dialog.close());
+    }
+}, true);
+
+abandonmentDialog?.addEventListener('confirm-dialog:confirmed', () => {
+    const pendingAction = pendingAbandonment;
+    pendingAbandonment = null;
+    isSubmittingProtectedForm = pendingAction?.permitsUnload ?? false;
+    pendingAction?.action?.();
+});
+
+abandonmentDialog?.addEventListener('close', () => {
+    pendingAbandonment = null;
+});
+
+window.addEventListener('beforeunload', (event) => {
+    if (!isSubmittingProtectedForm && isAnyNavigableProtectedFormDirty()) {
+        event.preventDefault();
+        event.returnValue = '';
+    }
 });
 
 document.addEventListener('click', (event) => {
     const openButton = event.target.closest('[data-dialog-open]');
 
     if (openButton) {
-        document.getElementById(openButton.dataset.dialogOpen)?.showModal();
+        const dialog = document.getElementById(openButton.dataset.dialogOpen);
+
+        if (dialog instanceof HTMLDialogElement) {
+            dialog.showModal();
+            scheduleDialogSelectRequiredAsterisks(dialog);
+        }
         return;
     }
 
@@ -229,6 +381,7 @@ document.querySelectorAll('[data-dialog-modal]').forEach((dialog) => {
 document.querySelectorAll('[data-dialog-auto-open]').forEach((dialog) => {
     if (dialog instanceof HTMLDialogElement) {
         dialog.showModal();
+        scheduleDialogSelectRequiredAsterisks(dialog);
     }
 });
 
@@ -260,6 +413,7 @@ if (locationForm) {
         if (submitLabel) {
             submitLabel.textContent = 'Salvar local';
         }
+        locationForm.dispatchEvent(new Event('unsaved-form:reset'));
     };
 
     document.querySelectorAll('[data-location-edit]').forEach((button) => {
@@ -272,6 +426,7 @@ if (locationForm) {
             if (submitLabel) {
                 submitLabel.textContent = 'Salvar alterações';
             }
+            locationForm.dispatchEvent(new Event('unsaved-form:reset'));
             locationForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
             locationForm.querySelector('[name="nome"]')?.focus();
         });
@@ -303,6 +458,7 @@ document.querySelectorAll('[data-entity-form]').forEach((entityForm) => {
         if (submitLabel) {
             submitLabel.textContent = `Salvar ${entityForm.closest('dialog')?.dataset.entityLabel || 'item'}`;
         }
+        entityForm.dispatchEvent(new Event('unsaved-form:reset'));
     };
 
     entityForm.closest('dialog')?.querySelectorAll('[data-entity-edit]').forEach((button) => {
@@ -313,6 +469,7 @@ document.querySelectorAll('[data-entity-form]').forEach((entityForm) => {
             if (submitLabel) {
                 submitLabel.textContent = 'Salvar alterações';
             }
+            entityForm.dispatchEvent(new Event('unsaved-form:reset'));
             entityForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
             entityForm.querySelector('[name="nome"]')?.focus();
         });
@@ -330,8 +487,21 @@ const formatPhone = (value) => digitsOnly(value, 11)
     .replace(/^(\d{2})(\d)/, '($1) $2')
     .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
 const formatCep = (value) => digitsOnly(value, 8).replace(/(\d{5})(\d)/, '$1-$2');
+const formatCurrencyBrl = (value) => {
+    if (!value.includes('R$') && /^\d+[.,]\d{1,2}$/.test(value)) {
+        return `R$ ${Number(value.replace(',', '.')).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
 
-const maskFormatters = { cpf: formatCpf, phone: formatPhone, cep: formatCep };
+    const cents = digitsOnly(value, 12);
+
+    if (cents === '') {
+        return '';
+    }
+
+    return `R$ ${(Number(cents) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+
+const maskFormatters = { cpf: formatCpf, phone: formatPhone, cep: formatCep, 'currency-brl': formatCurrencyBrl };
 
 document.querySelectorAll('[data-mask]').forEach((input) => {
     const formatter = maskFormatters[input.dataset.mask];

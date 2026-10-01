@@ -109,6 +109,68 @@ class PumpService
         });
     }
 
+    public function openMaintenance(BombaLeite $pump, array $data, int $userId): ManutencaoBomba
+    {
+        return DB::transaction(function () use ($pump, $data, $userId) {
+            $lockedPump = BombaLeite::query()->lockForUpdate()->findOrFail($pump->id);
+
+            abort_unless($lockedPump->situacao === 'disponivel', 409);
+
+            $maintenance = $lockedPump->manutencoes()->create([
+                'id_usuario' => $userId,
+                'data_inicio' => $data['started_at'],
+                'tipo' => $data['type'],
+                'descricao' => $data['description'],
+                'situacao' => $data['status'],
+                'observacao' => $data['notes'] ?? null,
+            ]);
+            $lockedPump->update(['situacao' => 'manutencao']);
+
+            return $maintenance;
+        });
+    }
+
+    public function finishMaintenance(BombaLeite $pump, ManutencaoBomba $maintenance, array $data): ManutencaoBomba
+    {
+        return DB::transaction(function () use ($pump, $maintenance, $data) {
+            $lockedPump = BombaLeite::query()->lockForUpdate()->findOrFail($pump->id);
+            $lockedMaintenance = ManutencaoBomba::query()->lockForUpdate()->findOrFail($maintenance->id);
+
+            abort_unless($lockedMaintenance->id_bomba === $lockedPump->id && in_array($lockedMaintenance->situacao, ['aberta', 'em_andamento'], true), 404);
+
+            $lockedMaintenance->update([
+                'situacao' => 'concluida',
+                'data_fim' => $data['finished_at'],
+                'observacao' => filled($data['notes'] ?? null) ? $data['notes'] : $lockedMaintenance->observacao,
+            ]);
+            if ($lockedPump->situacao !== 'baixada') {
+                $lockedPump->update(['situacao' => 'disponivel']);
+            }
+
+            return $lockedMaintenance->refresh();
+        });
+    }
+
+    public function cancelMaintenance(BombaLeite $pump, ManutencaoBomba $maintenance, array $data): ManutencaoBomba
+    {
+        return DB::transaction(function () use ($pump, $maintenance, $data) {
+            $lockedPump = BombaLeite::query()->lockForUpdate()->findOrFail($pump->id);
+            $lockedMaintenance = ManutencaoBomba::query()->lockForUpdate()->findOrFail($maintenance->id);
+
+            abort_unless($lockedMaintenance->id_bomba === $lockedPump->id && in_array($lockedMaintenance->situacao, ['aberta', 'em_andamento'], true), 404);
+
+            $lockedMaintenance->update([
+                'situacao' => 'cancelada',
+                'observacao' => filled($data['notes'] ?? null) ? $data['notes'] : $lockedMaintenance->observacao,
+            ]);
+            if ($lockedPump->situacao !== 'baixada') {
+                $lockedPump->update(['situacao' => 'disponivel']);
+            }
+
+            return $lockedMaintenance->refresh();
+        });
+    }
+
     public function destroy(BombaLeite $pump): bool
     {
         if ($pump->cessoes()->exists() || $pump->manutencoes()->exists()) {
@@ -124,7 +186,7 @@ class PumpService
 
     public function showData(BombaLeite $pump): array
     {
-        $pump->load(['modelo', 'doador', 'cessoes.beneficiaria', 'cessoes.usuarioRetirada', 'cessoes.pagamentos', 'manutencoes.usuario']);
+        $pump->load(['modelo', 'doador', 'cessoes.beneficiaria', 'cessoes.usuarioRetirada', 'cessoes.usuarioDevolucao', 'cessoes.pagamentos', 'manutencoes.usuario']);
         $currentContract = $this->currentContract($pump);
         $isAvailable = $pump->situacao === 'disponivel';
         $isRental = $currentContract?->tipo === 'aluguel';
@@ -154,6 +216,10 @@ class PumpService
             'loanHistory' => $this->loanHistory($pump),
             'payments' => $this->payments($pump),
             'maintenanceHistory' => $this->maintenanceHistory($pump),
+            'maintenanceAction' => [
+                'enabled' => $pump->situacao === 'disponivel',
+                'reason' => $this->maintenanceUnavailableReason($pump->situacao),
+            ],
             'history' => $this->history($pump),
         ];
     }
@@ -252,6 +318,12 @@ class PumpService
     private function contractData(CessaoBomba $contract): array
     {
         $isOverdue = $contract->data_prevista_devolucao?->isPast() && ! $contract->data_devolucao;
+        $renewals = collect(preg_split('/\R/', $contract->observacao_retirada ?? ''))
+            ->filter(fn (string $line) => str_starts_with($line, 'Renovado em '));
+        $baseNotes = collect(preg_split('/\R/', $contract->observacao_retirada ?? ''))
+            ->reject(fn (string $line) => str_starts_with($line, 'Renovado em '))
+            ->filter()
+            ->join("\n");
 
         return [
             'id' => $contract->id,
@@ -262,12 +334,12 @@ class PumpService
             'expires_at' => $contract->data_prevista_devolucao?->format('d/m/Y') ?? '-',
             'expires_at_input' => $contract->data_prevista_devolucao?->toDateString(),
             'renewal_min_date' => ($contract->data_prevista_devolucao?->isFuture() ? $contract->data_prevista_devolucao : now())->copy()->addDay()->toDateString(),
-            'next_renewal_at' => $contract->data_prevista_devolucao?->copy()->subDays(3)->format('d/m/Y') ?? '-',
+            'last_renewal' => $renewals->last() ?? '-',
             'monthly_fee' => $contract->tipo === 'aluguel' ? $this->money($contract->valor_mensalidade) : 'Sem custo',
             'billing_due_day' => $contract->tipo === 'aluguel' ? 'Conforme vencimentos cadastrados' : '-',
             'responsible' => $contract->usuarioRetirada?->nome ?? '-',
             'term_status' => 'Registrado',
-            'notes' => $contract->observacao_retirada ?: 'Bomba em uso por beneficiária.',
+            'notes' => collect([$baseNotes, $renewals->last()])->filter()->join("\n") ?: 'Bomba em uso por beneficiária.',
             'is_overdue' => $isOverdue,
             'is_renewable' => in_array($contract->situacao, ['ativa', 'atrasada'], true),
         ];
@@ -291,15 +363,18 @@ class PumpService
     private function payments(BombaLeite $pump): array
     {
         return $pump->cessoes
-            ->flatMap->pagamentos
-            ->sortByDesc('data_vencimento')
-            ->map(fn ($payment) => [
+            ->flatMap(fn (CessaoBomba $loan) => $loan->pagamentos->map(fn ($payment) => [
+                'id' => $payment->id,
+                'beneficiary' => $loan->beneficiaria?->nome ?? '-',
+                'sort_date' => ($payment->data_pagamento ?? $payment->data_vencimento)?->toDateString(),
                 'date' => ($payment->data_pagamento ?? $payment->data_vencimento)?->format('d/m/Y') ?? '-',
                 'reference' => $payment->competencia?->translatedFormat('m/Y') ?? '-',
-                'method' => $payment->data_pagamento ? 'Registrado' : '-',
+                'method' => $loan->forma_cobranca ? strtoupper($loan->forma_cobranca) : '-',
                 'value' => $this->money($payment->valor),
                 'status' => $this->paymentStatusLabel($payment->situacao),
-            ])
+                'can_register' => in_array($payment->situacao, ['pendente', 'atrasado'], true),
+            ]))
+            ->sortByDesc('sort_date')
             ->values()
             ->all();
     }
@@ -309,11 +384,14 @@ class PumpService
         return $pump->manutencoes
             ->sortByDesc('data_inicio')
             ->map(fn (ManutencaoBomba $maintenance) => [
+                'id' => $maintenance->id,
                 'date' => $maintenance->data_inicio?->format('d/m/Y') ?? '-',
+                'started_at_input' => $maintenance->data_inicio?->format('Y-m-d\TH:i'),
                 'type' => $this->maintenanceTypeLabel($maintenance->tipo),
                 'description' => $maintenance->descricao,
                 'responsible' => $maintenance->usuario?->nome ?? '-',
                 'status' => $this->maintenanceStatusLabel($maintenance->situacao),
+                'is_open' => in_array($maintenance->situacao, ['aberta', 'em_andamento'], true),
             ])
             ->values()
             ->all();
@@ -341,9 +419,36 @@ class PumpService
             'icon' => $maintenance->tipo === 'higienizacao' ? 'sparkles' : 'wrench',
         ]);
 
+        $maintenanceCompletions = $pump->manutencoes->filter(fn (ManutencaoBomba $maintenance) => $maintenance->situacao === 'concluida' && $maintenance->data_fim)->map(fn (ManutencaoBomba $maintenance) => [
+            'date' => $maintenance->data_fim,
+            'type' => 'Manutenção concluída',
+            'description' => $maintenance->observacao ?: 'Manutenção concluída e bomba liberada para uso.',
+            'responsible' => $maintenance->usuario?->nome ?? '-',
+            'icon' => 'circle-check',
+        ]);
+
+        $maintenanceCancellations = $pump->manutencoes->filter(fn (ManutencaoBomba $maintenance) => $maintenance->situacao === 'cancelada')->map(fn (ManutencaoBomba $maintenance) => [
+            'date' => $maintenance->data_inicio,
+            'type' => 'Manutenção cancelada',
+            'description' => $maintenance->observacao ?: 'Manutenção cancelada.',
+            'responsible' => $maintenance->usuario?->nome ?? '-',
+            'icon' => 'circle-x',
+        ]);
+
+        $returns = $pump->cessoes->filter(fn (CessaoBomba $loan) => $loan->data_devolucao)->map(fn (CessaoBomba $loan) => [
+            'date' => $loan->data_devolucao,
+            'type' => 'Devolução registrada',
+            'description' => $loan->observacao_devolucao ?: 'Bomba devolvida e disponibilizada para novo uso.',
+            'responsible' => $loan->usuarioDevolucao?->nome ?? '-',
+            'icon' => 'undo-2',
+        ]);
+
         return $items
             ->merge($loans)
             ->merge($maintenances)
+            ->merge($maintenanceCompletions)
+            ->merge($maintenanceCancellations)
+            ->merge($returns)
             ->filter(fn (array $item) => $item['date'])
             ->sortByDesc('date')
             ->map(fn (array $item) => [
@@ -420,6 +525,16 @@ class PumpService
     private function maintenanceStatusLabel(string $status): string
     {
         return ['aberta' => 'Agendado', 'em_andamento' => 'Em andamento', 'concluida' => 'Realizado', 'cancelada' => 'Cancelado'][$status] ?? $status;
+    }
+
+    private function maintenanceUnavailableReason(string $status): string
+    {
+        return match ($status) {
+            'alugada' => 'Esta bomba está emprestada ou alugada.',
+            'manutencao' => 'Esta bomba já está em manutenção.',
+            'baixada' => 'Esta bomba está inativa.',
+            default => 'Esta bomba não está disponível para manutenção.',
+        };
     }
 
     private function money(mixed $value): string

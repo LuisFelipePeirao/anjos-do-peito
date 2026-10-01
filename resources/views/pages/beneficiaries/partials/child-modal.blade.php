@@ -1,5 +1,5 @@
 <dialog id="{{ $id }}" data-dialog-modal class="m-auto w-[calc(100%-2rem)] max-w-lg rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45">
-    <form action="{{ $action }}" method="POST" class="p-5 sm:p-6">
+    <form action="{{ $action }}" method="POST" class="p-5 sm:p-6" data-unsaved-form>
         @csrf
         @if ($method !== 'POST') @method($method) @endif
         <div class="flex items-start justify-between gap-4"><div><h2 class="text-lg font-bold text-[#111827]">{{ $title }}</h2><p class="mt-1 text-sm text-[#667085]">Informe os dados da criança vinculada.</p></div><button type="button" data-dialog-close class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[#667085] hover:bg-[#f7edef]" aria-label="Fechar"><x-gmdi-close-o class="h-5 w-5" /></button></div>

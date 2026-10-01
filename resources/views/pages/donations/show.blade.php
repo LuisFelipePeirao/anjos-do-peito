@@ -42,10 +42,6 @@
                     <x-lucide-gift class="h-4 w-4" />
                     Registrar entrada
                 </a>
-                <a href="{{ route('donations.materials.create') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
-                    <x-lucide-pencil class="h-4 w-4" />
-                    Novo item
-                </a>
             </div>
         </div>
 

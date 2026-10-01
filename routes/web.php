@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/usuarios/{usuario}/editar', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/usuarios/{usuario}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/usuarios/{usuario}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::patch('/usuarios/{usuario}/ativar', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
     });
 
     Route::get('/beneficiarias', [BeneficiaryController::class, 'index'])->name('beneficiaries.index');
@@ -86,6 +87,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/bombas-de-leite/{pump}', [PumpController::class, 'update'])->name('pumps.update');
     Route::patch('/bombas-de-leite/{pump}/renovar-emprestimo', [PumpController::class, 'renewLoan'])->name('pumps.loans.renew');
     Route::patch('/bombas-de-leite/{pump}/registrar-devolucao', [PumpController::class, 'returnLoan'])->name('pumps.loans.return');
+    Route::post('/bombas-de-leite/{pump}/manutencoes', [PumpController::class, 'storeMaintenance'])->name('pumps.maintenance.store');
+    Route::patch('/bombas-de-leite/{pump}/manutencoes/{maintenance}/concluir', [PumpController::class, 'finishMaintenance'])->name('pumps.maintenance.finish');
+    Route::patch('/bombas-de-leite/{pump}/manutencoes/{maintenance}/cancelar', [PumpController::class, 'cancelMaintenance'])->name('pumps.maintenance.cancel');
+    Route::patch('/bombas-de-leite/{pump}/pagamentos/{payment}/registrar', [PumpController::class, 'registerPayment'])->name('pumps.payments.pay');
     Route::delete('/bombas-de-leite/{pump}', [PumpController::class, 'destroy'])->name('pumps.destroy');
 
     Route::get('/doacoes-e-estoque', [DonationStockController::class, 'index'])->name('donations.index');
@@ -102,6 +107,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/movimentacoes', [StockMovementController::class, 'index'])->name('movements.index');
     Route::get('/movimentacoes/nova', [StockMovementController::class, 'create'])->name('movements.create');
     Route::post('/movimentacoes', [StockMovementController::class, 'store'])->name('movements.store');
+    Route::patch('/movimentacoes/{movement}/dar-baixa', [StockMovementController::class, 'confirm'])->name('movements.confirm');
+    Route::patch('/movimentacoes/{movement}/cancelar', [StockMovementController::class, 'cancel'])->name('movements.cancel');
     Route::get('/movimentacoes/{movement}', [StockMovementController::class, 'show'])->name('movements.show');
 
     Route::get('/relatorios/exportar', [ReportController::class, 'export'])->name('reports.export');

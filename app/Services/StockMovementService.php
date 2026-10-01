@@ -58,6 +58,8 @@ class StockMovementService
             'distribuicaoItem.distribuicao.beneficiaria',
         ]);
 
+        $distribution = $movement->distribuicaoItem?->distribuicao;
+
         return [
             'movement' => $movement,
             'summary' => [
@@ -69,6 +71,8 @@ class StockMovementService
                 'status' => $this->statusLabel($movement),
                 'observation' => $movement->observacao ?: '-',
             ],
+            'distributionObservation' => $distribution?->observacao,
+            'canResolvePending' => $distribution?->situacao === 'pendente',
             'items' => [[
                 'material' => $movement->material?->nome ?? '-',
                 'category' => $movement->material?->categoria?->nome ?? '-',
@@ -76,6 +80,16 @@ class StockMovementService
                 'status' => $this->typeLabel($movement->tipo),
             ]],
         ];
+    }
+
+    public function confirmPending(EstoqueMovimentacao $movement): void
+    {
+        $this->resolvePending($movement, 'entregue');
+    }
+
+    public function cancelPending(EstoqueMovimentacao $movement): void
+    {
+        $this->resolvePending($movement, 'cancelada');
     }
 
     public function create(array $data, int $userId): EstoqueMovimentacao
@@ -103,7 +117,7 @@ class StockMovementService
             'materialBalances' => $materials
                 ->mapWithKeys(fn (Material $material) => [
                     $material->id => [
-                        'available' => $material->movimentacoes()->get()->sum(fn (EstoqueMovimentacao $movement) => $this->balanceImpact($movement)),
+                        'available' => $material->movimentacoes()->get()->sum(fn (EstoqueMovimentacao $movement) => $this->reservationImpact($movement)),
                         'unit' => $material->unidade_medida,
                     ],
                 ])
@@ -165,6 +179,34 @@ class StockMovementService
                 'id_usuario' => $userId,
                 'observacao' => 'Doação cancelada.',
             ]);
+        });
+    }
+
+    private function resolvePending(EstoqueMovimentacao $movement, string $status): void
+    {
+        DB::transaction(function () use ($movement, $status) {
+            $movement->loadMissing('distribuicaoItem');
+            $distributionId = $movement->distribuicaoItem?->id_distribuicao;
+
+            abort_unless($distributionId, 409);
+
+            $distribution = Distribuicao::query()->lockForUpdate()->findOrFail($distributionId);
+
+            abort_unless($distribution->situacao === 'pendente', 409);
+
+            $attributes = ['situacao' => $status];
+
+            if ($status === 'entregue') {
+                $attributes['data_hora'] = now();
+            }
+
+            $distribution->update($attributes);
+
+            if ($status === 'entregue') {
+                EstoqueMovimentacao::query()
+                    ->whereIn('id_distribuicao_item', $distribution->itens()->pluck('id'))
+                    ->update(['data_hora' => $distribution->data_hora]);
+            }
         });
     }
 
@@ -379,11 +421,11 @@ class StockMovementService
         return $absolute.' '.$unit.($absolute === 1 || str_ends_with($unit, 's') ? '' : 's');
     }
 
-    private function balanceImpact(EstoqueMovimentacao $movement): int
+    private function reservationImpact(EstoqueMovimentacao $movement): int
     {
         return match ($movement->tipo) {
             'entrada' => $movement->quantidade,
-            'saida' => $this->movementAffectsStock($movement) ? -$movement->quantidade : 0,
+            'saida' => $this->movementBlocksStockReservation($movement) ? -$movement->quantidade : 0,
             'ajuste' => $movement->quantidade,
             default => 0,
         };
@@ -391,10 +433,10 @@ class StockMovementService
 
     private function balance(Material $material): int
     {
-        return $material->movimentacoes->sum(fn (EstoqueMovimentacao $movement) => $this->balanceImpact($movement));
+        return $material->movimentacoes->sum(fn (EstoqueMovimentacao $movement) => $this->reservationImpact($movement));
     }
 
-    private function movementAffectsStock(EstoqueMovimentacao $movement): bool
+    private function movementBlocksStockReservation(EstoqueMovimentacao $movement): bool
     {
         return $movement->distribuicaoItem?->distribuicao?->situacao !== 'cancelada';
     }

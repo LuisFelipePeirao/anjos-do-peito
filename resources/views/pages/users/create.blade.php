@@ -17,7 +17,7 @@
                 'icon' => 'arrow-left',
             ]" />
 
-        <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('users.store') }}" method="POST" class="space-y-6" data-unsaved-form>
             @csrf
 
             @include('pages.users.partials.form', ['user' => null])

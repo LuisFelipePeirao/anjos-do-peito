@@ -5,7 +5,7 @@
     max-width="max-w-4xl"
 >
 
-        <form action="{{ route('attendances.locations.store') }}" method="POST" class="mt-5 space-y-5 rounded-lg border border-[#f0e7e8] p-4" data-location-form data-location-store-action="{{ route('attendances.locations.store') }}">
+        <form action="{{ route('attendances.locations.store') }}" method="POST" class="mt-5 space-y-5 rounded-lg border border-[#f0e7e8] p-4" data-location-form data-location-store-action="{{ route('attendances.locations.store') }}" data-unsaved-form>
             @csrf
             <input type="hidden" name="_method" value="PUT" data-location-method disabled>
             <div>

@@ -6,6 +6,7 @@ use App\Models\Beneficiaria;
 use App\Models\BombaLeite;
 use App\Models\CessaoBomba;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class PumpLoanService
@@ -32,23 +33,31 @@ class PumpLoanService
     public function create(array $data, int $userId): CessaoBomba
     {
         return DB::transaction(function () use ($data, $userId) {
+            $pump = BombaLeite::query()->lockForUpdate()->findOrFail($data['pump']);
+            abort_unless($pump->situacao === 'disponivel', 409);
+            $isRental = $data['contract_type'] === 'aluguel';
+            $firstBilling = $isRental ? Carbon::parse($data['first_billing_at']) : null;
             $loan = CessaoBomba::create([
                 'id_bomba' => $data['pump'],
                 'id_beneficiaria' => $data['beneficiary'],
                 'id_usuario_retirada' => $userId,
-                'tipo' => $data['contract_type'] === 'aluguel' ? 'aluguel' : 'gratuita',
-                'valor_mensalidade' => $data['contract_type'] === 'aluguel' ? $data['monthly_fee'] : null,
+                'tipo' => $isRental ? 'aluguel' : 'gratuita',
+                'valor_mensalidade' => $isRental ? $data['monthly_fee'] : null,
+                'dia_vencimento' => $isRental ? $data['due_day'] : null,
+                'forma_cobranca' => $isRental ? $data['billing_method'] : null,
+                'primeira_cobranca_em' => $firstBilling,
+                'proxima_cobranca_em' => $firstBilling?->copy()->startOfMonth()->addMonth(),
                 'data_retirada' => $data['withdrawn_at'],
                 'data_prevista_devolucao' => $data['expected_return'],
                 'situacao' => 'ativa',
                 'observacao_retirada' => $this->withdrawalNotes($data),
             ]);
 
-            BombaLeite::whereKey($data['pump'])->update(['situacao' => 'alugada']);
+            $pump->update(['situacao' => 'alugada']);
 
-            if ($data['contract_type'] === 'aluguel') {
+            if ($isRental) {
                 $loan->pagamentos()->create([
-                    'competencia' => $data['first_billing_at'],
+                    'competencia' => $firstBilling->copy()->startOfMonth(),
                     'valor' => $data['monthly_fee'],
                     'data_vencimento' => $data['first_billing_at'],
                     'situacao' => 'pendente',

@@ -57,4 +57,11 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('status', 'Usuario inativado com sucesso.');
     }
+
+    public function restore(User $usuario): RedirectResponse
+    {
+        $this->users->restore($usuario);
+
+        return redirect()->route('users.index')->with('status', 'Usuário ativado com sucesso.');
+    }
 }

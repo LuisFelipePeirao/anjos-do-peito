@@ -75,7 +75,7 @@ class DonationStockService
 
     public function formOptions(): array
     {
-        $materialBalances = $this->materialsWithBalance();
+        $materialBalances = $this->materialsWithBalance(includePendingReservations: true);
 
         return [
             'categories' => CategoriaMaterial::where('ativo', true)
@@ -185,13 +185,15 @@ class DonationStockService
         });
     }
 
-    private function materialsWithBalance(): Collection
+    private function materialsWithBalance(bool $includePendingReservations = false): Collection
     {
         return Material::with(['categoria', 'movimentacoes.distribuicaoItem.distribuicao'])
             ->orderBy('nome')
             ->get()
-            ->map(function (Material $material) {
-                $balance = $this->balance($material);
+            ->map(function (Material $material) use ($includePendingReservations) {
+                $balance = $includePendingReservations
+                    ? $this->reservableBalance($material)
+                    : $this->balance($material);
 
                 return [
                     'id' => $material->id,
@@ -338,7 +340,7 @@ class DonationStockService
         foreach (collect($items)->groupBy('id_material') as $materialId => $materialItems) {
             $material = Material::with('movimentacoes.distribuicaoItem.distribuicao')->findOrFail($materialId);
             $requested = $materialItems->sum('quantidade');
-            $available = $this->balance($material);
+            $available = $this->reservableBalance($material);
 
             if ($available < $requested) {
                 throw ValidationException::withMessages([
@@ -370,7 +372,7 @@ class DonationStockService
     {
         return $material->movimentacoes->sum(fn (EstoqueMovimentacao $movement) => match ($movement->tipo) {
             'entrada' => $movement->quantidade,
-            'saida' => $this->movementAffectsStock($movement) ? -$movement->quantidade : 0,
+            'saida' => $this->movementIsCompleted($movement) ? -$movement->quantidade : 0,
             'ajuste' => $movement->quantidade,
             default => 0,
         });
@@ -380,7 +382,7 @@ class DonationStockService
     {
         return $material->movimentacoes
             ->where('tipo', 'saida')
-            ->filter(fn (EstoqueMovimentacao $movement) => $this->movementAffectsStock($movement))
+            ->filter(fn (EstoqueMovimentacao $movement) => $this->movementIsCompleted($movement))
             ->sum('quantidade');
     }
 
@@ -397,12 +399,27 @@ class DonationStockService
     {
         return $material->movimentacoes
             ->where('tipo', 'saida')
-            ->filter(fn (EstoqueMovimentacao $movement) => $this->movementAffectsStock($movement))
+            ->filter(fn (EstoqueMovimentacao $movement) => $this->movementIsCompleted($movement))
             ->where('data_hora', '>=', now()->subDays(30))
             ->sum('quantidade');
     }
 
-    private function movementAffectsStock(EstoqueMovimentacao $movement): bool
+    private function reservableBalance(Material $material): int
+    {
+        return $material->movimentacoes->sum(fn (EstoqueMovimentacao $movement) => match ($movement->tipo) {
+            'entrada' => $movement->quantidade,
+            'saida' => $this->movementBlocksStockReservation($movement) ? -$movement->quantidade : 0,
+            'ajuste' => $movement->quantidade,
+            default => 0,
+        });
+    }
+
+    private function movementIsCompleted(EstoqueMovimentacao $movement): bool
+    {
+        return $movement->distribuicaoItem?->distribuicao?->situacao === 'entregue';
+    }
+
+    private function movementBlocksStockReservation(EstoqueMovimentacao $movement): bool
     {
         return $movement->distribuicaoItem?->distribuicao?->situacao !== 'cancelada';
     }
@@ -420,7 +437,7 @@ class DonationStockService
 
     private function quantity(int $amount, string $unit): string
     {
-        return $amount.' '.$unit.($amount === 1 || str_ends_with($unit, 's') ? '' : 's');
+        return $amount.' '.$unit.($amount === 1 || str_ends_with($unit, 's') || str_ends_with($unit, '(s)') ? '' : 's');
     }
 
     private function movementTypeLabel(string $type): string

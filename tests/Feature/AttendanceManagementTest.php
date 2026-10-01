@@ -37,6 +37,26 @@ it('requires authentication and limits attendance access to administrators and n
     $this->actingAs(User::factory()->enfermeira()->create())->get(route('attendances.index'))->assertOk();
 });
 
+it('shows realized attendances with the same blue status badge as borrowed pumps', function () {
+    $user = User::factory()->administrador()->create();
+    $beneficiary = attendanceBeneficiary();
+    $location = LocalAtendimento::create(['nome' => 'Sede ICAP']);
+
+    Atendimento::create([
+        'data_hora' => '2026-09-25 10:00:00',
+        'modalidade' => 'presencial',
+        'id_local' => $location->id,
+        'situacao' => 'realizado',
+        'rascunho' => false,
+        'id_beneficiaria' => $beneficiary->id,
+        'id_usuario' => $user->id,
+    ]);
+
+    $this->actingAs($user)->get(route('attendances.index'))
+        ->assertOk()
+        ->assertSee('bg-[#eef4ff] text-[#2f66d0]', false);
+});
+
 it('shows a scheduled form with clinical fields hidden and draft action', function () {
     $user = User::factory()->administrador()->create();
     attendanceBeneficiary();

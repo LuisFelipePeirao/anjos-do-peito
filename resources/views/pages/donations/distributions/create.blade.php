@@ -55,7 +55,7 @@
                 <p class="mt-2 text-sm text-[#667085]">Os campos serão adaptados conforme entrada, saída ou ajuste.</p>
             </article>
         @else
-            <form method="POST" action="{{ route('movements.store') }}" class="space-y-6">
+            <form method="POST" action="{{ route('movements.store') }}" class="space-y-6" data-unsaved-form>
                 @csrf
                 <input type="hidden" name="tipo" value="{{ $movementType }}">
 
@@ -76,7 +76,7 @@
                         <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
                         <div>
-                            <x-material.select name="situacao" label="Situação" :options="['recebida' => 'Recebida', 'cancelada' => 'Cancelada']" :selected="old('situacao', 'recebida')" required />
+                            <x-material.select name="situacao" label="Situação" :options="['recebida' => 'Recebida']" :selected="old('situacao', 'recebida')" required />
                             @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 
@@ -109,7 +109,7 @@
 
                                     <x-material.floating-input type="number" name="items[{{ $index }}][quantidade]" label="Quantidade" :value="$row['quantidade'] ?? null" min="1" data-entry-quantity />
 
-                                    <button type="button" data-remove-entry-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
+                                    <button type="button" data-remove-entry-item class="self-center inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                                         <x-gmdi-delete-o class="h-4 w-4" />
                                     </button>
 
@@ -130,7 +130,7 @@
                         <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
                         <div>
-                            <x-material.select name="situacao" label="Situação" :options="['entregue' => 'Entregue', 'pendente' => 'Pendente', 'cancelada' => 'Cancelada']" :selected="old('situacao', 'entregue')" required />
+                            <x-material.select name="situacao" label="Situação" :options="['entregue' => 'Entregue', 'pendente' => 'Pendente']" :selected="old('situacao', 'entregue')" required />
                             @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
                         </div>
 
@@ -161,12 +161,7 @@
                                         <x-material.select name="items[{{ $index }}][id_material]" label="Material" :options="$materials" :selected="$row['id_material'] ?? null" placeholder="Selecione" />
                                     </div>
 
-                                    <div class="block">
-                                        <span class="{{ $labelClass }}">Quantidade disponível</span>
-                                        <div class="mt-2 flex h-11 items-center rounded-[8px] bg-[#fbfaf9] px-3 text-sm font-semibold text-[#344054]" data-available-display>
-                                            Selecione material
-                                        </div>
-                                    </div>
+                                    <x-material.floating-input type="text" name="available_{{ $index }}" label="Em estoque" value="Selecione material" disabled data-available-display />
 
                                     <x-material.floating-input type="number" name="items[{{ $index }}][quantidade]" label="Quantidade" :value="$row['quantidade'] ?? null" min="1" data-distribution-quantity />
 
@@ -216,19 +211,13 @@
                     <x-material.select name="items[__INDEX__][id_material]" label="Material" :options="$materials" :selected="null" placeholder="Selecione" />
                 </div>
 
-                <label class="block">
-                    <span class="{{ $labelClass }}">Quantidade</span>
-                    <input type="number" min="1" class="{{ $inputClass }}" data-entry-quantity>
-                </label>
+                <x-material.floating-input type="number" name="items[__INDEX__][quantidade]" label="Quantidade" min="1" data-entry-quantity />
 
-                <button type="button" data-remove-entry-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
+                <button type="button" data-remove-entry-item class="self-center inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                     <x-gmdi-delete-o class="h-4 w-4" />
                 </button>
 
-                <label class="block md:col-span-3">
-                    <span class="{{ $labelClass }}">Observação do item</span>
-                    <input type="text" class="{{ $inputClass }}" data-entry-observation>
-                </label>
+                <x-material.floating-input name="items[__INDEX__][observacao]" label="Observação do item" wrapper-class="md:col-span-3" data-entry-observation />
             </div>
         </template>
 
@@ -289,12 +278,7 @@
                     <x-material.select name="items[__INDEX__][id_material]" label="Material" :options="$materials" :selected="null" placeholder="Selecione" />
                 </div>
 
-                <div class="block">
-                    <span class="{{ $labelClass }}">Quantidade disponível</span>
-                    <div class="mt-2 flex h-11 items-center rounded-[8px] bg-[#fbfaf9] px-3 text-sm font-semibold text-[#344054]" data-available-display>
-                        Selecione material
-                    </div>
-                </div>
+                <x-material.floating-input type="text" name="available___INDEX__" label="Quantidade disponível" value="Selecione material" disabled data-available-display />
 
                 <label class="block">
                     <span class="{{ $labelClass }}">Quantidade</span>
@@ -328,7 +312,7 @@
                 };
 
                 const selectedLabel = (select) => select?.querySelector('md-select-option[selected] [slot="headline"]')?.textContent?.trim() || 'material selecionado';
-                const formatQuantity = (amount, unit) => `${amount} ${unit}${amount === 1 || unit.endsWith('s') ? '' : 's'}`;
+                const formatQuantity = (amount, unit) => `${amount} ${unit}${amount === 1 || unit.endsWith('s') || unit.endsWith('(s)') ? '' : 's'}`;
                 const rows = () => Array.from(list.querySelectorAll('[data-distribution-item-row]'));
 
                 const syncNames = () => {
@@ -367,7 +351,7 @@
                         const isNegative = material && totalRequested > material.available;
 
                         if (available) {
-                            available.textContent = material ? formatQuantity(material.available - totalRequested, material.unit) : 'Selecione material';
+                            available.value = material ? formatQuantity(material.available - totalRequested, material.unit) : 'Selecione material';
                             available.classList.toggle('bg-[#fff1f1]', Boolean(isNegative));
                             available.classList.toggle('text-[#c2414b]', Boolean(isNegative));
                         }

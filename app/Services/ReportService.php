@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Atendimento;
 use App\Models\CessaoBomba;
-use App\Models\Doacao;
 use App\Models\Distribuicao;
+use App\Models\Doacao;
 use App\Models\EstoqueMovimentacao;
 use App\Models\Material;
 use Illuminate\Database\Eloquent\Builder;
@@ -191,6 +191,7 @@ class ReportService
 
         return $query->map(function ($row) use ($start, $end, $max) {
             $distributions = Distribuicao::where('id_usuario', $row->id)
+                ->where('situacao', 'entregue')
                 ->whereBetween('data_hora', [$start, $end])
                 ->count();
 
@@ -214,12 +215,18 @@ class ReportService
             ->orderBy('nome')
             ->get()
             ->map(function (Material $material) use ($start, $end, $periodDays) {
-                $available = EstoqueMovimentacao::where('id_material', $material->id)
-                    ->where('data_hora', '<=', $end)
-                    ->selectRaw("COALESCE(SUM(CASE WHEN tipo IN ('entrada', 'ajuste') THEN quantidade WHEN tipo = 'saida' THEN -quantidade ELSE 0 END), 0) as total")
+                $available = EstoqueMovimentacao::where('estoque_movimentacoes.id_material', $material->id)
+                    ->where('estoque_movimentacoes.data_hora', '<=', $end)
+                    ->leftJoin('distribuicoes_itens', 'distribuicoes_itens.id', '=', 'estoque_movimentacoes.id_distribuicao_item')
+                    ->leftJoin('distribuicoes', 'distribuicoes.id', '=', 'distribuicoes_itens.id_distribuicao')
+                    ->selectRaw("COALESCE(SUM(CASE WHEN estoque_movimentacoes.tipo IN ('entrada', 'ajuste') THEN estoque_movimentacoes.quantidade WHEN estoque_movimentacoes.tipo = 'saida' AND (estoque_movimentacoes.id_distribuicao_item IS NULL OR distribuicoes.situacao = 'entregue') THEN -estoque_movimentacoes.quantidade ELSE 0 END), 0) as total")
                     ->value('total');
                 $used = EstoqueMovimentacao::where('id_material', $material->id)
                     ->where('tipo', 'saida')
+                    ->where(function (Builder $query) {
+                        $query->whereNull('id_distribuicao_item')
+                            ->orWhereHas('distribuicaoItem.distribuicao', fn (Builder $distributionQuery) => $distributionQuery->where('situacao', 'entregue'));
+                    })
                     ->whereBetween('data_hora', [$start, $end])
                     ->sum('quantidade');
                 $days = $used > 0 ? (int) ceil(((int) $available / ($used / $periodDays))) : ((int) $available > 0 ? 90 : 0);

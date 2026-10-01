@@ -26,7 +26,7 @@
             </dl>
         </article>
 
-        <form method="POST" action="{{ route('attendances.continue.save', $attendance) }}" class="space-y-6" data-attendance-continuation-form>
+        <form method="POST" action="{{ route('attendances.continue.save', $attendance) }}" class="space-y-6" data-attendance-continuation-form data-unsaved-form>
             @csrf
             @method('PUT')
             <input type="hidden" name="confirmed_finalization" value="0" data-attendance-finalization-confirmation>

@@ -22,6 +22,18 @@
                     <x-gmdi-add class="h-4 w-4" />
                     Registrar movimentação
                 </a>
+                @if ($canResolvePending)
+                    <form method="POST" action="{{ route('movements.confirm', $movement) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#23845a] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1b6a48] sm:w-auto">Dar baixa</button>
+                    </form>
+                    <form method="POST" action="{{ route('movements.cancel', $movement) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#f2c7cf] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1] sm:w-auto">Cancelar</button>
+                    </form>
+                @endif
             </div>
         </div>
 
@@ -43,10 +55,20 @@
                     <dt class="text-xs font-semibold uppercase text-[#667085]">Responsável</dt>
                     <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $summary['responsible'] }}</dd>
                 </div>
+                <div>
+                    <dt class="text-xs font-semibold uppercase text-[#667085]">Situação</dt>
+                    <dd class="mt-1 text-sm font-semibold text-[#111827]">{{ $summary['status'] }}</dd>
+                </div>
                 <div class="md:col-span-2 xl:col-span-4">
                     <dt class="text-xs font-semibold uppercase text-[#667085]">Observação</dt>
                     <dd class="mt-1 text-sm text-[#344054]">{{ $summary['observation'] }}</dd>
                 </div>
+                @if (filled($distributionObservation))
+                    <div class="md:col-span-2 xl:col-span-4">
+                        <dt class="text-xs font-semibold uppercase text-[#667085]">Observação da distribuição</dt>
+                        <dd class="mt-1 text-sm text-[#344054]">{{ $distributionObservation }}</dd>
+                    </div>
+                @endif
             </div>
         </article>
 

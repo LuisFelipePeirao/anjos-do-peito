@@ -4,7 +4,7 @@
     @if ($errors->donor->any()) data-dialog-auto-open @endif
     class="m-auto w-[calc(100%-2rem)] max-w-2xl rounded-lg border border-[#eadfe0] bg-white p-0 text-[#111827] shadow-[0_24px_70px_rgba(17,24,39,0.22)] backdrop:bg-[#111827]/45"
 >
-    <form action="{{ route('donations.donors.store') }}" method="POST" class="p-5 sm:p-6">
+    <form action="{{ route('donations.donors.store') }}" method="POST" class="p-5 sm:p-6" data-unsaved-form>
         @csrf
         <div class="flex items-start justify-between gap-4">
             <div>

@@ -89,3 +89,21 @@ it('prevents deactivating the only active administrador', function () {
 
     expect($admin->fresh()->deleted_at)->toBeNull();
 });
+
+it('shows an activation action for inactive users and restores their access', function () {
+    $admin = User::factory()->administrador()->create();
+    $inactiveUser = User::factory()->atendente()->create();
+    $inactiveUser->delete();
+
+    $this->actingAs($admin)
+        ->get(route('users.index', ['status' => 'inactive']))
+        ->assertOk()
+        ->assertSee('title="Ativar usuário"', false)
+        ->assertDontSee('title="Editar usuário"', false);
+
+    $this->actingAs($admin)
+        ->patch('/usuarios/'.$inactiveUser->id.'/ativar')
+        ->assertRedirect(route('users.index'));
+
+    expect($inactiveUser->fresh()->deleted_at)->toBeNull();
+});

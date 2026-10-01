@@ -20,7 +20,7 @@
             description="Escolha se a bomba será emprestada sem custo ou alugada com cobrança mensal."
             :firstButton="['label' => 'Voltar para lista', 'link' => route('pumps.index'), 'icon' => 'arrow-left']" />
 
-        <form method="POST" action="{{ route('pumps.loans.store') }}" class="space-y-6">
+        <form method="POST" action="{{ route('pumps.loans.store') }}" class="space-y-6" data-unsaved-form>
             @csrf
 
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
@@ -123,13 +123,13 @@
                         </span>
                         <div>
                             <h3 class="text-lg font-bold text-[#111827]">Dados do aluguel</h3>
-                            <p class="mt-1 text-sm text-[#667085]">Preencha estes campos quando o tipo selecionado for aluguel.</p>
+                            <p class="mt-1 text-sm text-[#667085]">A primeira parcela será registrada agora; as próximas serão geradas automaticamente para controle interno.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
-                    <x-material.floating-input name="monthly_fee" label="Mensalidade" :value="old('monthly_fee')" placeholder="Ex.: R$ 100,00" inputmode="decimal" data-pump-billing-field disabled />
+                    <x-material.floating-input name="monthly_fee" label="Mensalidade" :value="old('monthly_fee')" placeholder="R$ 0,00" inputmode="numeric" data-mask="currency-brl" data-pump-billing-field disabled />
 
                     <x-material.floating-input type="number" name="due_day" label="Dia de vencimento" :value="old('due_day')" placeholder="Ex.: 10" min="1" max="31" data-pump-billing-field disabled />
 
@@ -142,7 +142,7 @@
 
                     <div class="md:col-span-2 xl:col-span-4">
                         <x-material.floating-textarea name="billing_notes" label="Observações financeiras" :value="old('billing_notes')" placeholder="Registre combinações de pagamento, isenção parcial, atraso negociado ou orientação administrativa." data-pump-billing-field disabled />
-                        <span class="{{ $hintClass }}">Para remover o custo, selecione a opção "Empréstimo" no início do formulário.</span>
+                        <span class="{{ $hintClass }}">A equipe registrará baixas e cancelamentos internamente. Para remover o custo, selecione "Empréstimo".</span>
                     </div>
                 </div>
             </article>

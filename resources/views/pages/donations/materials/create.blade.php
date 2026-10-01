@@ -18,7 +18,7 @@
             description="Cadastre material, categoria, unidade de medida e mínimo operacional."
             :firstButton="['label' => 'Voltar para lista', 'link' => route('donations.index'), 'icon' => 'arrow-left']" />
 
-        <form method="POST" action="{{ route('donations.materials.store') }}" class="space-y-6">
+        <form method="POST" action="{{ route('donations.materials.store') }}" class="space-y-6" data-unsaved-form>
             @csrf
             <x-donations.partials.form-shell title="Dados do item" description="Informações usadas no saldo e nos alertas de reposição.">
                 <x-material.floating-input name="nome" label="Nome" :value="old('nome')" placeholder="Ex.: Fralda tamanho P" required />

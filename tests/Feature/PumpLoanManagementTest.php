@@ -2,6 +2,7 @@
 
 use App\Models\Beneficiaria;
 use App\Models\BombaLeite;
+use App\Models\CessaoBomba;
 use App\Models\ModeloBomba;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -62,6 +63,7 @@ it('uses floating controls while keeping billing fields disabled', function () {
         ->assertSee('id="withdrawn_at"', false)
         ->assertSee('name="billing_notes"', false)
         ->assertSee('data-pump-billing-field', false)
+        ->assertSee('data-mask="currency-brl"', false)
         ->assertSee('disabled="disabled"', false)
         ->assertDontSee('name="renewal"', false)
         ->assertSee('peer-not-placeholder-shown:-top-2.5', false);
@@ -120,6 +122,10 @@ it('registers a rental and creates the first pending payment', function () {
         'tipo' => 'aluguel',
         'valor_mensalidade' => 120.50,
         'situacao' => 'ativa',
+        'dia_vencimento' => 10,
+        'forma_cobranca' => 'pix',
+        'primeira_cobranca_em' => '2026-08-25 00:00:00',
+        'proxima_cobranca_em' => '2026-09-01 00:00:00',
     ]);
     $this->assertDatabaseHas('pagamentos_alugueis', [
         'valor' => 120.50,
