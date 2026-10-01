@@ -6,8 +6,9 @@ export const shouldConfirmUnsavedNavigation = ({
     hasModifier = false,
     download = false,
     isConfirmationOpener = false,
+    isInClosedDialog = false,
 }) => {
-    if (!isDirty || !href || target || hasModifier || download || isConfirmationOpener) {
+    if (!isDirty || isInClosedDialog || !href || target || hasModifier || download || isConfirmationOpener) {
         return false;
     }
 

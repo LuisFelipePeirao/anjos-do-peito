@@ -24,6 +24,13 @@ test('confirma abandono apenas para formulário alterado e link comum na mesma a
 
     assert.equal(shouldConfirmUnsavedNavigation({
         isDirty: true,
+        isInClosedDialog: true,
+        href: 'http://localhost/beneficiarias',
+        currentHref: 'http://localhost/beneficiarias/1',
+    }), false);
+
+    assert.equal(shouldConfirmUnsavedNavigation({
+        isDirty: true,
         href: 'http://localhost/beneficiarias',
         currentHref: 'http://localhost/beneficiarias/nova',
         target: '_blank',

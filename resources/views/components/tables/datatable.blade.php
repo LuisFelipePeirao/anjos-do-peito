@@ -138,7 +138,10 @@
                                                 ? 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1] hover:text-[#c2414b]'
                                                 : 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]';
 
-                                            $confirmation = $action['confirmation'] ?? ($actionVariant === 'danger' ? $deleteConfirmation : null);
+                                            $confirmation = $action['confirmation'] ?? null;
+                                            if ($actionVariant === 'danger') {
+                                                $confirmation = array_merge($deleteConfirmation, is_array($confirmation) ? $confirmation : []);
+                                            }
                                             $confirmation = is_array($confirmation)
                                                 ? array_merge([
                                                     'title' => 'Confirmar exclusão',

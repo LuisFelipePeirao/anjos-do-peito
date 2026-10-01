@@ -233,6 +233,11 @@ const serializeForm = (form) => Array.from(new FormData(form).entries())
 const sameFormData = (first, second) => JSON.stringify(first) === JSON.stringify(second);
 const isProtectedFormDirty = (form) => !sameFormData(unsavedFormSnapshots.get(form), serializeForm(form));
 const isAnyProtectedFormDirty = () => unsavedForms.some((form) => !sameFormData(unsavedFormSnapshots.get(form), serializeForm(form)));
+const isAnyNavigableProtectedFormDirty = () => unsavedForms.some((form) => {
+    const dialog = form.closest('dialog');
+
+    return isProtectedFormDirty(form) && (!dialog || dialog.open);
+});
 const resetUnsavedFormSnapshot = (form) => unsavedFormSnapshots.set(form, serializeForm(form));
 
 unsavedForms.forEach((form) => {
@@ -272,6 +277,7 @@ document.addEventListener('click', (event) => {
         hasModifier: event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0,
         download: link.hasAttribute('download'),
         isConfirmationOpener: link.hasAttribute('data-confirm-dialog-open'),
+        isInClosedDialog: !isAnyNavigableProtectedFormDirty(),
     })) {
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -338,7 +344,7 @@ abandonmentDialog?.addEventListener('close', () => {
 });
 
 window.addEventListener('beforeunload', (event) => {
-    if (!isSubmittingProtectedForm && isAnyProtectedFormDirty()) {
+    if (!isSubmittingProtectedForm && isAnyNavigableProtectedFormDirty()) {
         event.preventDefault();
         event.returnValue = '';
     }
