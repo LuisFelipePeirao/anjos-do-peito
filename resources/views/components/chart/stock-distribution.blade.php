@@ -23,15 +23,15 @@
         <div class="flex flex-col items-center gap-3">
             <div
                 class="relative flex h-44 w-44 shrink-0 items-center justify-center rounded-full"
-                style="background: conic-gradient(#23845a 0deg {{ $availableDeg }}deg, #bf5d6f {{ $availableDeg }}deg 360deg);">
+                style="background: conic-gradient(#197a4b 0deg {{ $availableDeg }}deg, #a62d5b {{ $availableDeg }}deg 360deg);">
                 <div class="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
                     <span class="text-2xl font-bold text-[#111827]">{{ $availableStock }}</span>
                 <span class="text-xs text-[#667085]">disponíveis</span>
             </div>
         </div>
             <div class="flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-[#667085]">
-                <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-[#23845a]"></span>Disponível</span>
-                <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-[#bf5d6f]"></span>Em uso</span>
+                <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-[#197a4b]"></span>Disponível</span>
+                <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-[#a62d5b]"></span>Em uso</span>
             </div>
         </div>
 
@@ -43,10 +43,10 @@
                     $isLow = $item['available'] < $item['minimum'];
                     $isEmpty = $item['available'] === 0;
                     $status = $isEmpty
-                        ? ['label' => 'Sem estoque', 'badge' => 'bg-[#fdecec] text-[#c2414b]', 'bar' => 'bg-[#c2414b]']
+                        ? ['label' => 'Sem estoque', 'badge' => 'bg-[#fdecec] text-[#b42336]', 'bar' => 'bg-[#b42336]']
                         : ($isLow
-                            ? ['label' => 'Baixo estoque', 'badge' => 'bg-[#fff3d6] text-[#b77910]', 'bar' => 'bg-[#d97706]']
-                            : ['label' => 'Estoque adequado', 'badge' => 'bg-[#e8f8ee] text-[#23845a]', 'bar' => 'bg-[#23845a]']);
+                            ? ['label' => 'Baixo estoque', 'badge' => 'bg-[#fff3d6] text-[#8a4b00]', 'bar' => 'bg-[#d97706]']
+                            : ['label' => 'Estoque adequado', 'badge' => 'bg-[#e8f8ee] text-[#197a4b]', 'bar' => 'bg-[#197a4b]']);
                 @endphp
 
                 <div>
@@ -58,7 +58,7 @@
                             </div>
                             <p class="mt-0.5 text-[11px] text-[#667085]">Mínimo: {{ $item['minimum'] }}</p>
                         </div>
-                        <span class="shrink-0 text-xs {{ $isEmpty ? 'font-semibold text-[#c2414b]' : 'text-[#667085]' }}">
+                        <span class="shrink-0 text-xs {{ $isEmpty ? 'font-semibold text-[#b42336]' : 'text-[#667085]' }}">
                             {{ $item['available'] }} disp. / {{ $item['used'] }} uso
                         </span>
                     </div>

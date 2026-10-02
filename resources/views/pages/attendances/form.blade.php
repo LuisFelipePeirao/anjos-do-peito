@@ -35,7 +35,7 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
                     <x-material.floating-input type="date" name="date" label="Data" :value="old('date', $attendanceData['date'])" required-indicator />
                     <x-material.floating-input type="time" name="time" label="Horário" :value="old('time', $attendanceData['time'])" required-indicator />
-                    <div><x-material.select name="duration" label="Duração prevista" :options="$durations" :selected="old('duration', $attendanceData['duration'])" required-indicator />@error('duration') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="duration" label="Duração prevista" :options="$durations" :selected="old('duration', $attendanceData['duration'])" required-indicator />@error('duration') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
                     <div>
                         @if ($isEdit)
                             <input type="hidden" name="status" value="{{ $selectedStatus }}">
@@ -43,27 +43,27 @@
                         @else
                             <x-material.select name="status" label="Situação" :options="$statuses" :selected="$selectedStatus" data-attendance-status-select data-initial-status="{{ $selectedStatus }}" />
                         @endif
-                        @error('status') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                        @error('status') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                     </div>
-                    <div><x-material.select name="modality" label="Modalidade" :options="$modalities" :selected="old('modality', $attendanceData['modality'])" required-indicator />@error('modality') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                    <div><x-material.select name="location" label="Local" :options="$locations" :selected="old('location', $attendanceData['location'])" placeholder="Selecionar local cadastrado" required-indicator />@error('location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="modality" label="Modalidade" :options="$modalities" :selected="old('modality', $attendanceData['modality'])" required-indicator />@error('modality') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="location" label="Local" :options="$locations" :selected="old('location', $attendanceData['location'])" placeholder="Selecionar local cadastrado" required-indicator />@error('location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
                     <div class="space-y-3">
-                        <div><x-material.select name="attendance_category" label="Categoria do atendimento" :options="$attendanceCategories" :selected="old('attendance_category', $attendanceData['attendance_category'])" placeholder="Selecione" required-indicator />@error('attendance_category') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                        <div><x-material.select name="attendance_category" label="Categoria do atendimento" :options="$attendanceCategories" :selected="old('attendance_category', $attendanceData['attendance_category'])" placeholder="Selecione" required-indicator />@error('attendance_category') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
                         <button type="button" data-dialog-open="attendance-category-dialog" class="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm font-semibold text-[#ef5b97] shadow-sm transition hover:bg-[#fbf1f3]" aria-label="Gerenciar categoria de atendimento"><x-gmdi-add class="h-4 w-4" /> Gerenciar categorias</button>
                     </div>
                     <div class="space-y-3">
-                        <div><x-material.select name="procedure" label="Procedimento" :options="$procedures" :selected="old('procedure', $attendanceData['procedure'])" placeholder="Selecione" required-indicator />@error('procedure') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                        <div><x-material.select name="procedure" label="Procedimento" :options="$procedures" :selected="old('procedure', $attendanceData['procedure'])" placeholder="Selecione" required-indicator />@error('procedure') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
                         <button type="button" data-dialog-open="attendance-procedure-dialog" class="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[#e4d8d9] bg-white px-3 text-sm font-semibold text-[#ef5b97] shadow-sm transition hover:bg-[#fbf1f3]" aria-label="Gerenciar procedimentos"><x-gmdi-add class="h-4 w-4" /> Gerenciar procedimentos</button>
                     </div>
                 </div>
             </article>
 
             <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
-                <div class="border-b border-[#f0e7e8] p-5"><div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#eef4ff] text-[#2f66d0]"><x-lucide-users class="h-5 w-5" /></span><div><h3 class="text-lg font-bold text-[#111827]">Participantes</h3><p class="mt-1 text-sm text-[#667085]">Beneficiária, criança vinculada e profissional responsável.</p></div></div></div>
+                <div class="border-b border-[#f0e7e8] p-5"><div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#eef4ff] text-[#1769aa]"><x-lucide-users class="h-5 w-5" /></span><div><h3 class="text-lg font-bold text-[#111827]">Participantes</h3><p class="mt-1 text-sm text-[#667085]">Beneficiária, criança vinculada e profissional responsável.</p></div></div></div>
                 <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-3">
-                    <div><x-material.select name="beneficiary" label="Beneficiária" :options="$beneficiaries" :selected="old('beneficiary', $attendanceData['beneficiary'])" placeholder="Selecione" required data-attendance-beneficiary />@error('beneficiary') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                    <div><x-material.select name="child" label="Criança" :options="[]" :selected="old('child', $attendanceData['child'])" placeholder="Nenhuma criança vinculada" data-attendance-child data-initial-child="{{ old('child', $attendanceData['child']) }}" />@error('child') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                    <div><x-material.select name="professional" label="Profissional" :options="$professionals" :selected="old('professional', $attendanceData['professional'])" placeholder="Selecione" required-indicator />@error('professional') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="beneficiary" label="Beneficiária" :options="$beneficiaries" :selected="old('beneficiary', $attendanceData['beneficiary'])" placeholder="Selecione" required data-attendance-beneficiary />@error('beneficiary') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="child" label="Criança" :options="[]" :selected="old('child', $attendanceData['child'])" placeholder="Nenhuma criança vinculada" data-attendance-child data-initial-child="{{ old('child', $attendanceData['child']) }}" />@error('child') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="professional" label="Profissional" :options="$professionals" :selected="old('professional', $attendanceData['professional'])" placeholder="Selecione" required-indicator />@error('professional') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
                 </div>
             </article>
 
@@ -74,7 +74,7 @@
             <div class="sticky bottom-0 -mx-4 border-t border-[#eadfe0] bg-[#fbfaf9]/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8"><div class="mx-auto flex max-w-6xl flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                 <a href="{{ $cancelRoute }}" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">Cancelar</a>
                 <button type="submit" name="save_as" value="draft" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#e4d8d9] bg-white px-5 text-sm font-semibold text-[#344054] shadow-sm transition hover:bg-[#fbf1f3]"><x-lucide-file-pen-line class="h-4 w-4" /> Salvar rascunho</button>
-                <button type="submit" name="save_as" value="final" data-attendance-final-submit class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#ef5b97] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]"><x-lucide-save class="h-4 w-4" /> {{ $isEdit ? 'Salvar alterações' : 'Salvar atendimento' }}</button>
+                <button type="submit" name="save_as" value="final" data-attendance-final-submit class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#c73570] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]"><x-lucide-save class="h-4 w-4" /> {{ $isEdit ? 'Salvar alterações' : 'Salvar atendimento' }}</button>
             </div></div>
         </form>
 

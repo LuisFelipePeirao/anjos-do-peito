@@ -89,7 +89,7 @@
             aria-hidden="true"
             data-select-required-asterisk
             data-required-indicator="{{ $name }}"
-            class="pointer-events-none absolute z-10 text-sm font-semibold leading-5 text-[#c2414b]"
+            class="pointer-events-none absolute z-10 text-sm font-semibold leading-5 text-[#b42336]"
             style="visibility: hidden;"
         >*</span>
     @endif

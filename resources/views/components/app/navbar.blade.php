@@ -16,7 +16,7 @@
     <div class="flex min-w-0 items-center gap-3">
         <button
             type="button"
-            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#f7edef] hover:text-[#bf5d6f] md:hidden"
+            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#f7edef] hover:text-[#a62d5b] md:hidden"
             data-sidebar-mobile-toggle
             aria-label="Abrir menu"
             aria-expanded="false">
@@ -35,7 +35,7 @@
             <span class="block text-xs text-[#667085]">{{ ucfirst($currentUser?->perfil ?? '') }}</span>
         </div>
 
-        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#ef5b97] text-sm font-semibold text-white">
+        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#c73570] text-sm font-semibold text-white">
             {{ $initials ?: 'U' }}
         </div>
     </div>

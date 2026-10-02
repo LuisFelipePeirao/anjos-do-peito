@@ -70,14 +70,14 @@
                                     <x-gmdi-person-add-o class="h-5 w-5" />
                                 </button>
                             </div>
-                            @error('id_doador') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                            @error('id_doador') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                         </div>
 
                         <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
                         <div>
                             <x-material.select name="situacao" label="Situação" :options="['recebida' => 'Recebida']" :selected="old('situacao', 'recebida')" required />
-                            @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                            @error('situacao') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                         </div>
 
                         <x-material.floating-textarea name="observacao" label="Observação" :value="old('observacao')" wrapper-class="md:col-span-2" />
@@ -109,7 +109,7 @@
 
                                     <x-material.floating-input type="number" name="items[{{ $index }}][quantidade]" label="Quantidade" :value="$row['quantidade'] ?? null" min="1" data-entry-quantity />
 
-                                    <button type="button" data-remove-entry-item class="self-center inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
+                                    <button type="button" data-remove-entry-item class="self-center inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#b42336] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                                         <x-gmdi-delete-o class="h-4 w-4" />
                                     </button>
 
@@ -118,20 +118,20 @@
                             @endforeach
                         </div>
 
-                        @error('items') <span class="block px-5 pb-5 text-sm font-medium text-[#c2414b]">{{ $message }}</span> @enderror
+                        @error('items') <span class="block px-5 pb-5 text-sm font-medium text-[#b42336]">{{ $message }}</span> @enderror
                     </article>
                 @elseif ($movementType === 'saida')
                     <x-donations.partials.form-shell title="Dados da saída" description="Beneficiária, data e situação da entrega." icon="gmdi-volunteer-activism-o">
                         <div>
                             <x-material.select name="id_beneficiaria" label="Beneficiária" :options="$beneficiaries" :selected="old('id_beneficiaria')" placeholder="Selecione" required />
-                            @error('id_beneficiaria') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                            @error('id_beneficiaria') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                         </div>
 
                         <x-material.floating-input type="datetime-local" name="data_hora" label="Data e hora" :value="old('data_hora', now()->format('Y-m-d\TH:i'))" required />
 
                         <div>
                             <x-material.select name="situacao" label="Situação" :options="['entregue' => 'Entregue', 'pendente' => 'Pendente']" :selected="old('situacao', 'entregue')" required />
-                            @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                            @error('situacao') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                         </div>
 
                         <x-material.floating-textarea name="observacao" label="Observação" :value="old('observacao')" wrapper-class="md:col-span-2" />
@@ -165,26 +165,26 @@
 
                                     <x-material.floating-input type="number" name="items[{{ $index }}][quantidade]" label="Quantidade" :value="$row['quantidade'] ?? null" min="1" data-distribution-quantity />
 
-                                    <button type="button" data-remove-distribution-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
+                                    <button type="button" data-remove-distribution-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#b42336] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                                         <x-gmdi-delete-o class="h-4 w-4" />
                                     </button>
                                 </div>
                             @endforeach
                         </div>
 
-                        <p class="hidden px-5 pb-5 text-sm font-medium text-[#c2414b]" data-stock-error></p>
-                        @error('items') <span class="block px-5 pb-5 text-sm font-medium text-[#c2414b]">{{ $message }}</span> @enderror
+                        <p class="hidden px-5 pb-5 text-sm font-medium text-[#b42336]" data-stock-error></p>
+                        @error('items') <span class="block px-5 pb-5 text-sm font-medium text-[#b42336]">{{ $message }}</span> @enderror
                     </article>
                 @elseif ($movementType === 'ajuste')
                     <x-donations.partials.form-shell title="Dados do ajuste" description="Material, operação, quantidade e justificativa." icon="gmdi-swap-horiz-o">
                         <div>
                             <x-material.select name="id_material" label="Material" :options="$materials" :selected="old('id_material', $selectedMaterial)" placeholder="Selecione" required />
-                            @error('id_material') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                            @error('id_material') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <x-material.select name="operacao" label="Operação" :options="['adicionar' => 'Adicionar ao estoque', 'subtrair' => 'Subtrair do estoque']" :selected="old('operacao', 'adicionar')" required />
-                            @error('operacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                            @error('operacao') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                         </div>
 
                         <x-material.floating-input type="number" name="quantidade" label="Quantidade" :value="old('quantidade')" min="1" required />
@@ -213,7 +213,7 @@
 
                 <x-material.floating-input type="number" name="items[__INDEX__][quantidade]" label="Quantidade" min="1" data-entry-quantity />
 
-                <button type="button" data-remove-entry-item class="self-center inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
+                <button type="button" data-remove-entry-item class="self-center inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#b42336] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                     <x-gmdi-delete-o class="h-4 w-4" />
                 </button>
 
@@ -285,7 +285,7 @@
                     <input type="number" min="1" class="{{ $inputClass }}" data-distribution-quantity>
                 </label>
 
-                <button type="button" data-remove-distribution-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
+                <button type="button" data-remove-distribution-item class="mt-7 inline-flex h-10 w-10 items-center justify-center rounded-[8px] border border-[#e4d8d9] text-[#b42336] transition hover:bg-[#fff1f1]" aria-label="Remover item" title="Remover item">
                     <x-gmdi-delete-o class="h-4 w-4" />
                 </button>
             </div>
@@ -353,7 +353,7 @@
                         if (available) {
                             available.value = material ? formatQuantity(material.available - totalRequested, material.unit) : 'Selecione material';
                             available.classList.toggle('bg-[#fff1f1]', Boolean(isNegative));
-                            available.classList.toggle('text-[#c2414b]', Boolean(isNegative));
+                            available.classList.toggle('text-[#b42336]', Boolean(isNegative));
                         }
                     });
 

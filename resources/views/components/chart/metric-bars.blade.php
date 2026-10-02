@@ -6,7 +6,7 @@
 
 @php
     $colors = [
-        'rose' => 'bg-[#bf5d6f]',
+        'rose' => 'bg-[#a62d5b]',
         'blue' => 'bg-[#2677b8]',
         'green' => 'bg-[#23845a]',
         'amber' => 'bg-[#d97706]',

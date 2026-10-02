@@ -10,14 +10,14 @@
 
 @php
     $colors = [
-        'rose' => 'bg-[#fdecef] text-[#bf5d6f] hover:bg-[#fbcad1]',
-        'blue' => 'bg-[#e8f4ff] text-[#2677b8] hover:bg-[#cce5ff]',
-        'green' => 'bg-[#e8f8ee] text-[#23845a] hover:bg-[#d1f3dc]',
-        'amber' => 'bg-[#fff3d6] text-[#b77910] hover:bg-[#ffe3a8]',
+        'rose' => 'bg-[#fdecef] text-[#a62d5b] hover:bg-[#fbcad1]',
+        'blue' => 'bg-[#e8f4ff] text-[#1769aa] hover:bg-[#cce5ff]',
+        'green' => 'bg-[#e8f8ee] text-[#197a4b] hover:bg-[#d1f3dc]',
+        'amber' => 'bg-[#fff3d6] text-[#8a4b00] hover:bg-[#ffe3a8]',
     ];
     $arrowColors = [
-        'up' => 'bg-[#e8f8ee] text-[#23845a]',
-        'down' => 'bg-[#fdecec] text-[#c2414b]',
+        'up' => 'bg-[#e8f8ee] text-[#197a4b]',
+        'down' => 'bg-[#fdecec] text-[#b42336]',
     ];
 
     $mdIcon = 'gmdi-' . $icon;

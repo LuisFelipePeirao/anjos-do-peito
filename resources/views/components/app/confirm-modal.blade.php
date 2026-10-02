@@ -15,17 +15,17 @@
     $variantConfig = match ($variant) {
         'warning' => [
             'icon' => 'gmdi-warning-amber-o',
-            'iconClass' => 'bg-[#fff7e6] text-[#b76b00]',
+            'iconClass' => 'bg-[#fff7e6] text-[#8a4b00]',
             'buttonClass' => 'bg-[#b76b00] hover:bg-[#965800] focus:ring-[#fff0cc]',
         ],
         'default' => [
             'icon' => 'gmdi-help-outline-o',
-            'iconClass' => 'bg-[#eef4ff] text-[#2f66d0]',
+            'iconClass' => 'bg-[#eef4ff] text-[#1769aa]',
             'buttonClass' => 'bg-[#111827] hover:bg-[#252f3f] focus:ring-[#e5e7eb]',
         ],
         default => [
             'icon' => 'gmdi-warning-o',
-            'iconClass' => 'bg-[#fff1f1] text-[#c2414b]',
+            'iconClass' => 'bg-[#fff1f1] text-[#b42336]',
             'buttonClass' => 'bg-[#c2414b] hover:bg-[#a93640] focus:ring-[#ffe0e0]',
         ],
     };

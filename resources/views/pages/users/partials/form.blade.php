@@ -30,7 +30,7 @@
 <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
     <div class="border-b border-[#f0e7e8] p-5">
         <div class="flex items-start gap-3">
-            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#eef4ff] text-[#2f66d0]">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#eef4ff] text-[#1769aa]">
                 <x-lucide-shield-check class="h-5 w-5" />
             </span>
             <div>
@@ -60,7 +60,7 @@
 <article class="overflow-hidden rounded-[8px] border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
     <div class="border-b border-[#f0e7e8] p-5">
         <div class="flex items-start gap-3">
-            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fff7e6] text-[#b76b00]">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#fff7e6] text-[#8a4b00]">
                 <x-lucide-lock-keyhole class="h-5 w-5" />
             </span>
             <div>

@@ -22,7 +22,7 @@
 
     <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-[#667085]">
         <span class="inline-flex items-center gap-2">
-            <span class="h-2.5 w-2.5 rounded-sm bg-[#bf5d6f]"></span>
+            <span class="h-2.5 w-2.5 rounded-sm bg-[#a62d5b]"></span>
             Atendimentos realizados
         </span>
         <span><strong class="font-semibold text-[#111827]">{{ $periodTotal }}</strong> nos últimos {{ count($values) }} meses</span>
@@ -36,7 +36,7 @@
             <div class="flex h-64 flex-col justify-end gap-3">
                 <div class="flex flex-1 items-end justify-center">
                     <div
-                        class="w-full max-w-12 rounded-t-md bg-[#bf5d6f]"
+                        class="w-full max-w-12 rounded-t-md bg-[#a62d5b]"
                         style="height: {{ $totalHeight }}%; min-height: {{ $month['total'] > 0 ? '2px' : '0' }};"
                         title="Realizado: {{ $month['total'] }}">
                     </div>

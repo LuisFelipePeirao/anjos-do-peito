@@ -91,11 +91,11 @@ it('renders movement status badges with their intended colors', function () {
     ])->render();
 
     expect($html)
-        ->toMatch('/bg-\\[#e8f8ee\\] text-\\[#23845a\\][^>]*>\\s*Entregue/')
-        ->toMatch('/bg-\\[#eef4ff\\] text-\\[#2f66d0\\][^>]*>\\s*Recebida/')
+        ->toMatch('/bg-\\[#e8f8ee\\] text-\\[#197a4b\\][^>]*>\\s*Entregue/')
+        ->toMatch('/bg-\\[#eef4ff\\] text-\\[#1769aa\\][^>]*>\\s*Recebida/')
         ->toMatch('/bg-\\[#f2f4f7\\] text-\\[#667085\\][^>]*>\\s*Ajuste/')
-        ->toMatch('/bg-\\[#fff1f1\\] text-\\[#c2414b\\][^>]*>\\s*Cancelado/')
-        ->toMatch('/bg-\\[#fff7e6\\] text-\\[#b76b00\\][^>]*>\\s*Pendente/');
+        ->toMatch('/bg-\\[#fff1f1\\] text-\\[#b42336\\][^>]*>\\s*Cancelado/')
+        ->toMatch('/bg-\\[#fff7e6\\] text-\\[#8a4b00\\][^>]*>\\s*Pendente/');
 });
 
 it('shows movement type chooser before showing a form', function () {

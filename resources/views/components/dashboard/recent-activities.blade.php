@@ -12,7 +12,7 @@
         @foreach ($data as $activity)
             <div class="flex gap-3">
                 <div class="flex flex-col items-center">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#bf5d6f]">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#a62d5b]">
                         <x-gmdi-timeline-o class="h-4 w-4" />
                     </span>
                     @if (!$loop->last)

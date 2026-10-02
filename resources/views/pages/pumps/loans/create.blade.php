@@ -45,7 +45,7 @@
                                 <span class="mt-1 block text-sm leading-6 text-[#667085]">Saída sem cobrança mensal, usada quando a ONG apenas empresta a bomba para a beneficiária.</span>
                             </span>
                         </span>
-                        <span class="mt-4 inline-flex w-fit rounded-full bg-[#e8f8ee] px-2.5 py-1 text-xs font-semibold text-[#23845a]">Sem custo</span>
+                        <span class="mt-4 inline-flex w-fit rounded-full bg-[#e8f8ee] px-2.5 py-1 text-xs font-semibold text-[#197a4b]">Sem custo</span>
                     </label>
 
                     <label class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
@@ -56,16 +56,16 @@
                                 <span class="mt-1 block text-sm leading-6 text-[#667085]">Saída com mensalidade definida, vencimento recorrente e controle de pagamento.</span>
                             </span>
                         </span>
-                        <span class="mt-4 inline-flex w-fit rounded-full bg-[#eef4ff] px-2.5 py-1 text-xs font-semibold text-[#2f66d0]">Com mensalidade</span>
+                        <span class="mt-4 inline-flex w-fit rounded-full bg-[#eef4ff] px-2.5 py-1 text-xs font-semibold text-[#1769aa]">Com mensalidade</span>
                     </label>
                 </div>
-                @error('contract_type') <p class="px-5 pb-5 text-xs text-[#c2414b]">{{ $message }}</p> @enderror
+                @error('contract_type') <p class="px-5 pb-5 text-xs text-[#b42336]">{{ $message }}</p> @enderror
             </article>
 
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef4ff] text-[#2f66d0]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef4ff] text-[#1769aa]">
                             <x-lucide-milk class="h-5 w-5" />
                         </span>
                         <div>
@@ -85,12 +85,12 @@
                             placeholder="Selecione"
                             required
                         />
-                        @error('pump') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                        @error('pump') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <x-material.select name="beneficiary" label="Beneficiária" :options="$beneficiaries" :selected="old('beneficiary')" placeholder="Selecione" required />
-                        @error('beneficiary') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                        @error('beneficiary') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                     </div>
                 </div>
             </article>
@@ -98,7 +98,7 @@
             <article class="overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ecfdf3] text-[#23845a]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ecfdf3] text-[#197a4b]">
                             <x-lucide-calendar-days class="h-5 w-5" />
                         </span>
                         <div>
@@ -118,7 +118,7 @@
             <article class="hidden overflow-hidden rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]" data-pump-billing-section>
                 <div class="border-b border-[#f0e7e8] p-5">
                     <div class="flex items-start gap-3">
-                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fff7e6] text-[#b76b00]">
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fff7e6] text-[#8a4b00]">
                             <x-lucide-receipt class="h-5 w-5" />
                         </span>
                         <div>
@@ -135,7 +135,7 @@
 
                     <div>
                         <x-material.select name="billing_method" label="Forma de cobrança" :options="$billingMethods" :selected="old('billing_method')" placeholder="Selecione" data-pump-billing-field disabled />
-                        @error('billing_method') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                        @error('billing_method') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                     </div>
 
                     <x-material.floating-input type="date" name="first_billing_at" label="Primeira cobrança" :value="old('first_billing_at')" data-pump-billing-field disabled />
@@ -163,7 +163,7 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2">
                     <div>
                         <x-material.select name="term_signed" label="Gerar termo para assinatura?" :options="[1 => 'Sim', 0 => 'Não']" :selected="old('term_signed', 1)" />
-                        @error('term_signed') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                        @error('term_signed') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                     </div>
 
                     <x-material.floating-textarea name="notes" label="Observações do contrato" :value="old('notes')" placeholder="Registre cuidados combinados, restrições, contatos alternativos ou orientações para acompanhamento." wrapper-class="md:col-span-2" />
@@ -175,7 +175,7 @@
                     <a href="{{ route('pumps.index') }}" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
                         Cancelar
                     </a>
-                    <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+                    <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                         <x-lucide-save class="h-4 w-4" />
                         Registrar saída
                     </button>

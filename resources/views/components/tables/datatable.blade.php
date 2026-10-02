@@ -87,11 +87,11 @@
                             @elseif ($key === 'status')
                                 @php
                                     $statusClass = match ($value) {
-                                        'Ativa', 'Em andamento', 'Disponível', 'Pago', 'Entrada', 'Normal', 'Entregue' => 'bg-[#e8f8ee] text-[#23845a]',
-                                        'Agendado', 'Emprestada', 'Distribuído', 'Realizado', 'Recebida' => 'bg-[#eef4ff] text-[#2f66d0]',
+                                        'Ativa', 'Em andamento', 'Disponível', 'Pago', 'Entrada', 'Normal', 'Entregue' => 'bg-[#e8f8ee] text-[#197a4b]',
+                                        'Agendado', 'Emprestada', 'Distribuído', 'Realizado', 'Recebida' => 'bg-[#eef4ff] text-[#1769aa]',
                                         'Manutenção', 'Ajuste' => 'bg-[#f2f4f7] text-[#667085]',
-                                        'Em atraso', 'Pendente', 'Baixo', 'Saída' => 'bg-[#fff7e6] text-[#b76b00]',
-                                        'Cancelado', 'Inativa', 'Crítico' => 'bg-[#fff1f1] text-[#c2414b]',
+                                        'Em atraso', 'Pendente', 'Baixo', 'Saída' => 'bg-[#fff7e6] text-[#8a4b00]',
+                                        'Cancelado', 'Inativa', 'Crítico' => 'bg-[#fff1f1] text-[#b42336]',
                                         default => 'bg-[#f2f4f7] text-[#667085]',
                                     };
                                 @endphp
@@ -135,7 +135,7 @@
                                             $actionVariant = $action['variant']
                                                 ?? (($action['icon'] ?? null) === 'delete-o' ? 'danger' : 'default');
                                             $actionClass = $actionVariant === 'danger'
-                                                ? 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#c2414b] transition hover:bg-[#fff1f1] hover:text-[#c2414b]'
+                                                ? 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#b42336] transition hover:bg-[#fff1f1] hover:text-[#b42336]'
                                                 : 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]';
 
                                             $confirmation = $action['confirmation'] ?? null;

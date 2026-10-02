@@ -10,27 +10,27 @@
             <input type="hidden" name="_method" value="PUT" data-location-method disabled>
             <div>
                 <x-material.floating-input name="nome" label="Nome" :value="old('nome')" placeholder="Ex.: Domiciliar, UBS Centro, Google Meet" required />
-                @error('nome', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                @error('nome', 'location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
             </div>
 
             <div>
                 <x-material.floating-textarea name="descricao" label="Descrição" :value="old('descricao')" placeholder="Observações sobre uso, acesso ou referência do local." />
-                @error('descricao', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                @error('descricao', 'location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
             </div>
 
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-                <div class="xl:col-span-2"><x-material.floating-input name="cep" label="CEP" :value="old('cep')" placeholder="00000-000" inputmode="numeric" data-mask="cep" data-cep-input />@error('cep', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror<span data-cep-feedback class="mt-1 block text-xs text-[#667085]"></span></div>
-                <div class="xl:col-span-3"><x-material.floating-input name="logradouro" label="Rua" :value="old('logradouro')" placeholder="Ex.: Rua das Palmeiras" />@error('logradouro', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                <div class="xl:col-span-2"><x-material.floating-input name="cep" label="CEP" :value="old('cep')" placeholder="00000-000" inputmode="numeric" data-mask="cep" data-cep-input />@error('cep', 'location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror<span data-cep-feedback class="mt-1 block text-xs text-[#667085]"></span></div>
+                <div class="xl:col-span-3"><x-material.floating-input name="logradouro" label="Rua" :value="old('logradouro')" placeholder="Ex.: Rua das Palmeiras" />@error('logradouro', 'location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
                 <x-material.floating-input name="numero" label="Número" :value="old('numero')" placeholder="245" />
                 <x-material.floating-input name="complemento" label="Complemento" :value="old('complemento')" placeholder="Casa, sala, referência" wrapper-class="md:col-span-2" />
                 <x-material.floating-input name="bairro" label="Bairro" :value="old('bairro')" placeholder="Centro" wrapper-class="xl:col-span-2" />
-                <div class="xl:col-span-2"><x-material.floating-input name="cidade" label="Cidade" :value="old('cidade')" placeholder="Cidade" />@error('cidade', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                <div><x-material.floating-input name="uf" label="UF" :value="old('uf')" placeholder="SC" maxlength="2" class="uppercase" />@error('uf', 'location') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                <div class="xl:col-span-2"><x-material.floating-input name="cidade" label="Cidade" :value="old('cidade')" placeholder="Cidade" />@error('cidade', 'location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
+                <div><x-material.floating-input name="uf" label="UF" :value="old('uf')" placeholder="SC" maxlength="2" class="uppercase" />@error('uf', 'location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
             </div>
 
             <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <button type="button" data-location-reset class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] hover:bg-[#fbfaf9]">Cancelar</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white hover:bg-[#d94889]">
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white hover:bg-[#a62d5b]">
                     <x-lucide-save class="h-4 w-4" />
                     <span data-location-submit-label>Salvar local</span>
                 </button>
@@ -56,7 +56,7 @@
                         <tr class="transition hover:bg-[#fff7f9]">
                             <td class="px-4 py-3 font-semibold text-[#111827]">{{ $location->nome }}</td>
                             <td class="px-4 py-3">
-                                <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $location->ativo ? 'bg-[#e8f8ee] text-[#23845a]' : 'bg-[#f4f4f5] text-[#667085]' }}">
+                                <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $location->ativo ? 'bg-[#e8f8ee] text-[#197a4b]' : 'bg-[#f4f4f5] text-[#667085]' }}">
                                     {{ $location->ativo ? 'Ativo' : 'Inativo' }}
                                 </span>
                             </td>
@@ -65,7 +65,7 @@
                                     <button type="button" title="Editar local" aria-label="Editar local" data-location-edit data-location-update-action="{{ route('attendances.locations.update', $location) }}" data-location-nome="{{ $location->nome }}" data-location-descricao="{{ $location->descricao }}" data-location-cep="{{ $formattedCep }}" data-location-logradouro="{{ $cep?->logradouro }}" data-location-numero="{{ $address?->numero }}" data-location-complemento="{{ $address?->complemento }}" data-location-bairro="{{ $cep?->bairro }}" data-location-cidade="{{ $cep?->cidade }}" data-location-uf="{{ $cep?->uf }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]">
                                         <x-gmdi-edit-o class="h-4 w-4" />
                                     </button>
-                                    <button form="location-toggle-{{ $location->id }}" type="submit" title="{{ $location->ativo ? 'Inativar local' : 'Reativar local' }}" aria-label="{{ $location->ativo ? 'Inativar local' : 'Reativar local' }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] transition {{ $location->ativo ? 'text-[#c2414b] hover:bg-[#fff1f1]' : 'text-[#23845a] hover:bg-[#e8f8ee]' }}">
+                                    <button form="location-toggle-{{ $location->id }}" type="submit" title="{{ $location->ativo ? 'Inativar local' : 'Reativar local' }}" aria-label="{{ $location->ativo ? 'Inativar local' : 'Reativar local' }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e4d8d9] transition {{ $location->ativo ? 'text-[#b42336] hover:bg-[#fff1f1]' : 'text-[#197a4b] hover:bg-[#e8f8ee]' }}">
                                         @if ($location->ativo)
                                             <x-gmdi-delete-o class="h-4 w-4" />
                                         @else

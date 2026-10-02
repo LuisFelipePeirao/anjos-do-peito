@@ -113,9 +113,9 @@
                             @foreach ($pumpDueDates as $loan)
                                 @php
                                     $statusClass = match ($loan['status']) {
-                                        'Normal' => 'bg-[#e8f8ee] text-[#23845a]',
-                                        'Pendente' => 'bg-[#fff7e6] text-[#b76b00]',
-                                        'Em atraso' => 'bg-[#fff1f1] text-[#c2414b]',
+                                        'Normal' => 'bg-[#e8f8ee] text-[#197a4b]',
+                                        'Pendente' => 'bg-[#fff7e6] text-[#8a4b00]',
+                                        'Em atraso' => 'bg-[#fff1f1] text-[#b42336]',
                                         default => 'bg-[#f2f4f7] text-[#667085]',
                                     };
                                 @endphp
@@ -192,8 +192,8 @@
                             @foreach ($donationSources as $source)
                                 @php
                                     $statusClass = $source['status'] === 'Normal'
-                                        ? 'bg-[#e8f8ee] text-[#23845a]'
-                                        : 'bg-[#fff7e6] text-[#b76b00]';
+                                        ? 'bg-[#e8f8ee] text-[#197a4b]'
+                                        : 'bg-[#fff7e6] text-[#8a4b00]';
                                 @endphp
 
                                 <div class="rounded-lg border border-[#f0e7e8] p-4">

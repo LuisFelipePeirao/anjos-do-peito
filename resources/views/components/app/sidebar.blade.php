@@ -34,7 +34,7 @@
     class="app-sidebar fixed inset-y-0 left-0 z-40 flex flex-col border-r border-[#eadfe0] bg-white shadow-[0_20px_60px_rgba(28,25,23,0.08)] transition-[transform,width] duration-300 ease-out md:translate-x-0 md:shadow-none"
     aria-label="Menu principal">
     <div class="flex h-16 items-center gap-3 border-b border-[#eadfe0] px-5">
-        <div class="sidebar-logo flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fdecef] text-[#ef5b97]">
+        <div class="sidebar-logo flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fdecef] text-[#a62d5b]">
             <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" class="h-10 w-10" />
         </div>
 
@@ -44,7 +44,7 @@
 
         <button
             type="button"
-            class="sidebar-collapse-button hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#f7edef] hover:text-[#ef5b97] md:inline-flex hover:cursor-pointer"
+            class="sidebar-collapse-button hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#667085] transition hover:bg-[#f7edef] hover:text-[#a62d5b] md:inline-flex hover:cursor-pointer"
             data-sidebar-collapse
             aria-label="Recolher menu"
             aria-expanded="true">
@@ -62,7 +62,7 @@
 
             <a
                 href="{{ $href }}"
-                class="sidebar-link {{ $isActive ? 'is-active' : '' }} flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]"
+                class="sidebar-link {{ $isActive ? 'is-active' : '' }} flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#fbf1f3] hover:text-[#a62d5b]"
                 title="{{ $item['label'] }}">
                 <x-dynamic-component :component="$item['icon']" class="h-5 w-5 shrink-0" />
                 <span class="sidebar-text truncate">{{ $item['label'] }}</span>
@@ -72,7 +72,7 @@
 
     <div class="border-t border-[#eadfe0] p-4">
         <div class="sidebar-user mb-3 flex items-center gap-3">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ef5b97] text-sm font-semibold text-white">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#c73570] text-sm font-semibold text-white">
                 {{ $initials ?: 'U' }}
             </div>
             <div class="sidebar-text min-w-0">
@@ -84,7 +84,7 @@
         <button
             type="button"
             data-confirm-dialog-open="logout-confirmation"
-            class="sidebar-link flex h-10 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-medium text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#ef5b97]"
+            class="sidebar-link flex h-10 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-medium text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#a62d5b]"
             title="Sair">
             <x-gmdi-logout-o class="h-5 w-5 shrink-0" />
             <span class="sidebar-text truncate">Sair</span>
