@@ -7,6 +7,30 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Desenvolvimento com Docker
+
+O Docker executa o Laravel com PHP 8.4 e um MySQL isolado, sem alterar o PHP ou o MySQL do XAMPP.
+
+```powershell
+docker compose up --build
+```
+
+Na primeira inicialização, as dependências e as migrations são aplicadas. A aplicação fica disponível em `http://localhost:8001`.
+
+Para atualizar dependências com o PHP do container:
+
+```powershell
+docker compose exec app composer update
+```
+
+Após alterar assets do frontend, gere o bundle com:
+
+```powershell
+docker compose run --rm frontend npm run build
+```
+
+Para encerrar, use `docker compose down`. Para remover também os dados locais do banco Docker, use `docker compose down -v`.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
