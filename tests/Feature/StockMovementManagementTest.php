@@ -315,6 +315,36 @@ it('prevents adjustment subtraction from making stock negative', function () {
         ->assertSessionHasErrors('quantidade');
 });
 
+it('keeps stock and movement history unchanged after an invalid adjustment subtraction', function () {
+    $user = User::factory()->administrador()->create();
+    $material = movementMaterial();
+    $donor = movementDonor();
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'entrada',
+        'id_doador' => $donor->id,
+        'data_hora' => '2026-08-29 09:00:00',
+        'situacao' => 'recebida',
+        'items' => [['id_material' => $material->id, 'quantidade' => 5]],
+    ])->assertRedirect();
+
+    $this->actingAs($user)
+        ->from(route('movements.create', ['tipo' => 'ajuste']))
+        ->post(route('movements.store'), [
+            'tipo' => 'ajuste',
+            'id_material' => $material->id,
+            'operacao' => 'subtrair',
+            'quantidade' => 6,
+            'data_hora' => '2026-08-29 12:00:00',
+            'observacao' => 'Perda maior que o saldo.',
+        ])
+        ->assertRedirect(route('movements.create', ['tipo' => 'ajuste']))
+        ->assertSessionHasErrors('quantidade');
+
+    expect(EstoqueMovimentacao::where('id_material', $material->id)->where('tipo', 'ajuste')->count())->toBe(0)
+        ->and(app(DonationStockService::class)->showData($material->fresh())['stockItem']['quantity'])->toBe('5 pacotes');
+});
+
 it('creates exit movements and prevents negative stock', function () {
     $user = User::factory()->administrador()->create();
     $material = movementMaterial();

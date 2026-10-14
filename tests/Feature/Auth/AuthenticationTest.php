@@ -16,6 +16,28 @@ it('shows the VITA favicon in the login browser tab', function () {
         ->assertSee('assets/img/favicon_VITA.png');
 });
 
+it('provides Portuguese semantic landmarks on the login page', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('<html lang="pt-BR">', false)
+        ->assertSee('<main', false)
+        ->assertSee('aria-labelledby="login-title"', false)
+        ->assertSee('id="login-title"', false);
+});
+
+it('announces login validation errors to assistive technologies', function () {
+    $this->from(route('login'))
+        ->post(route('login.store'), [])
+        ->assertRedirect(route('login'));
+
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('aria-invalid="true"', false)
+        ->assertSee('aria-describedby="email-error"', false)
+        ->assertSee('id="email-error"', false)
+        ->assertSee('role="alert"', false);
+});
+
 it('shows the VITA logo on the reset password page', function () {
     $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com']))
         ->assertOk()
@@ -64,8 +86,8 @@ it('shows password visibility controls on login and reset password forms', funct
     $this->get(route('login'))
         ->assertOk()
         ->assertSee('data-password-toggle="senha"', false)
-        ->assertSee('rounded-[4px] text-[#8590ad]', false)
-        ->assertSee('focus-visible:ring-2', false)
+        ->assertSee('rounded-[4px] text-[#526078]', false)
+        ->assertSee('focus-visible:outline-2', false)
         ->assertDontSee('hover:bg-[#fdecef]', false)
         ->assertDontSee('rounded-full text-[#8590ad] transition hover:bg', false);
 
@@ -73,8 +95,8 @@ it('shows password visibility controls on login and reset password forms', funct
         ->assertOk()
         ->assertSee('data-password-toggle="senha"', false)
         ->assertSee('data-password-toggle="senha_confirmation"', false)
-        ->assertSee('rounded-[4px] text-[#8590ad]', false)
-        ->assertSee('focus-visible:ring-2', false)
+        ->assertSee('rounded-[4px] text-[#526078]', false)
+        ->assertSee('focus-visible:outline-2', false)
         ->assertDontSee('hover:bg-[#fdecef]', false)
         ->assertDontSee('rounded-full text-[#8590ad] transition hover:bg', false);
 });

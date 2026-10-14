@@ -1,0 +1,1 @@
+<svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><?php /**PATH C:\xampp\htdocs\anjos-do-peito\storage\framework\testing-views/6ca9a61e67563f46de44eb91a8ac3137.blade.php ENDPATH**/ ?>

@@ -54,7 +54,7 @@ it('shows realized attendances with the same blue status badge as borrowed pumps
 
     $this->actingAs($user)->get(route('attendances.index'))
         ->assertOk()
-        ->assertSee('bg-[#eef4ff] text-[#2f66d0]', false);
+        ->assertSee('bg-[#e8f4ff] text-[#1769aa]', false);
 });
 
 it('shows a scheduled form with clinical fields hidden and draft action', function () {
@@ -262,6 +262,10 @@ it('starts an attendance and saves or finalizes its clinical continuation', func
 
     $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'draft', 'summary' => 'Registro parcial'])->assertRedirect(route('attendances.show', $attendance));
     expect($attendance->fresh()->situacao)->toBe('em_atendimento')->and($attendance->fresh()->rascunho)->toBeTrue();
+    $this->assertDatabaseHas('atendimento_detalhes', [
+        'id_atendimento' => $attendance->id,
+        'resumo' => 'Registro parcial',
+    ]);
 
     $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'final', 'confirmed_finalization' => 1, 'summary' => 'Registro completo', 'objective' => 'Objetivo', 'complaint' => 'Queixa', 'evaluation' => 'Avaliação', 'conduct' => 'Conduta'])->assertSessionHasErrors(['attendance_category', 'procedure']);
 

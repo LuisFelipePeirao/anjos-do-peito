@@ -13,7 +13,7 @@ it('renders the select label inside the field without a placeholder option', fun
         ->toContain('required')
         ->toContain('no-asterisk')
         ->toContain('data-select-required-asterisk')
-        ->toContain('text-[#c2414b]')
+        ->toContain('text-[#b42336]')
         ->toContain('value="busca_espontanea"')
         ->not->toContain('>Selecione<')
         ->not->toContain('<span class="block text-sm font-semibold text-[#344054]">');
