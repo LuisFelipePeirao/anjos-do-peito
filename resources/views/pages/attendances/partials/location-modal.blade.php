@@ -8,6 +8,8 @@
         <form action="{{ route('attendances.locations.store') }}" method="POST" class="mt-5 space-y-5 rounded-lg border border-[#f0e7e8] p-4" data-location-form data-location-store-action="{{ route('attendances.locations.store') }}" data-unsaved-form>
             @csrf
             <input type="hidden" name="_method" value="PUT" data-location-method disabled>
+            <fieldset class="space-y-5 border-0 p-0">
+                <legend class="sr-only">Dados do local</legend>
             <div>
                 <x-material.floating-input name="nome" label="Nome" :value="old('nome')" placeholder="Ex.: Domiciliar, UBS Centro, Google Meet" required />
                 @error('nome', 'location') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
@@ -35,10 +37,12 @@
                     <span data-location-submit-label>Salvar local</span>
                 </button>
             </div>
+            </fieldset>
         </form>
 
         <div class="mt-6 max-h-96 overflow-y-auto rounded-lg border border-[#f0e7e8]">
             <table class="w-full min-w-[34rem] text-left text-sm">
+                <caption class="sr-only">Lista de locais</caption>
                 <thead class="sticky top-0 border-b border-[#eadfe0] bg-[#fbfaf9] text-xs uppercase tracking-wide text-[#667085]">
                     <tr>
                         <th class="px-4 py-3 font-semibold">Nome</th>
@@ -73,10 +77,6 @@
                                         @endif
                                     </button>
                                 </div>
-                                <form id="location-toggle-{{ $location->id }}" action="{{ route('attendances.locations.toggle', $location) }}" method="POST" class="hidden">
-                                    @csrf
-                                    @method('PATCH')
-                                </form>
                             </td>
                         </tr>
                     @empty
@@ -87,4 +87,13 @@
                 </tbody>
             </table>
         </div>
+        @foreach ($allLocations as $location)
+            <form id="location-toggle-{{ $location->id }}" action="{{ route('attendances.locations.toggle', $location) }}" method="POST" class="hidden">
+                @csrf
+                @method('PATCH')
+                <fieldset>
+                    <legend class="sr-only">Alterar status de {{ $location->nome }}</legend>
+                </fieldset>
+            </form>
+        @endforeach
 </x-app.modal-shell>

@@ -37,9 +37,9 @@
                 </div>
 
                 <div class="grid gap-4 p-5 md:grid-cols-2">
-                    <label class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
+                    <label for="contract-type-loan" class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
                         <span class="flex items-start gap-3">
-                            <input type="radio" name="contract_type" value="emprestimo" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type @checked(old('contract_type', 'emprestimo') === 'emprestimo')>
+                            <input id="contract-type-loan" type="radio" name="contract_type" value="emprestimo" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type @checked(old('contract_type', 'emprestimo') === 'emprestimo')>
                             <span>
                                 <span class="block text-base font-bold text-[#111827]">Empréstimo</span>
                                 <span class="mt-1 block text-sm leading-6 text-[#667085]">Saída sem cobrança mensal, usada quando a ONG apenas empresta a bomba para a beneficiária.</span>
@@ -48,9 +48,9 @@
                         <span class="mt-4 inline-flex w-fit rounded-full bg-[#e8f8ee] px-2.5 py-1 text-xs font-semibold text-[#197a4b]">Sem custo</span>
                     </label>
 
-                    <label class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
+                    <label for="contract-type-rental" class="flex h-full cursor-pointer flex-col rounded-lg border border-[#eadfe0] bg-white p-4 transition has-[:checked]:border-[#ef5b97] has-[:checked]:bg-[#fff7f9]">
                         <span class="flex items-start gap-3">
-                            <input type="radio" name="contract_type" value="aluguel" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type @checked(old('contract_type') === 'aluguel')>
+                            <input id="contract-type-rental" type="radio" name="contract_type" value="aluguel" class="mt-1 h-4 w-4 border-[#d0d5dd] text-[#ef5b97] focus:ring-[#ef5b97]" data-pump-contract-type @checked(old('contract_type') === 'aluguel')>
                             <span>
                                 <span class="block text-base font-bold text-[#111827]">Aluguel</span>
                                 <span class="mt-1 block text-sm leading-6 text-[#667085]">Saída com mensalidade definida, vencimento recorrente e controle de pagamento.</span>

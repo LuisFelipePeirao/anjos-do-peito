@@ -71,6 +71,7 @@
                         $displayRow = collect((array) $row)
                             ->reject(fn ($value, $key) => str_starts_with((string) $key, '_'))
                             ->all();
+                        $rowLabel = (string) collect($displayRow)->first();
                     @endphp
                     <tr class="transition hover:bg-[#fff7f9]">
                          @foreach ($displayRow as $key => $value)
@@ -165,10 +166,10 @@
                                         <a
                                             href="{{ $actionRoute }}"
                                             class="{{ $actionClass }}"
-                                            title="{{ $actionTitle }}"
                                             @if ($confirmationId) data-confirm-dialog-open="{{ $confirmationId }}" @endif
                                         >
                                             <x-dynamic-component :component="$actionIcon" class="h-4 w-4" />
+                                            <span class="sr-only">{{ $actionTitle }} {{ $rowLabel }}</span>
                                         </a>
 
                                         @if ($confirmationId)

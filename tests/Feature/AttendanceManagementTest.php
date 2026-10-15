@@ -405,3 +405,43 @@ it('renders category and procedure dialogs with shared edit forms and external m
         ->assertDontSee('>Inativar<', false)
         ->assertDontSee('>Reativar<', false);
 });
+
+it('renders attendance form groups and keeps modal toggle forms outside data tables', function () {
+    $user = User::factory()->administrador()->create();
+    $category = CategoriaAtendimento::create(['nome' => 'Gestantes', 'ativo' => true]);
+    $procedure = Procedimento::create(['nome' => 'Laserterapia', 'ativo' => true]);
+
+    $response = $this->actingAs($user)->get(route('attendances.create'));
+    $content = $response->getContent();
+
+    $response->assertOk()
+        ->assertSee('<legend class="sr-only">Dados do atendimento</legend>', false)
+        ->assertSee('<legend class="sr-only">Dados da categoria</legend>', false)
+        ->assertSee('<legend class="sr-only">Dados do procedimento</legend>', false)
+        ->assertSee('<caption class="sr-only">Lista de categoria</caption>', false)
+        ->assertSee('<caption class="sr-only">Lista de procedimento</caption>', false);
+
+    expect($content)->not->toMatch('/<table\\b(?:(?!<\\/table>)[\\s\\S])*<form id="attendance-category-dialog-toggle-'.$category->id.'"/')
+        ->and($content)->not->toMatch('/<table\\b(?:(?!<\\/table>)[\\s\\S])*<form id="attendance-procedure-dialog-toggle-'.$procedure->id.'"/');
+});
+
+it('renders shared authenticated accessibility fallbacks without invalid table forms', function () {
+    $user = User::factory()->administrador()->create();
+    $location = LocalAtendimento::create(['nome' => 'Sede ICAP']);
+
+    $response = $this->actingAs($user)->get(route('attendances.index'));
+    $content = $response->getContent();
+
+    $response->assertOk()
+        ->assertSee('href="#inicio-conteudo"', false)
+        ->assertSee('accesskey="1"', false)
+        ->assertSee('id="inicio-conteudo"', false)
+        ->assertSee('name="inicio-conteudo"', false)
+        ->assertSee('<noscript>', false)
+        ->assertSee('<legend class="sr-only">Dados do local</legend>', false)
+        ->assertSee('<caption class="sr-only">Lista de locais</caption>', false)
+        ->assertDontSee('title="Início"', false)
+        ->assertDontSee('title="Sair"', false);
+
+    expect($content)->not->toMatch('/<table\\b(?:(?!<\\/table>)[\\s\\S])*<form id="location-toggle-'.$location->id.'"/');
+});

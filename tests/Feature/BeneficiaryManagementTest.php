@@ -136,3 +136,15 @@ it('manages children only within their beneficiary profile', function () {
 
     $this->assertDatabaseHas('criancas', ['nome' => 'Lucas Silva', 'id_beneficiaria' => $beneficiaria->id]);
 });
+
+it('gives child icon actions accessible text', function () {
+    $user = User::factory()->create();
+    $beneficiaria = Beneficiaria::create([...beneficiaryPayload(), 'cpf' => '12345678909', 'situacao' => 'ativo']);
+    $beneficiaria->criancas()->create(['nome' => 'Lucas Silva', 'data_nascimento' => '2026-01-15', 'sexo' => 'masculino']);
+
+    $this->actingAs($user)
+        ->get(route('beneficiaries.show', ['beneficiaria' => $beneficiaria, 'tab' => 'babies']))
+        ->assertOk()
+        ->assertSee('<span class="sr-only">Editar bebê Lucas Silva</span>', false)
+        ->assertSee('<span class="sr-only">Excluir bebê Lucas Silva</span>', false);
+});

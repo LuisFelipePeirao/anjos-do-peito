@@ -41,7 +41,28 @@ it('announces login validation errors to assistive technologies', function () {
 it('shows the VITA logo on the reset password page', function () {
     $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com']))
         ->assertOk()
-        ->assertSee('http://localhost:8000/assets/img/logo_VITA.png');
+        ->assertSee(asset('assets/img/logo_VITA.png'));
+});
+
+it('keeps password pages single-headed and free from the login fallback', function () {
+    $responses = [
+        $this->get(route('password.request')),
+        $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com'])),
+    ];
+
+    foreach ($responses as $response) {
+        $response->assertOk()->assertDontSee('E-mail para acesso sem JavaScript');
+        expect(substr_count($response->getContent(), '<h1'))->toBe(1);
+    }
+});
+
+it('shows validation feedback in the no-JavaScript login fallback', function () {
+    $this->from(route('login'))->post(route('login.store'), []);
+
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('id="email-no-javascript-error"', false)
+        ->assertSee('id="senha-no-javascript-error"', false);
 });
 
 it('authenticates a user with email and senha', function () {

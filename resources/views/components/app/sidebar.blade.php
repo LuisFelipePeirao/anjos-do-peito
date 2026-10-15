@@ -62,8 +62,7 @@
 
             <a
                 href="{{ $href }}"
-                class="sidebar-link {{ $isActive ? 'is-active' : '' }} flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#fbf1f3] hover:text-[#a62d5b]"
-                title="{{ $item['label'] }}">
+                class="sidebar-link {{ $isActive ? 'is-active' : '' }} flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#fbf1f3] hover:text-[#a62d5b]">
                 <x-dynamic-component :component="$item['icon']" class="h-5 w-5 shrink-0" />
                 <span class="sidebar-text truncate">{{ $item['label'] }}</span>
             </a>
@@ -84,8 +83,7 @@
         <button
             type="button"
             data-confirm-dialog-open="logout-confirmation"
-            class="sidebar-link flex h-10 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-medium text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#a62d5b]"
-            title="Sair">
+            class="sidebar-link flex h-10 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-medium text-[#667085] transition hover:bg-[#fbf1f3] hover:text-[#a62d5b]">
             <x-gmdi-logout-o class="h-5 w-5 shrink-0" />
             <span class="sidebar-text truncate">Sair</span>
         </button>

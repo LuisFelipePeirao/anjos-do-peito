@@ -37,6 +37,22 @@
     --sidebar-width: 16rem;
 }
 
+.login-logo {
+    animation: login-logo-enter 700ms ease-out both;
+}
+
+@keyframes login-logo-enter {
+    from {
+        opacity: 0;
+        transform: translateY(1rem) scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 .app-shell[data-sidebar-collapsed='true'] {
     --sidebar-width: 5.25rem;
 }
