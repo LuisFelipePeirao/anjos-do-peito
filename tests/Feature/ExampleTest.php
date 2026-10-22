@@ -10,7 +10,7 @@ test('login page has keyboard navigation landmarks and labelled inputs', functio
     $response = $this->get('/');
 
     $response->assertSee('lang="pt-BR"', false)
-        ->assertSee('href="#inicio-conteudo"', false)
+        ->assertSee('href="#conteudo"', false)
         ->assertSee('id="conteudo"', false)
         ->assertSee('label="E-mail"', false)
         ->assertSee('name="email"', false)
@@ -28,13 +28,31 @@ test('login form groups its credentials with a descriptive legend', function () 
 test('login page provides an eMAG skip link and a no-JavaScript fallback', function () {
     $response = $this->get('/');
 
-    $response->assertSee('href="#inicio-conteudo"', false)
+    $response->assertSee('href="#conteudo"', false)
         ->assertSee('accesskey="1"', false)
-        ->assertSee('id="inicio-conteudo"', false)
-        ->assertSee('name="inicio-conteudo"', false)
+        ->assertSee('class="skip-link"', false)
         ->assertSee('<noscript>', false)
         ->assertSee('E-mail para acesso sem JavaScript', false)
         ->assertSee('Senha para acesso sem JavaScript', false);
+});
+
+test('login skip link targets the main landmark', function () {
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('href="#conteudo"', false)
+        ->assertSee('<main id="conteudo"', false);
+});
+
+test('confirmation forms have an accessible name without a visible legend', function () {
+    $html = view('components.app.confirm-modal', [
+        'id' => 'logout-confirmation',
+        'title' => 'Sair do sistema?',
+        'action' => '/logout',
+    ])->render();
+
+    expect($html)
+        ->toContain('<form action="/logout" method="POST" aria-label="Sair do sistema?">')
+        ->not->toContain('<legend');
 });
 
 test('login page exposes only one top-level heading across script fallbacks', function () {

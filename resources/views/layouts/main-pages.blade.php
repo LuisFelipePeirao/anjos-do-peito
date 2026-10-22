@@ -27,10 +27,9 @@
 </head>
 
 <body>
-    <a href="#inicio-conteudo" accesskey="1" class="sr-only absolute left-4 top-4 z-50 rounded bg-white px-4 py-2 text-[#1f2937] shadow focus:not-sr-only">
+    <a href="#conteudo" accesskey="1" class="skip-link">
         Pular para conteúdo
     </a>
-    <a id="inicio-conteudo" name="inicio-conteudo" tabindex="-1" class="sr-only">Início do conteúdo</a>
     <noscript>
         <p class="m-4 rounded border border-[#b42336] bg-[#fff1f1] p-4 text-[#b42336]" role="status">Ative o JavaScript para usar o sistema.</p>
     </noscript>

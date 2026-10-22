@@ -76,9 +76,7 @@
             </button>
 
             @if ($action)
-                <form action="{{ $action }}" method="{{ $normalizedMethod === 'GET' ? 'GET' : 'POST' }}">
-                    <fieldset class="border-0 p-0">
-                        <legend class="sr-only">{{ $title }}</legend>
+                <form action="{{ $action }}" method="{{ $normalizedMethod === 'GET' ? 'GET' : 'POST' }}" aria-label="{{ $title }}">
                     @if ($normalizedMethod !== 'GET')
                         @csrf
                     @endif
@@ -92,7 +90,6 @@
                     >
                         {{ $confirmLabel }}
                     </button>
-                    </fieldset>
                 </form>
             @elseif ($href)
                 <a

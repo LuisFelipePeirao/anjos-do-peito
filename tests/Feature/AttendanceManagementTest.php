@@ -433,10 +433,9 @@ it('renders shared authenticated accessibility fallbacks without invalid table f
     $content = $response->getContent();
 
     $response->assertOk()
-        ->assertSee('href="#inicio-conteudo"', false)
+        ->assertSee('href="#conteudo"', false)
         ->assertSee('accesskey="1"', false)
-        ->assertSee('id="inicio-conteudo"', false)
-        ->assertSee('name="inicio-conteudo"', false)
+        ->assertSee('class="skip-link"', false)
         ->assertSee('<noscript>', false)
         ->assertSee('<legend class="sr-only">Dados do local</legend>', false)
         ->assertSee('<caption class="sr-only">Lista de locais</caption>', false)
