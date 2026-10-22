@@ -100,6 +100,29 @@ it('allows an empty alternate phone number', function () {
     $this->assertDatabaseHas('beneficiarias', ['cpf' => '12345678909', 'telefone_alternativo' => '']);
 });
 
+it('creates a beneficiary without an email address', function () {
+    $user = User::factory()->create();
+    $payload = beneficiaryPayload();
+    unset($payload['email']);
+
+    $this->actingAs($user)->post(route('beneficiaries.store'), $payload)
+        ->assertRedirect(route('beneficiaries.index'));
+
+    $this->assertDatabaseHas('beneficiarias', ['cpf' => '12345678909', 'email' => null]);
+});
+
+it('updates a beneficiary without an email address', function () {
+    $user = User::factory()->create();
+    $beneficiaria = Beneficiaria::create([...beneficiaryPayload(), 'cpf' => '12345678909', 'situacao' => 'ativo']);
+    $payload = beneficiaryPayload(['nome' => 'Maria Atualizada']);
+    unset($payload['email']);
+
+    $this->actingAs($user)->put(route('beneficiaries.update', $beneficiaria), $payload)
+        ->assertRedirect(route('beneficiaries.show', $beneficiaria));
+
+    $this->assertDatabaseHas('beneficiarias', ['id' => $beneficiaria->id, 'nome' => 'Maria Atualizada', 'email' => null]);
+});
+
 it('filters beneficiaries by status and search', function () {
     $user = User::factory()->create();
     Beneficiaria::create([...beneficiaryPayload(), 'cpf' => '12345678909', 'situacao' => 'ativo']);

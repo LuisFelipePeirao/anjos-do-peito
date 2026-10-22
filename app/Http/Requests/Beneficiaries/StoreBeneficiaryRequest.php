@@ -28,7 +28,7 @@ class StoreBeneficiaryRequest extends FormRequest
         return [
             'nome' => ['required', 'string', 'max:255'],
             'cpf' => ['required', 'string', 'regex:/^\d{11}$/', fn (string $attribute, string $value, $fail) => self::isValidCpf($value) ?: $fail('Informe um CPF válido.'), Rule::unique('beneficiarias', 'cpf')->ignore($this->beneficiaryIdToIgnore())],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
             'telefone' => ['required', 'string', 'max:30'],
             'telefone_alternativo' => ['nullable', 'string', 'max:30'],
             'origem_cadastro' => ['required', Rule::in(array_keys(self::origins()))],

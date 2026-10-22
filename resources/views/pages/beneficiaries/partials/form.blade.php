@@ -25,7 +25,7 @@
     <div class="grid gap-5 p-5 md:grid-cols-2 xl:grid-cols-4">
         <x-material.floating-input type="tel" name="telefone" label="Telefone principal" :value="old('telefone', $beneficiaria?->telefone)" placeholder="(00) 00000-0000" inputmode="numeric" data-mask="phone" required />
         <x-material.floating-input type="tel" name="telefone_alternativo" label="Telefone alternativo" :value="old('telefone_alternativo', $beneficiaria?->telefone_alternativo)" placeholder="(00) 00000-0000" inputmode="numeric" data-mask="phone" />
-        <x-material.floating-input type="email" name="email" label="E-mail" :value="old('email', $beneficiaria?->email)" placeholder="nome@email.com" required />
+        <x-material.floating-input type="email" name="email" label="E-mail" :value="old('email', $beneficiaria?->email)" placeholder="nome@email.com" />
         <div><x-material.select name="origem_cadastro" label="Origem do cadastro" :options="$origins" :selected="old('origem_cadastro', $beneficiaria?->origem_cadastro)" placeholder="Selecione" required />@error('origem_cadastro') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
     </div>
 </article>
