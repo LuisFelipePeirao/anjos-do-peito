@@ -122,7 +122,7 @@ class StoreAttendanceRequest extends FormRequest
 
     public static function durations(): array
     {
-        return ['00:30' => '30 minutos', '00:45' => '45 minutos', '01:00' => '60 minutos', '01:30' => '90 minutos'];
+        return ['00:15' => '15 minutos', '00:30' => '30 minutos', '00:45' => '45 minutos', '01:00' => '60 minutos', '01:30' => '90 minutos'];
     }
 
     private function ensureChildBelongsToBeneficiary(?int $childId, int $beneficiaryId): void
