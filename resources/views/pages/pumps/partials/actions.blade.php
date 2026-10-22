@@ -3,7 +3,7 @@
         <a href="{{ $cancelRoute }}" class="inline-flex h-11 items-center justify-center rounded-[8px] border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#fbf1f3]">
             Cancelar
         </a>
-        <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#ef5b97] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+        <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] bg-[#c73570] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
             <x-lucide-save class="h-4 w-4" />
             {{ $submitLabel }}
         </button>

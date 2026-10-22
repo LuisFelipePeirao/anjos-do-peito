@@ -98,8 +98,8 @@ it('shows an activation action for inactive users and restores their access', fu
     $this->actingAs($admin)
         ->get(route('users.index', ['status' => 'inactive']))
         ->assertOk()
-        ->assertSee('title="Ativar usuário"', false)
-        ->assertDontSee('title="Editar usuário"', false);
+        ->assertSee('Ativar usuário '.$inactiveUser->nome)
+        ->assertDontSee('Editar usuário '.$inactiveUser->nome);
 
     $this->actingAs($admin)
         ->patch('/usuarios/'.$inactiveUser->id.'/ativar')

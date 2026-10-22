@@ -14,10 +14,10 @@
         ];
 
         $statusClass = match ($attendanceData['status_label']) {
-            'Realizado' => 'bg-[#e8f8ee] text-[#23845a]',
-            'Em andamento' => 'bg-[#ecfdf3] text-[#23845a]',
-            'Agendado' => 'bg-[#eef4ff] text-[#2f66d0]',
-            'Cancelado' => 'bg-[#fff1f1] text-[#c2414b]',
+            'Realizado' => 'bg-[#e8f8ee] text-[#197a4b]',
+            'Em andamento' => 'bg-[#ecfdf3] text-[#197a4b]',
+            'Agendado' => 'bg-[#eef4ff] text-[#1769aa]',
+            'Cancelado' => 'bg-[#fff1f1] text-[#b42336]',
             default => 'bg-[#f2f4f7] text-[#667085]',
         };
     @endphp
@@ -42,13 +42,13 @@
                     <form action="{{ route('attendances.start', $attendance) }}" method="POST">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                        <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                             <x-lucide-play class="h-4 w-4" />
                             Iniciar atendimento
                         </button>
                     </form>
                 @elseif ($attendance->situacao === 'em_atendimento')
-                    <a href="{{ route('attendances.continue', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                    <a href="{{ route('attendances.continue', $attendance) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                         <x-lucide-play class="h-4 w-4" />
                         Continuar atendimento
                     </a>
@@ -59,7 +59,7 @@
                         Editar
                     </a>
                 @endif
-                <button type="button" data-confirm-dialog-open="attendance-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1]">
+                <button type="button" data-confirm-dialog-open="attendance-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#b42336] shadow-sm transition hover:bg-[#fff1f1]">
                     <x-lucide-trash-2 class="h-4 w-4" />
                     Excluir
                 </button>
@@ -134,7 +134,7 @@
                 @foreach ($tabs as $key => $label)
                     <a
                         href="{{ route('attendances.show', ['attendance' => $attendance, 'tab' => $key]) }}"
-                        class="shrink-0 border-b-2 px-1 py-4 text-sm font-medium transition {{ $tab === $key ? 'border-[#bf5d6f] text-[#bf5d6f]' : 'border-transparent text-[#4b5563] hover:text-[#bf5d6f]' }}">
+                        class="shrink-0 border-b-2 px-1 py-4 text-sm font-medium transition {{ $tab === $key ? 'border-[#a62d5b] text-[#a62d5b]' : 'border-transparent text-[#4b5563] hover:text-[#a62d5b]' }}">
                         {{ $label }}
                     </a>
                 @endforeach
@@ -159,7 +159,7 @@
             <div class="grid gap-4 lg:grid-cols-2">
                 <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                     <div class="flex items-start gap-3">
-                        <x-lucide-target class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
+                        <x-lucide-target class="mt-0.5 h-5 w-5 shrink-0 text-[#a62d5b]" />
                         <div>
                             <h3 class="text-lg font-bold text-[#111827]">Objetivo</h3>
                             <p class="mt-2 text-sm leading-6 text-[#667085]">{{ $attendanceData['objective'] }}</p>
@@ -169,7 +169,7 @@
 
                 <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                     <div class="flex items-start gap-3">
-                        <x-lucide-clipboard-check class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
+                        <x-lucide-clipboard-check class="mt-0.5 h-5 w-5 shrink-0 text-[#a62d5b]" />
                         <div>
                             <h3 class="text-lg font-bold text-[#111827]">Conduta</h3>
                             <p class="mt-2 text-sm leading-6 text-[#667085]">{{ $attendanceData['conduct'] }}</p>
@@ -197,7 +197,7 @@
                         @endphp
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#bf5d6f]">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#a62d5b]">
                                     <x-dynamic-component :component="$icon" class="h-4 w-4" />
                                 </span>
                                 @if (!$loop->last)

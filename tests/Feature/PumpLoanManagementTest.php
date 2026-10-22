@@ -60,6 +60,10 @@ it('uses floating controls while keeping billing fields disabled', function () {
 
     $this->actingAs($user)->get(route('pumps.loans.create'))
         ->assertOk()
+        ->assertSee('for="contract-type-loan"', false)
+        ->assertSee('id="contract-type-loan"', false)
+        ->assertSee('for="contract-type-rental"', false)
+        ->assertSee('id="contract-type-rental"', false)
         ->assertSee('id="withdrawn_at"', false)
         ->assertSee('name="billing_notes"', false)
         ->assertSee('data-pump-billing-field', false)

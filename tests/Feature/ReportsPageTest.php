@@ -167,6 +167,17 @@ it('validates report filter dates', function () {
         ->assertSessionHasErrors('end_date');
 });
 
+it('associates report period labels with their date fields', function () {
+    $user = User::factory()->administrador()->create();
+
+    $this->actingAs($user)->get(route('reports.index'))
+        ->assertOk()
+        ->assertSee('for="report-start-date"', false)
+        ->assertSee('id="report-start-date"', false)
+        ->assertSee('for="report-end-date"', false)
+        ->assertSee('id="report-end-date"', false);
+});
+
 it('excludes pending exits from stock coverage and professional distributions', function () {
     $user = User::factory()->administrador()->create();
     $beneficiary = reportBeneficiary();

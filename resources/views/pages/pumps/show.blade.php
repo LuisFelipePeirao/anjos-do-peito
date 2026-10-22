@@ -16,11 +16,11 @@
         ];
 
         $statusClass = match ($pumpData['status']) {
-            'Disponível' => 'bg-[#e8f8ee] text-[#23845a]',
-            'Emprestada' => 'bg-[#eef4ff] text-[#2f66d0]',
-            'Em atraso' => 'bg-[#fff7e6] text-[#b76b00]',
+            'Disponível' => 'bg-[#e8f8ee] text-[#197a4b]',
+            'Emprestada' => 'bg-[#eef4ff] text-[#1769aa]',
+            'Em atraso' => 'bg-[#fff7e6] text-[#8a4b00]',
             'Manutenção' => 'bg-[#f2f4f7] text-[#667085]',
-            default => 'bg-[#fff1f1] text-[#c2414b]',
+            default => 'bg-[#fff1f1] text-[#b42336]',
         };
     @endphp
 
@@ -57,7 +57,7 @@
                     <x-lucide-pencil class="h-4 w-4" />
                     Editar
                 </a>
-                <button type="button" data-confirm-dialog-open="pump-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1]">
+                <button type="button" data-confirm-dialog-open="pump-delete-confirmation" class="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#f2c7cb] bg-white px-4 text-sm font-semibold text-[#b42336] shadow-sm transition hover:bg-[#fff1f1]">
                     <x-lucide-trash-2 class="h-4 w-4" />
                     Excluir
                 </button>
@@ -112,11 +112,11 @@
                     @if (($currentContract['is_renewable'] ?? false) && in_array($pumpData['status'], ['Emprestada', 'Em atraso'], true))
                         <div class="sm:col-span-2 xl:col-span-4">
                             <div data-pump-loan-actions class="flex flex-col items-end gap-3">
-                                <button type="button" data-dialog-open="pump-renewal-modal" class="inline-flex h-10 items-center justify-center gap-2 rounded-[8px] bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                                <button type="button" data-dialog-open="pump-renewal-modal" class="inline-flex h-10 items-center justify-center gap-2 rounded-[8px] bg-[#c73570] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                                     <x-lucide-refresh-cw class="h-4 w-4" />
                                     Renovar empréstimo
                                 </button>
-                                <button type="button" data-dialog-open="pump-return-modal" class="inline-flex h-10 items-center justify-center gap-2 rounded-[8px] border border-[#23845a] bg-white px-4 text-sm font-semibold text-[#23845a] shadow-sm transition hover:bg-[#e8f8ee]">
+                                <button type="button" data-dialog-open="pump-return-modal" class="inline-flex h-10 items-center justify-center gap-2 rounded-[8px] border border-[#23845a] bg-white px-4 text-sm font-semibold text-[#197a4b] shadow-sm transition hover:bg-[#e8f8ee]">
                                     <x-lucide-undo-2 class="h-4 w-4" />
                                     Registrar devolução
                                 </button>
@@ -132,7 +132,7 @@
                 @foreach ($tabs as $key => $label)
                     <a
                         href="{{ route('pumps.show', ['pump' => $pump, 'tab' => $key]) }}"
-                        class="shrink-0 border-b-2 px-1 py-4 text-sm font-medium transition {{ $tab === $key ? 'border-[#bf5d6f] text-[#bf5d6f]' : 'border-transparent text-[#4b5563] hover:text-[#bf5d6f]' }}">
+                        class="shrink-0 border-b-2 px-1 py-4 text-sm font-medium transition {{ $tab === $key ? 'border-[#a62d5b] text-[#a62d5b]' : 'border-transparent text-[#4b5563] hover:text-[#a62d5b]' }}">
                         {{ $label }}
                     </a>
                 @endforeach
@@ -157,7 +157,7 @@
             <div class="grid gap-4 lg:grid-cols-2">
                 <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                     <div class="flex items-start gap-3">
-                        <x-lucide-handshake class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
+                        <x-lucide-handshake class="mt-0.5 h-5 w-5 shrink-0 text-[#a62d5b]" />
                         <div>
                             <h3 class="text-lg font-bold text-[#111827]">Contrato atual</h3>
                             @if ($currentContract)
@@ -188,7 +188,7 @@
 
                 <article class="rounded-[8px] border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                     <div class="flex items-start gap-3">
-                        <x-lucide-wrench class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
+                        <x-lucide-wrench class="mt-0.5 h-5 w-5 shrink-0 text-[#a62d5b]" />
                         <div>
                             <h3 class="text-lg font-bold text-[#111827]">Controle do equipamento</h3>
                             <dl class="mt-4 grid gap-4 sm:grid-cols-2">
@@ -225,7 +225,7 @@
             />
         @elseif ($tab === 'payments')
             @if (count($payments))
-                <div class="overflow-x-auto rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]"><table class="w-full min-w-225 text-left text-sm"><thead class="border-b border-[#eadfe0] bg-[#fbfaf9] text-xs uppercase text-[#667085]"><tr><th class="px-5 py-4">Beneficiária</th><th class="px-5 py-4">Data</th><th class="px-5 py-4">Referência</th><th class="px-5 py-4">Forma</th><th class="px-5 py-4">Valor</th><th class="px-5 py-4">Situação</th><th class="px-5 py-4 text-right">Ações</th></tr></thead><tbody class="divide-y divide-[#f0e7e8]">@foreach ($payments as $payment)<tr><th class="px-5 py-4 font-semibold text-[#111827]">{{ $payment['beneficiary'] }}</th><td class="px-5 py-4">{{ $payment['date'] }}</td><td class="px-5 py-4">{{ $payment['reference'] }}</td><td class="px-5 py-4">{{ $payment['method'] }}</td><td class="px-5 py-4">{{ $payment['value'] }}</td><td class="px-5 py-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ match ($payment['status']) { 'Pago' => 'bg-[#e8f8ee] text-[#23845a]', 'Pendente', 'Em atraso' => 'bg-[#fff7e6] text-[#b76b00]', 'Cancelado' => 'bg-[#fff1f1] text-[#c2414b]', default => 'bg-[#f2f4f7] text-[#667085]' } }}">{{ $payment['status'] }}</span></td><td class="px-5 py-4 text-right">@if ($payment['can_register'])<button type="button" data-dialog-open="payment-{{ $payment['id'] }}" title="Registrar pagamento" aria-label="Registrar pagamento" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d1eadb] text-[#23845a] transition hover:bg-[#e8f8ee]"><x-gmdi-payments-o class="h-4 w-4" /></button>@endif</td></tr>@endforeach</tbody></table></div>
+                <div class="overflow-x-auto rounded-lg border border-[#eadfe0] bg-white shadow-[0_14px_35px_rgba(28,25,23,0.05)]"><table class="w-full min-w-225 text-left text-sm"><thead class="border-b border-[#eadfe0] bg-[#fbfaf9] text-xs uppercase text-[#667085]"><tr><th class="px-5 py-4">Beneficiária</th><th class="px-5 py-4">Data</th><th class="px-5 py-4">Referência</th><th class="px-5 py-4">Forma</th><th class="px-5 py-4">Valor</th><th class="px-5 py-4">Situação</th><th class="px-5 py-4 text-right">Ações</th></tr></thead><tbody class="divide-y divide-[#f0e7e8]">@foreach ($payments as $payment)<tr><th class="px-5 py-4 font-semibold text-[#111827]">{{ $payment['beneficiary'] }}</th><td class="px-5 py-4">{{ $payment['date'] }}</td><td class="px-5 py-4">{{ $payment['reference'] }}</td><td class="px-5 py-4">{{ $payment['method'] }}</td><td class="px-5 py-4">{{ $payment['value'] }}</td><td class="px-5 py-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ match ($payment['status']) { 'Pago' => 'bg-[#e8f8ee] text-[#197a4b]', 'Pendente', 'Em atraso' => 'bg-[#fff7e6] text-[#8a4b00]', 'Cancelado' => 'bg-[#fff1f1] text-[#b42336]', default => 'bg-[#f2f4f7] text-[#667085]' } }}">{{ $payment['status'] }}</span></td><td class="px-5 py-4 text-right">@if ($payment['can_register'])<button type="button" data-dialog-open="payment-{{ $payment['id'] }}" title="Registrar pagamento" aria-label="Registrar pagamento" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d1eadb] text-[#197a4b] transition hover:bg-[#e8f8ee]"><x-gmdi-payments-o class="h-4 w-4" /></button>@endif</td></tr>@endforeach</tbody></table></div>
                 @foreach ($payments as $payment)
                     @if ($payment['can_register'])<dialog id="payment-{{ $payment['id'] }}" data-dialog-modal class="m-auto w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#eadfe0] bg-white p-5"><form method="POST" action="{{ route('pumps.payments.pay', [$pump, $payment['id']]) }}" class="space-y-5" data-unsaved-form>@csrf @method('PATCH')<h2 class="text-lg font-bold">Registrar pagamento</h2><x-material.floating-input type="date" name="paid_at" label="Data do pagamento" :value="old('paid_at', now()->toDateString())" required /><x-material.floating-textarea name="notes" label="Observações" :value="old('notes')" /><div class="flex justify-end gap-3"><button type="button" data-dialog-close class="rounded-lg border px-4 py-2">Cancelar</button><button class="rounded-lg bg-[#23845a] px-4 py-2 font-semibold text-white">Confirmar pagamento</button></div></form></dialog>@endif
                 @endforeach
@@ -255,9 +255,9 @@
                         @forelse ($maintenanceHistory as $maintenance)
                             @php
                                 $maintenanceStatusClass = match ($maintenance['status']) {
-                                    'Em andamento' => 'bg-[#e8f8ee] text-[#23845a]',
-                                    'Agendado' => 'bg-[#eef4ff] text-[#2f66d0]',
-                                    'Cancelado' => 'bg-[#fff1f1] text-[#c2414b]',
+                                    'Em andamento' => 'bg-[#e8f8ee] text-[#197a4b]',
+                                    'Agendado' => 'bg-[#eef4ff] text-[#1769aa]',
+                                    'Cancelado' => 'bg-[#fff1f1] text-[#b42336]',
                                     default => 'bg-[#f2f4f7] text-[#667085]',
                                 };
                             @endphp
@@ -270,8 +270,8 @@
                                 <td class="px-5 py-4 text-right">
                                     @if ($maintenance['is_open'])
                                         <div class="inline-flex gap-2">
-                                            <button type="button" data-dialog-open="maintenance-finish-{{ $maintenance['id'] }}" title="Concluir manutenção" aria-label="Concluir manutenção" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d1eadb] text-[#23845a] transition hover:bg-[#e8f8ee]"><x-gmdi-check-circle-o class="h-4 w-4" /></button>
-                                            <button type="button" data-dialog-open="maintenance-cancel-{{ $maintenance['id'] }}" title="Cancelar manutenção" aria-label="Cancelar manutenção" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#f2c7cb] text-[#c2414b] transition hover:bg-[#fff1f1]"><x-gmdi-cancel-o class="h-4 w-4" /></button>
+                                            <button type="button" data-dialog-open="maintenance-finish-{{ $maintenance['id'] }}" title="Concluir manutenção" aria-label="Concluir manutenção" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d1eadb] text-[#197a4b] transition hover:bg-[#e8f8ee]"><x-gmdi-check-circle-o class="h-4 w-4" /></button>
+                                            <button type="button" data-dialog-open="maintenance-cancel-{{ $maintenance['id'] }}" title="Cancelar manutenção" aria-label="Cancelar manutenção" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#f2c7cb] text-[#b42336] transition hover:bg-[#fff1f1]"><x-gmdi-cancel-o class="h-4 w-4" /></button>
                                         </div>
                                     @endif
                                 </td>
@@ -296,7 +296,7 @@
                         @endphp
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#bf5d6f]">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#a62d5b]">
                                     <x-dynamic-component :component="$icon" class="h-4 w-4" />
                                 </span>
                                 @if (!$loop->last)
@@ -337,7 +337,7 @@
                 @csrf
 
                 <div class="flex items-start gap-4">
-                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#fff1f1] text-[#bf5d6f]">
+                    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#fff1f1] text-[#a62d5b]">
                         <x-lucide-wrench class="h-5 w-5" />
                     </span>
                     <div class="min-w-0 flex-1 pt-0.5">
@@ -348,8 +348,8 @@
                 </div>
 
                 <div class="mt-6 grid gap-5 sm:grid-cols-2">
-                    <div><x-material.select name="type" label="Tipo" :options="['preventiva' => 'Preventiva', 'corretiva' => 'Corretiva', 'higienizacao' => 'Higienização']" :selected="old('type', 'preventiva')" required />@error('type') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
-                    <div><x-material.select name="status" label="Situação inicial" :options="['aberta' => 'Aberta', 'em_andamento' => 'Em andamento']" :selected="old('status', 'aberta')" required />@error('status') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="type" label="Tipo" :options="['preventiva' => 'Preventiva', 'corretiva' => 'Corretiva', 'higienizacao' => 'Higienização']" :selected="old('type', 'preventiva')" required />@error('type') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
+                    <div><x-material.select name="status" label="Situação inicial" :options="['aberta' => 'Aberta', 'em_andamento' => 'Em andamento']" :selected="old('status', 'aberta')" required />@error('status') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
                     <div class="sm:col-span-2"><x-material.floating-input type="datetime-local" name="started_at" label="Data e hora de início" :value="old('started_at', now()->format('Y-m-d\TH:i'))" required /></div>
                     <div class="sm:col-span-2"><x-material.floating-textarea name="description" label="Descrição" :value="old('description')" required /></div>
                     <div class="sm:col-span-2"><x-material.floating-textarea name="notes" label="Observações" :value="old('notes')" /></div>
@@ -357,7 +357,7 @@
 
                 <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] transition hover:bg-[#fbfaf9]">Cancelar</button>
-                    <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white transition hover:bg-[#a94f60]">Registrar manutenção</button>
+                    <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white transition hover:bg-[#a62d5b]">Registrar manutenção</button>
                 </div>
             </form>
         </dialog>
@@ -398,7 +398,7 @@
                     @method('PATCH')
 
                     <div class="flex items-start gap-4">
-                        <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e8f8ee] text-[#23845a]">
+                        <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e8f8ee] text-[#197a4b]">
                             <x-lucide-undo-2 class="h-5 w-5" />
                         </span>
                         <div class="min-w-0 flex-1 pt-0.5">
@@ -434,7 +434,7 @@
                     @method('PATCH')
 
                     <div class="flex items-start gap-4">
-                        <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full {{ ($currentContract['is_overdue'] ?? false) ? 'bg-[#fff7e6] text-[#b76b00]' : 'bg-[#eef4ff] text-[#2f66d0]' }}">
+                        <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full {{ ($currentContract['is_overdue'] ?? false) ? 'bg-[#fff7e6] text-[#8a4b00]' : 'bg-[#eef4ff] text-[#1769aa]' }}">
                             @if ($currentContract['is_overdue'] ?? false)
                                 <x-gmdi-warning-amber-o class="h-5 w-5" />
                             @else
@@ -460,14 +460,14 @@
 
                     <div class="mt-6">
                         <x-material.floating-input type="date" name="expires_at" label="Nova expiração" :value="old('expires_at', $currentContract['renewal_min_date'])" :min="$currentContract['renewal_min_date']" required />
-                        @error('expires_at') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                        @error('expires_at') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                         <button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] transition hover:cursor-pointer hover:bg-[#fbfaf9] focus:outline-none focus:ring-3 focus:ring-[#fdecef]">
                             Cancelar
                         </button>
-                        <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white transition hover:cursor-pointer hover:bg-[#a94f60] focus:outline-none focus:ring-3 focus:ring-[#fdecef]">
+                        <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white transition hover:cursor-pointer hover:bg-[#a62d5b] focus:outline-none focus:ring-3 focus:ring-[#fdecef]">
                             Renovar empréstimo
                         </button>
                     </div>

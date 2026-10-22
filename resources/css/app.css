@@ -25,6 +25,27 @@
     }
 }
 
+.skip-link {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    border-radius: 0.25rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    color: #1f2937;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+}
+
+.skip-link:not(:focus) {
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
 .auth-input,
 .auth-input:focus,
 .auth-input:focus-visible {
@@ -35,6 +56,22 @@
 
 .app-shell {
     --sidebar-width: 16rem;
+}
+
+.login-logo {
+    animation: login-logo-enter 700ms ease-out both;
+}
+
+@keyframes login-logo-enter {
+    from {
+        opacity: 0;
+        transform: translateY(1rem) scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .app-shell[data-sidebar-collapsed='true'] {

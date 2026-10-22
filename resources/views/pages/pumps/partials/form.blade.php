@@ -23,26 +23,26 @@
 
         <div>
             <x-material.select name="id_modelo" label="Modelo" :options="$models" :selected="old('id_modelo', $pumpData['id_modelo'])" placeholder="Selecione" required />
-            @error('id_modelo') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+            @error('id_modelo') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
         </div>
 
         <x-material.floating-input name="num_serie" label="Número de série" :value="old('num_serie', $pumpData['num_serie'])" placeholder="Ex.: SN-2026-009" />
 
         <div>
             <x-material.select name="situacao" label="Situação" :options="$editableStatuses" :selected="old('situacao', $pumpData['situacao'])" />
-            @error('situacao') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+            @error('situacao') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
         </div>
 
         <x-material.floating-input type="date" name="data_aquisicao" label="Data de aquisição" :value="old('data_aquisicao', $pumpData['data_aquisicao'])" />
 
         <div>
             <x-material.select name="origem" label="Origem" :options="$origins" :selected="old('origem', $pumpData['origem'])" placeholder="Selecione" />
-            @error('origem') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+            @error('origem') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
         </div>
 
         <div class="md:col-span-2">
             <x-material.select name="id_doador" label="Doador" :options="$donors" :selected="old('id_doador', $pumpData['id_doador'])" placeholder="Sem doador vinculado" />
-            @error('id_doador') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+            @error('id_doador') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
         </div>
 
         <x-material.floating-textarea name="acessorios" label="Itens do kit" :value="old('acessorios', $pumpData['acessorios'])" placeholder="Ex.: motor, frasco, mangueira, conector, fonte, bolsa de transporte." wrapper-class="md:col-span-2 xl:col-span-4" />

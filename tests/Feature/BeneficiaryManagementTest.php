@@ -40,7 +40,7 @@ it('shows a floating label for the full-name field when creating a beneficiary',
         ->assertOk()
         ->assertSee('name="nome"', false)
         ->assertSee('id="cpf"', false)
-        ->assertSee('<span aria-hidden="true" data-required-indicator="nome" class="ml-0.5 text-[#c2414b]">*</span>', false)
+        ->assertSee('<span aria-hidden="true" data-required-indicator="nome" class="ml-0.5 text-[#b42336]">*</span>', false)
         ->assertSee('peer h-11 w-full rounded-[8px] border bg-white px-3 text-sm', false)
         ->assertSee('class="pointer-events-none absolute left-3 top-0 flex h-11 items-center', false)
         ->assertSee('peer-focus:-top-2.5', false)
@@ -135,4 +135,16 @@ it('manages children only within their beneficiary profile', function () {
     ])->assertRedirect(route('beneficiaries.show', $beneficiaria));
 
     $this->assertDatabaseHas('criancas', ['nome' => 'Lucas Silva', 'id_beneficiaria' => $beneficiaria->id]);
+});
+
+it('gives child icon actions accessible text', function () {
+    $user = User::factory()->create();
+    $beneficiaria = Beneficiaria::create([...beneficiaryPayload(), 'cpf' => '12345678909', 'situacao' => 'ativo']);
+    $beneficiaria->criancas()->create(['nome' => 'Lucas Silva', 'data_nascimento' => '2026-01-15', 'sexo' => 'masculino']);
+
+    $this->actingAs($user)
+        ->get(route('beneficiaries.show', ['beneficiaria' => $beneficiaria, 'tab' => 'babies']))
+        ->assertOk()
+        ->assertSee('<span class="sr-only">Editar bebê Lucas Silva</span>', false)
+        ->assertSee('<span class="sr-only">Excluir bebê Lucas Silva</span>', false);
 });

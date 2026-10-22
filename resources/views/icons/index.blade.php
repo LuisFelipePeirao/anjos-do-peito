@@ -62,17 +62,17 @@
         ];
 
         $tones = [
-            'rose' => 'bg-[#fdecef] text-[#bf5d6f]',
-            'amber' => 'bg-[#fff3d6] text-[#b77910]',
-            'green' => 'bg-[#e8f8ee] text-[#23845a]',
-            'blue' => 'bg-[#e8f4ff] text-[#2677b8]',
+            'rose' => 'bg-[#fdecef] text-[#a62d5b]',
+            'amber' => 'bg-[#fff3d6] text-[#8a4b00]',
+            'green' => 'bg-[#e8f8ee] text-[#197a4b]',
+            'blue' => 'bg-[#e8f4ff] text-[#1769aa]',
         ];
     @endphp
 
     <main class="mx-auto w-full max-w-6xl px-6 py-8">
         <header class="mb-6 flex items-end justify-between border-b border-[#dfe3e8] pb-5">
             <div>
-                <p class="text-xs font-semibold uppercase text-[#bf5d6f]">Anjos do Peito</p>
+                <p class="text-xs font-semibold uppercase text-[#a62d5b]">Anjos do Peito</p>
                 <h1 class="mt-1 text-3xl font-bold text-[#111827]">Ícones principais</h1>
                 <p class="mt-1 text-sm text-[#667085]">Seleção dos símbolos mais utilizados e reconhecíveis do sistema.</p>
             </div>
@@ -92,7 +92,7 @@
                             @php
                                 $featured = $group['featured'] ?? false;
                                 $iconTone = $tones[$icon['tone'] ?? ''] ?? 'bg-[#f2f4f7] text-[#475467]';
-                                $iconTone = ($icon['danger'] ?? false) ? 'bg-[#fff1f1] text-[#c2414b]' : $iconTone;
+                                $iconTone = ($icon['danger'] ?? false) ? 'bg-[#fff1f1] text-[#b42336]' : $iconTone;
                             @endphp
 
                             <div class="flex min-h-28 flex-col items-center justify-center gap-2.5 border-b border-r border-[#e8eaed] p-4 text-center lg:border-b-0">

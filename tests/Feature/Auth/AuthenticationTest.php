@@ -16,10 +16,53 @@ it('shows the VITA favicon in the login browser tab', function () {
         ->assertSee('assets/img/favicon_VITA.png');
 });
 
+it('provides Portuguese semantic landmarks on the login page', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('<html lang="pt-BR">', false)
+        ->assertSee('<main', false)
+        ->assertSee('aria-labelledby="login-title"', false)
+        ->assertSee('id="login-title"', false);
+});
+
+it('announces login validation errors to assistive technologies', function () {
+    $this->from(route('login'))
+        ->post(route('login.store'), [])
+        ->assertRedirect(route('login'));
+
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('aria-invalid="true"', false)
+        ->assertSee('aria-describedby="email-error"', false)
+        ->assertSee('id="email-error"', false)
+        ->assertSee('role="alert"', false);
+});
+
 it('shows the VITA logo on the reset password page', function () {
     $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com']))
         ->assertOk()
-        ->assertSee('http://localhost:8000/assets/img/logo_VITA.png');
+        ->assertSee(asset('assets/img/logo_VITA.png'));
+});
+
+it('keeps password pages single-headed and free from the login fallback', function () {
+    $responses = [
+        $this->get(route('password.request')),
+        $this->get(route('password.reset', ['token' => 'test-token', 'email' => 'user@example.com'])),
+    ];
+
+    foreach ($responses as $response) {
+        $response->assertOk()->assertDontSee('E-mail para acesso sem JavaScript');
+        expect(substr_count($response->getContent(), '<h1'))->toBe(1);
+    }
+});
+
+it('shows validation feedback in the no-JavaScript login fallback', function () {
+    $this->from(route('login'))->post(route('login.store'), []);
+
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('id="email-no-javascript-error"', false)
+        ->assertSee('id="senha-no-javascript-error"', false);
 });
 
 it('authenticates a user with email and senha', function () {
@@ -64,8 +107,8 @@ it('shows password visibility controls on login and reset password forms', funct
     $this->get(route('login'))
         ->assertOk()
         ->assertSee('data-password-toggle="senha"', false)
-        ->assertSee('rounded-[4px] text-[#8590ad]', false)
-        ->assertSee('focus-visible:ring-2', false)
+        ->assertSee('rounded-[4px] text-[#526078]', false)
+        ->assertSee('focus-visible:outline-2', false)
         ->assertDontSee('hover:bg-[#fdecef]', false)
         ->assertDontSee('rounded-full text-[#8590ad] transition hover:bg', false);
 
@@ -73,8 +116,8 @@ it('shows password visibility controls on login and reset password forms', funct
         ->assertOk()
         ->assertSee('data-password-toggle="senha"', false)
         ->assertSee('data-password-toggle="senha_confirmation"', false)
-        ->assertSee('rounded-[4px] text-[#8590ad]', false)
-        ->assertSee('focus-visible:ring-2', false)
+        ->assertSee('rounded-[4px] text-[#526078]', false)
+        ->assertSee('focus-visible:outline-2', false)
         ->assertDontSee('hover:bg-[#fdecef]', false)
         ->assertDontSee('rounded-full text-[#8590ad] transition hover:bg', false);
 });

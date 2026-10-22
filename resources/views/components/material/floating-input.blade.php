@@ -42,6 +42,6 @@
     >{{ $label }}@if ($showRequiredMarker)<span aria-hidden="true" data-required-indicator="{{ $name }}" class="ml-0.5 text-[#c2414b]">*</span>@endif</label>
 
     @error($name)
-        <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span>
+        <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span>
     @enderror
 </div>

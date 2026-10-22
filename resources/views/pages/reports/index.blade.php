@@ -23,22 +23,22 @@
         <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
             <form action="{{ route('reports.index') }}" method="GET"
                 class="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(180px,0.8fr)_minmax(180px,0.8fr)_minmax(220px,1fr)_minmax(220px,1fr)_auto]">
-                <label class="block">
+                <label for="report-start-date" class="block">
                     <span class="mb-1.5 block text-xs font-semibold uppercase text-[#667085]">Período inicial</span>
                     <span class="relative block">
                         <x-gmdi-calendar-month-o
                             class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
-                        <input type="date" name="start_date" value="{{ $startDate }}"
+                        <input id="report-start-date" type="date" name="start_date" value="{{ $startDate }}"
                             class="h-11 w-full rounded-lg border border-[#e4d8d9] bg-white pl-10 pr-3 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]" />
                     </span>
                 </label>
 
-                <label class="block">
+                <label for="report-end-date" class="block">
                     <span class="mb-1.5 block text-xs font-semibold uppercase text-[#667085]">Período final</span>
                     <span class="relative block">
                         <x-gmdi-calendar-month-o
                             class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
-                        <input type="date" name="end_date" value="{{ $endDate }}"
+                        <input id="report-end-date" type="date" name="end_date" value="{{ $endDate }}"
                             class="h-11 w-full rounded-lg border border-[#e4d8d9] bg-white pl-10 pr-3 text-sm font-medium text-[#111827] outline-none transition hover:cursor-pointer focus:border-[#ef5b97] focus:ring-3 focus:ring-[#fdecef]" />
                     </span>
                 </label>
@@ -113,9 +113,9 @@
                             @foreach ($pumpDueDates as $loan)
                                 @php
                                     $statusClass = match ($loan['status']) {
-                                        'Normal' => 'bg-[#e8f8ee] text-[#23845a]',
-                                        'Pendente' => 'bg-[#fff7e6] text-[#b76b00]',
-                                        'Em atraso' => 'bg-[#fff1f1] text-[#c2414b]',
+                                        'Normal' => 'bg-[#e8f8ee] text-[#197a4b]',
+                                        'Pendente' => 'bg-[#fff7e6] text-[#8a4b00]',
+                                        'Em atraso' => 'bg-[#fff1f1] text-[#b42336]',
                                         default => 'bg-[#f2f4f7] text-[#667085]',
                                     };
                                 @endphp
@@ -192,8 +192,8 @@
                             @foreach ($donationSources as $source)
                                 @php
                                     $statusClass = $source['status'] === 'Normal'
-                                        ? 'bg-[#e8f8ee] text-[#23845a]'
-                                        : 'bg-[#fff7e6] text-[#b76b00]';
+                                        ? 'bg-[#e8f8ee] text-[#197a4b]'
+                                        : 'bg-[#fff7e6] text-[#8a4b00]';
                                 @endphp
 
                                 <div class="rounded-lg border border-[#f0e7e8] p-4">

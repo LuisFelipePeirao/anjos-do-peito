@@ -1,0 +1,1 @@
+<x-material.select name="origem" label="Origem do cadastro" :options="$options" placeholder="Selecione" required />

@@ -18,7 +18,7 @@
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
-                <a href="{{ route('movements.create') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                <a href="{{ route('movements.create') }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                     <x-gmdi-add class="h-4 w-4" />
                     Registrar movimentação
                 </a>
@@ -31,7 +31,7 @@
                     <form method="POST" action="{{ route('movements.cancel', $movement) }}">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#f2c7cf] bg-white px-4 text-sm font-semibold text-[#c2414b] shadow-sm transition hover:bg-[#fff1f1] sm:w-auto">Cancelar</button>
+                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#f2c7cf] bg-white px-4 text-sm font-semibold text-[#b42336] shadow-sm transition hover:bg-[#fff1f1] sm:w-auto">Cancelar</button>
                     </form>
                 @endif
             </div>

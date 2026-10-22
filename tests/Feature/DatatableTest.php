@@ -25,5 +25,6 @@ it('uses the page-specific deletion confirmation when an action defines only its
     expect($html)
         ->toContain('Excluir bomba de leite?')
         ->toContain('Bombas vinculadas serão inativadas.')
-        ->toContain('Excluir bomba');
+        ->toContain('Excluir bomba')
+        ->toContain('<span class="sr-only">Excluir bomba Bomba BL-001</span>');
 });

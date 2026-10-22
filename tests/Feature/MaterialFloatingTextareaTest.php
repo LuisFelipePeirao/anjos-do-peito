@@ -12,5 +12,5 @@ it('renders a required textarea with a floating label', function () {
         ->toContain('peer-focus:-top-2.5')
         ->toContain('peer-not-placeholder-shown:-top-2.5')
         ->toContain('required')
-        ->toContain('text-[#c2414b]');
+        ->toContain('text-[#b42336]');
 });

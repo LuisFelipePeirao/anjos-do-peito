@@ -76,7 +76,7 @@ it('uses floating controls on the pump form', function () {
         ->assertSee('id="codigo"', false)
         ->assertSee('name="acessorios"', false)
         ->assertSee('peer-not-placeholder-shown:-top-2.5', false)
-        ->assertSee('text-[#c2414b]', false);
+        ->assertSee('text-[#b42336]', false);
 });
 
 it('creates lists shows and updates milk pumps using database records', function () {

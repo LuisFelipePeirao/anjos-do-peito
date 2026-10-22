@@ -26,7 +26,7 @@
 
 <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
     <div>
-        <p class="text-sm font-medium text-[#ef5b97]">{{ $subheading }}</p>
+        <p class="text-sm font-medium text-[#a62d5b]">{{ $subheading }}</p>
         <h2 class="mt-1 text-2xl font-bold tracking-normal text-[#111827] md:text-3xl">{{ $title }}</h2>
         <p class="mt-2 max-w-2xl text-sm text-[#667085]">
             {{ $description }}
@@ -38,14 +38,14 @@
             <button
                 type="button"
                 data-dialog-open="{{ $firstButton['dialog'] }}"
-                class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+                class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                 <x-dynamic-component :component="$firstButton['icon']" class="h-4 w-4" />
                 {{ $firstButton['label'] }}
             </button>
         @else
             <a href="{{ $firstButton['link'] }}"
                 @if ($confirmation && $confirmationId) data-confirm-dialog-open="{{ $confirmationId }}" @endif
-                class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d94889]">
+                class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                 <x-dynamic-component :component="$firstButton['icon']" class="h-4 w-4" />
                 {{ $firstButton['label'] }}
             </a>

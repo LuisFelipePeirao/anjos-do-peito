@@ -27,12 +27,18 @@
 </head>
 
 <body>
+    <a href="#conteudo" accesskey="1" class="skip-link">
+        Pular para conteúdo
+    </a>
+    <noscript>
+        <p class="m-4 rounded border border-[#b42336] bg-[#fff1f1] p-4 text-[#b42336]" role="status">Ative o JavaScript para usar o sistema.</p>
+    </noscript>
     <div id="app-shell" class="app-shell min-h-screen bg-[#fbfaf9]" data-sidebar-collapsed="false" data-mobile-sidebar-open="false">
         <x-app.sidebar :active="trim($__env->yieldContent('active-menu')) ?: null" />
 
         <div class="fixed inset-0 z-30 hidden bg-[#111827]/35 md:hidden" data-sidebar-overlay></div>
 
-        <main class="app-main min-h-screen transition-[margin] duration-300 ease-out">
+        <main id="conteudo" tabindex="-1" class="app-main min-h-screen transition-[margin] duration-300 ease-out">
             <x-app.navbar
                 :breadcrumb="trim($__env->yieldContent('breadcrumb')) ?: 'Início'"
                 :title="trim($__env->yieldContent('page-title')) ?: 'Visão geral'" />

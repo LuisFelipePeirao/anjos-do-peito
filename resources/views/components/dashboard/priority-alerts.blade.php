@@ -6,9 +6,9 @@
 
 @php
     $toneClasses = [
-        'red' => 'bg-[#fdecec] text-[#c2414b]',
-        'amber' => 'bg-[#fff3d6] text-[#b77910]',
-        'blue' => 'bg-[#e8f4ff] text-[#2677b8]',
+        'red' => 'bg-[#fdecec] text-[#b42336]',
+        'amber' => 'bg-[#fff3d6] text-[#8a4b00]',
+        'blue' => 'bg-[#e8f4ff] text-[#1769aa]',
     ];
 @endphp
 

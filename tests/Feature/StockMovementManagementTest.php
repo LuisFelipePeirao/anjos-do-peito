@@ -91,11 +91,11 @@ it('renders movement status badges with their intended colors', function () {
     ])->render();
 
     expect($html)
-        ->toMatch('/bg-\\[#e8f8ee\\] text-\\[#23845a\\][^>]*>\\s*Entregue/')
-        ->toMatch('/bg-\\[#eef4ff\\] text-\\[#2f66d0\\][^>]*>\\s*Recebida/')
+        ->toMatch('/bg-\\[#e8f8ee\\] text-\\[#197a4b\\][^>]*>\\s*Entregue/')
+        ->toMatch('/bg-\\[#eef4ff\\] text-\\[#1769aa\\][^>]*>\\s*Recebida/')
         ->toMatch('/bg-\\[#f2f4f7\\] text-\\[#667085\\][^>]*>\\s*Ajuste/')
-        ->toMatch('/bg-\\[#fff1f1\\] text-\\[#c2414b\\][^>]*>\\s*Cancelado/')
-        ->toMatch('/bg-\\[#fff7e6\\] text-\\[#b76b00\\][^>]*>\\s*Pendente/');
+        ->toMatch('/bg-\\[#fff1f1\\] text-\\[#b42336\\][^>]*>\\s*Cancelado/')
+        ->toMatch('/bg-\\[#fff7e6\\] text-\\[#8a4b00\\][^>]*>\\s*Pendente/');
 });
 
 it('shows movement type chooser before showing a form', function () {
@@ -313,6 +313,36 @@ it('prevents adjustment subtraction from making stock negative', function () {
         ])
         ->assertRedirect(route('movements.create', ['tipo' => 'ajuste']))
         ->assertSessionHasErrors('quantidade');
+});
+
+it('keeps stock and movement history unchanged after an invalid adjustment subtraction', function () {
+    $user = User::factory()->administrador()->create();
+    $material = movementMaterial();
+    $donor = movementDonor();
+
+    $this->actingAs($user)->post(route('movements.store'), [
+        'tipo' => 'entrada',
+        'id_doador' => $donor->id,
+        'data_hora' => '2026-08-29 09:00:00',
+        'situacao' => 'recebida',
+        'items' => [['id_material' => $material->id, 'quantidade' => 5]],
+    ])->assertRedirect();
+
+    $this->actingAs($user)
+        ->from(route('movements.create', ['tipo' => 'ajuste']))
+        ->post(route('movements.store'), [
+            'tipo' => 'ajuste',
+            'id_material' => $material->id,
+            'operacao' => 'subtrair',
+            'quantidade' => 6,
+            'data_hora' => '2026-08-29 12:00:00',
+            'observacao' => 'Perda maior que o saldo.',
+        ])
+        ->assertRedirect(route('movements.create', ['tipo' => 'ajuste']))
+        ->assertSessionHasErrors('quantidade');
+
+    expect(EstoqueMovimentacao::where('id_material', $material->id)->where('tipo', 'ajuste')->count())->toBe(0)
+        ->and(app(DonationStockService::class)->showData($material->fresh())['stockItem']['quantity'])->toBe('5 pacotes');
 });
 
 it('creates exit movements and prevents negative stock', function () {

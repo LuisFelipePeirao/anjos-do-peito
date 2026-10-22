@@ -54,7 +54,7 @@ it('shows realized attendances with the same blue status badge as borrowed pumps
 
     $this->actingAs($user)->get(route('attendances.index'))
         ->assertOk()
-        ->assertSee('bg-[#eef4ff] text-[#2f66d0]', false);
+        ->assertSee('bg-[#e8f4ff] text-[#1769aa]', false);
 });
 
 it('shows a scheduled form with clinical fields hidden and draft action', function () {
@@ -262,6 +262,10 @@ it('starts an attendance and saves or finalizes its clinical continuation', func
 
     $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'draft', 'summary' => 'Registro parcial'])->assertRedirect(route('attendances.show', $attendance));
     expect($attendance->fresh()->situacao)->toBe('em_atendimento')->and($attendance->fresh()->rascunho)->toBeTrue();
+    $this->assertDatabaseHas('atendimento_detalhes', [
+        'id_atendimento' => $attendance->id,
+        'resumo' => 'Registro parcial',
+    ]);
 
     $this->actingAs($user)->put(route('attendances.continue.save', $attendance), ['save_as' => 'final', 'confirmed_finalization' => 1, 'summary' => 'Registro completo', 'objective' => 'Objetivo', 'complaint' => 'Queixa', 'evaluation' => 'Avaliação', 'conduct' => 'Conduta'])->assertSessionHasErrors(['attendance_category', 'procedure']);
 
@@ -400,4 +404,43 @@ it('renders category and procedure dialogs with shared edit forms and external m
         ->assertDontSee('value="Laserterapia"', false)
         ->assertDontSee('>Inativar<', false)
         ->assertDontSee('>Reativar<', false);
+});
+
+it('renders attendance form groups and keeps modal toggle forms outside data tables', function () {
+    $user = User::factory()->administrador()->create();
+    $category = CategoriaAtendimento::create(['nome' => 'Gestantes', 'ativo' => true]);
+    $procedure = Procedimento::create(['nome' => 'Laserterapia', 'ativo' => true]);
+
+    $response = $this->actingAs($user)->get(route('attendances.create'));
+    $content = $response->getContent();
+
+    $response->assertOk()
+        ->assertSee('<legend class="sr-only">Dados do atendimento</legend>', false)
+        ->assertSee('<legend class="sr-only">Dados da categoria</legend>', false)
+        ->assertSee('<legend class="sr-only">Dados do procedimento</legend>', false)
+        ->assertSee('<caption class="sr-only">Lista de categoria</caption>', false)
+        ->assertSee('<caption class="sr-only">Lista de procedimento</caption>', false);
+
+    expect($content)->not->toMatch('/<table\\b(?:(?!<\\/table>)[\\s\\S])*<form id="attendance-category-dialog-toggle-'.$category->id.'"/')
+        ->and($content)->not->toMatch('/<table\\b(?:(?!<\\/table>)[\\s\\S])*<form id="attendance-procedure-dialog-toggle-'.$procedure->id.'"/');
+});
+
+it('renders shared authenticated accessibility fallbacks without invalid table forms', function () {
+    $user = User::factory()->administrador()->create();
+    $location = LocalAtendimento::create(['nome' => 'Sede ICAP']);
+
+    $response = $this->actingAs($user)->get(route('attendances.index'));
+    $content = $response->getContent();
+
+    $response->assertOk()
+        ->assertSee('href="#conteudo"', false)
+        ->assertSee('accesskey="1"', false)
+        ->assertSee('class="skip-link"', false)
+        ->assertSee('<noscript>', false)
+        ->assertSee('<legend class="sr-only">Dados do local</legend>', false)
+        ->assertSee('<caption class="sr-only">Lista de locais</caption>', false)
+        ->assertDontSee('title="Início"', false)
+        ->assertDontSee('title="Sair"', false);
+
+    expect($content)->not->toMatch('/<table\\b(?:(?!<\\/table>)[\\s\\S])*<form id="location-toggle-'.$location->id.'"/');
 });

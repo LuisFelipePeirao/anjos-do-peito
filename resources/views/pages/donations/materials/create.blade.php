@@ -25,7 +25,7 @@
 
                 <div>
                     <x-material.select name="id_categoria" label="Categoria" :options="$categories" :selected="old('id_categoria')" placeholder="Selecione" required />
-                    @error('id_categoria') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror
+                    @error('id_categoria') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                 </div>
 
                 <x-material.floating-input name="unidade_medida" label="Unidade de medida" :value="old('unidade_medida')" placeholder="Ex.: pacote" required />

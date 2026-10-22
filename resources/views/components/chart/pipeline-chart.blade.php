@@ -17,10 +17,10 @@
             <div>
                 <div class="mb-2 flex items-center justify-between">
                     <span class="text-sm font-semibold text-[#111827]">{{ $step['label'] }}</span>
-                    <span class="text-sm font-bold text-[#bf5d6f]">{{ $step['value'] }}</span>
+                    <span class="text-sm font-bold text-[#a62d5b]">{{ $step['value'] }}</span>
                 </div>
                 <div class="h-3 overflow-hidden rounded-full bg-[#f2e9ea]">
-                    <div class="h-full rounded-full bg-[#bf5d6f]" style="width: {{ $percent }}%"></div>
+                    <div class="h-full rounded-full bg-[#a62d5b]" style="width: {{ $percent }}%"></div>
                 </div>
             </div>
         @endforeach

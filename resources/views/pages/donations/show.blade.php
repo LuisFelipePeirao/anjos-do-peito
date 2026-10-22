@@ -15,9 +15,9 @@
         ];
 
         $statusClass = match ($stockItem['status']) {
-            'Normal' => 'bg-[#e8f8ee] text-[#23845a]',
-            'Baixo' => 'bg-[#fff7e6] text-[#b76b00]',
-            'Crítico' => 'bg-[#fff1f1] text-[#c2414b]',
+            'Normal' => 'bg-[#e8f8ee] text-[#197a4b]',
+            'Baixo' => 'bg-[#fff7e6] text-[#8a4b00]',
+            'Crítico' => 'bg-[#fff1f1] text-[#b42336]',
             default => 'bg-[#f2f4f7] text-[#667085]',
         };
     @endphp
@@ -34,7 +34,7 @@
                     <x-lucide-arrow-left class="h-4 w-4" />
                     Voltar
                 </a>
-                <a href="{{ route('movements.create', ['tipo' => 'saida', 'material' => $material->id]) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#bf5d6f] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a94f60]">
+                <a href="{{ route('movements.create', ['tipo' => 'saida', 'material' => $material->id]) }}" class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#a62d5b]">
                     <x-gmdi-swap-horiz-o class="h-4 w-4" />
                     Registrar movimentação
                 </a>
@@ -89,7 +89,7 @@
                 @foreach ($tabs as $key => $label)
                     <a
                         href="{{ route('donations.show', ['material' => $item, 'tab' => $key]) }}"
-                        class="shrink-0 border-b-2 px-1 py-4 text-sm font-medium transition {{ $tab === $key ? 'border-[#bf5d6f] text-[#bf5d6f]' : 'border-transparent text-[#4b5563] hover:text-[#bf5d6f]' }}">
+                        class="shrink-0 border-b-2 px-1 py-4 text-sm font-medium transition {{ $tab === $key ? 'border-[#a62d5b] text-[#a62d5b]' : 'border-transparent text-[#4b5563] hover:text-[#a62d5b]' }}">
                         {{ $label }}
                     </a>
                 @endforeach
@@ -113,7 +113,7 @@
 
             <article class="rounded-lg border border-[#eadfe0] bg-white p-5 shadow-[0_14px_35px_rgba(28,25,23,0.05)]">
                 <div class="flex items-start gap-3">
-                    <x-gmdi-report-problem-o class="mt-0.5 h-5 w-5 shrink-0 text-[#bf5d6f]" />
+                    <x-gmdi-report-problem-o class="mt-0.5 h-5 w-5 shrink-0 text-[#a62d5b]" />
                     <div>
                         <h3 class="text-lg font-bold text-[#111827]">Prioridade de movimentação</h3>
                         <p class="mt-2 text-sm leading-6 text-[#667085]">
@@ -148,7 +148,7 @@
                         @endphp
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#bf5d6f]">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-[#f0dadd] bg-white text-[#a62d5b]">
                                     <x-dynamic-component :component="$icon" class="h-4 w-4" />
                                 </span>
                                 @if (!$loop->last)

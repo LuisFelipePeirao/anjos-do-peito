@@ -6,8 +6,8 @@
         <div class="mt-5 space-y-5">
             <x-material.floating-input name="nome" label="Nome" :value="old('nome', $child?->nome)" required />
             <x-material.floating-input type="date" name="data_nascimento" label="Data de nascimento" :value="old('data_nascimento', $child?->data_nascimento?->format('Y-m-d'))" required />
-            <div><x-material.select name="sexo" label="Sexo" :options="$sexOptions" :selected="old('sexo', $child?->sexo)" required />@error('sexo') <span class="mt-1 block text-xs text-[#c2414b]">{{ $message }}</span> @enderror</div>
+            <div><x-material.select name="sexo" label="Sexo" :options="$sexOptions" :selected="old('sexo', $child?->sexo)" required />@error('sexo') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror</div>
         </div>
-        <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] hover:bg-[#fbfaf9]">Cancelar</button><button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#ef5b97] px-4 text-sm font-semibold text-white hover:bg-[#d94889]"><x-lucide-save class="h-4 w-4" /> Salvar bebê</button></div>
+        <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" data-dialog-close class="inline-flex h-10 items-center justify-center rounded-lg border border-[#e4d8d9] bg-white px-4 text-sm font-semibold text-[#344054] hover:bg-[#fbfaf9]">Cancelar</button><button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white hover:bg-[#a62d5b]"><x-lucide-save class="h-4 w-4" /> Salvar bebê</button></div>
     </form>
 </dialog>

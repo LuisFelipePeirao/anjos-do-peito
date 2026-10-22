@@ -1,0 +1,53 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8001:80"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8001
+      APP_KEY: base64:d8s3N0sP4PmLFG9VlKjsnvO2zHS2uMPusKuDToLOcQA=
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: anjos_do_peito
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+    depends_on:
+      db:
+        condition: service_healthy
+      frontend:
+        condition: service_completed_successfully
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+
+  frontend:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm ci --ignore-scripts && npm run build"
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: anjos_do_peito
+      MYSQL_ROOT_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+  node-modules:
+  vendor:
