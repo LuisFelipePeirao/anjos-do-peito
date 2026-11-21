@@ -2,6 +2,18 @@ import { shouldConfirmFormDismissal, shouldConfirmUnsavedNavigation } from './un
 
 const shell = document.getElementById('app-shell');
 
+const loginForm = document.getElementById('login-enhanced-form');
+
+loginForm?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' || event.isComposing || event.defaultPrevented
+        || event.composedPath()[0]?.tagName !== 'INPUT') {
+        return;
+    }
+
+    event.preventDefault();
+    loginForm.requestSubmit();
+});
+
 const passwordToggleTarget = (button) => {
     const field = button.closest('md-filled-text-field');
 
