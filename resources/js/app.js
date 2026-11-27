@@ -369,6 +369,15 @@ document.addEventListener('click', (event) => {
         const dialog = document.getElementById(openButton.dataset.dialogOpen);
 
         if (dialog instanceof HTMLDialogElement) {
+            event.preventDefault();
+            if (dialog.hasAttribute('data-loan-term-modal')) {
+                dialog.loanTermOpener = openButton;
+                dialog.querySelector('[data-loan-term-preview]').src = openButton.href;
+                dialog.querySelector('[data-loan-term-open]').href = openButton.href;
+                const downloadUrl = new URL(openButton.href);
+                downloadUrl.searchParams.set('download', '1');
+                dialog.querySelector('[data-loan-term-download]').href = downloadUrl.href;
+            }
             dialog.showModal();
             scheduleDialogSelectRequiredAsterisks(dialog);
         }
@@ -383,6 +392,9 @@ document.addEventListener('click', (event) => {
 });
 
 document.querySelectorAll('[data-dialog-modal]').forEach((dialog) => {
+    if (dialog.hasAttribute('data-loan-term-modal')) {
+        dialog.addEventListener('close', () => dialog.loanTermOpener?.focus());
+    }
     dialog.addEventListener('click', (event) => {
         if (event.target === dialog) {
             dialog.close();

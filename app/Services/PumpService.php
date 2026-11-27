@@ -338,7 +338,7 @@ class PumpService
             'monthly_fee' => $contract->tipo === 'aluguel' ? $this->money($contract->valor_mensalidade) : 'Sem custo',
             'billing_due_day' => $contract->tipo === 'aluguel' ? 'Conforme vencimentos cadastrados' : '-',
             'responsible' => $contract->usuarioRetirada?->nome ?? '-',
-            'term_status' => 'Registrado',
+            'term_status' => $contract->termo_dados !== null ? 'Gerado para assinatura' : 'Sem termo disponível',
             'notes' => collect([$baseNotes, $renewals->last()])->filter()->join("\n") ?: 'Bomba em uso por beneficiária.',
             'is_overdue' => $isOverdue,
             'is_renewable' => in_array($contract->situacao, ['ativa', 'atrasada'], true),
@@ -355,6 +355,12 @@ class PumpService
                 'beneficiary' => $loan->beneficiaria?->nome ?? '-',
                 'responsible' => $loan->usuarioRetirada?->nome ?? '-',
                 'status' => $this->loanStatusLabel($loan->situacao),
+                '_actions' => ['items' => $loan->termo_dados !== null && auth()->user()?->canManageAttendances() ? [[
+                    'icon' => 'description-o',
+                    'title' => 'Emitir termo',
+                    'route' => route('pumps.loans.term', $loan),
+                    'dialog' => 'loan-term-modal',
+                ]] : []],
             ])
             ->values()
             ->all();

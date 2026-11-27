@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "codeat3/blade-google-material-design-icons": "^1.21",
+        "dompdf/dompdf": "^3.1",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
         "mallardduck/blade-lucide-icons": "^2.0",

@@ -98,6 +98,10 @@ it('registers a free pump loan and marks pump as borrowed', function () {
         'situacao' => 'ativa',
     ]);
     $this->assertDatabaseHas('bomba_leite', ['id' => $pump->id, 'situacao' => 'alugada']);
+    $loan = CessaoBomba::firstOrFail();
+    expect($loan->termo_dados['monthly_fee'])->toBe('Sem cobrança');
+    expect($loan->termo_dados['payments'])->toBe([]);
+    $this->get(route('pumps.loans.term', $loan))->assertOk()->assertHeader('Content-Type', 'application/pdf');
 });
 
 it('registers a rental and creates the first pending payment', function () {
@@ -151,4 +155,68 @@ it('rejects unavailable pumps for new loans', function () {
         'expected_return' => '2026-09-20',
         'term_signed' => 1,
     ])->assertSessionHasErrors('pump');
+});
+
+it('freezes rental term data and reissues a real pdf without using updated records', function () {
+    $user = User::factory()->administrador()->create();
+    $pump = loanPump();
+    $beneficiary = loanBeneficiary();
+
+    $this->actingAs($user)->post(route('pumps.loans.store'), [
+        'contract_type' => 'aluguel', 'pump' => $pump->id, 'beneficiary' => $beneficiary->id,
+        'withdrawn_at' => '2026-11-21', 'expected_return' => '2026-12-21',
+        'monthly_fee' => '120,50', 'due_day' => 25, 'billing_method' => 'pix',
+        'first_billing_at' => '2026-11-25', 'term_signed' => 1,
+        'billing_notes' => 'Pagamento combinado.', 'notes' => 'Frasco entregue.',
+    ])->assertSessionHas('loan_term_id');
+
+    $loan = CessaoBomba::firstOrFail();
+    $snapshot = $loan->termo_dados;
+    expect($snapshot)->toBeArray();
+    expect($snapshot['beneficiary']['name'])->toBe('Ana Empréstimo');
+    expect($snapshot['payments'][0]['status'])->toBe('Pendente');
+    expect($loan->observacao_retirada)->not->toContain('Termo: assinado');
+    $this->get(route('pumps.show', $pump))
+        ->assertOk()->assertSee('data-dialog-auto-open', false)
+        ->assertSee(route('pumps.loans.term', $loan), false);
+
+    $beneficiary->update(['nome' => 'Nome alterado']);
+    $pump->update(['codigo' => 'BL-ALTERADA']);
+    $loan->update(['data_prevista_devolucao' => '2027-01-21']);
+    $loan->pagamentos()->first()->update(['situacao' => 'pago', 'valor' => 999]);
+    expect($loan->fresh()->termo_dados)->toBe($snapshot);
+
+    $response = $this->get(route('pumps.loans.term', $loan));
+    $response->assertOk()->assertHeader('Content-Type', 'application/pdf');
+    expect($response->getContent())->toStartWith('%PDF-');
+    $html = view('pages.pumps.loans.term', ['term' => $snapshot])->render();
+    expect($html)->toContain('Ana Empréstimo', 'BL-100', '120,50', 'Pendente', 'Assinatura');
+    expect($html)->not->toContain('Nome alterado', 'BL-ALTERADA', '999,00');
+
+    $this->get(route('pumps.show', ['pump' => $pump, 'tab' => 'loans']))
+        ->assertOk()->assertSee('Emitir termo')->assertDontSee('data-dialog-auto-open', false);
+
+    $this->get(route('pumps.loans.term', [$loan, 'download' => 1]))
+        ->assertOk()->assertHeader('Content-Disposition', 'attachment; filename="termo-emprestimo-'.$loan->id.'.pdf"');
+
+    $this->actingAs(User::factory()->atendente()->create())
+        ->get(route('pumps.loans.term', $loan))->assertForbidden();
+    auth()->logout();
+    $this->get(route('pumps.loans.term', $loan))->assertRedirect(route('login'));
+});
+
+it('does not generate or offer a term when no was selected or historical data is missing', function () {
+    $user = User::factory()->administrador()->create();
+    $pump = loanPump();
+    $beneficiary = loanBeneficiary();
+    $this->actingAs($user)->post(route('pumps.loans.store'), [
+        'contract_type' => 'emprestimo', 'pump' => $pump->id, 'beneficiary' => $beneficiary->id,
+        'withdrawn_at' => '2026-11-21', 'expected_return' => '2026-12-21', 'term_signed' => 0,
+    ])->assertSessionMissing('loan_term_id');
+    $loan = CessaoBomba::firstOrFail();
+    expect($loan->termo_dados)->toBeNull();
+    $loan->update(['observacao_retirada' => 'Termo: assinado']);
+    $this->get(route('pumps.loans.term', $loan))->assertNotFound();
+    $this->get(route('pumps.show', ['pump' => $pump, 'tab' => 'loans']))
+        ->assertOk()->assertDontSee('Emitir termo')->assertDontSee('data-dialog-auto-open', false);
 });

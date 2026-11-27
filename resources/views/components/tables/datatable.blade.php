@@ -165,8 +165,10 @@
 
                                         <a
                                             href="{{ $actionRoute }}"
+                                            title="{{ $actionTitle }}"
                                             class="{{ $actionClass }}"
                                             @if ($confirmationId) data-confirm-dialog-open="{{ $confirmationId }}" @endif
+                                            @if (isset($action['dialog'])) data-dialog-open="{{ $action['dialog'] }}" @endif
                                         >
                                             <x-dynamic-component :component="$actionIcon" class="h-4 w-4" />
                                             <span class="sr-only">{{ $actionTitle }} {{ $rowLabel }}</span>

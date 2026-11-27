@@ -60,8 +60,8 @@ class StorePumpLoanRequest extends FormRequest
             'first_billing_at.date' => 'Informe uma data de cobrança válida.',
             'first_billing_at.after_or_equal' => 'A primeira cobrança deve ser na mesma data ou após a retirada.',
             'billing_notes.string' => 'As observações de cobrança devem ser um texto válido.',
-            'term_signed.required' => 'Confirme a assinatura do termo.',
-            'term_signed.boolean' => 'A confirmação do termo é inválida.',
+            'term_signed.required' => 'Informe se deseja gerar o termo para assinatura.',
+            'term_signed.boolean' => 'A opção de geração do termo é inválida.',
             'notes.string' => 'As observações devem ser um texto válido.',
         ];
     }

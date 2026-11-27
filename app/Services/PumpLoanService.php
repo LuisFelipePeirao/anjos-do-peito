@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Beneficiaria;
 use App\Models\BombaLeite;
 use App\Models\CessaoBomba;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class PumpLoanService
@@ -65,6 +65,10 @@ class PumpLoanService
                 ]);
             }
 
+            if ($data['term_signed']) {
+                $loan->update(['termo_dados' => app(PumpLoanTermService::class)->snapshot($loan)]);
+            }
+
             return $loan->refresh();
         });
     }
@@ -72,7 +76,7 @@ class PumpLoanService
     private function withdrawalNotes(array $data): ?string
     {
         return collect([
-            'Termo: '.($data['term_signed'] ? 'assinado' : 'não assinado'),
+            'Termo: '.($data['term_signed'] ? 'gerado para assinatura' : 'não solicitado'),
             $data['notes'] ?? null,
         ])->filter()->join("\n") ?: null;
     }

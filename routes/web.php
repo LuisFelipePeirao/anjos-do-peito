@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/bombas-de-leite/emprestimos/novo', [PumpLoanController::class, 'create'])->name('pumps.loans.create');
     Route::post('/bombas-de-leite/emprestimos', [PumpLoanController::class, 'store'])->name('pumps.loans.store');
+    Route::get('/bombas-de-leite/emprestimos/{loan}/termo', [PumpLoanController::class, 'term'])->name('pumps.loans.term');
 
     Route::get('/bombas-de-leite', [PumpController::class, 'index'])->name('pumps.index');
     Route::get('/bombas-de-leite/nova', [PumpController::class, 'create'])->name('pumps.create');

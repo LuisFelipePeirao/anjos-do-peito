@@ -163,6 +163,7 @@
                 <div class="grid gap-5 p-5 md:grid-cols-2">
                     <div>
                         <x-material.select name="term_signed" label="Gerar termo para assinatura?" :options="[1 => 'Sim', 0 => 'Não']" :selected="old('term_signed', 1)" />
+                        <p class="mt-2 text-sm text-[#667085]">Ao selecionar Sim, o PDF abrirá após o cadastro e poderá ser emitido novamente na aba Empréstimos.</p>
                         @error('term_signed') <span class="mt-1 block text-xs text-[#b42336]">{{ $message }}</span> @enderror
                     </div>
 

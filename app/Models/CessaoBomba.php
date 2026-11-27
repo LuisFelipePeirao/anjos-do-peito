@@ -29,11 +29,13 @@ class CessaoBomba extends Model
         'situacao',
         'observacao_retirada',
         'observacao_devolucao',
+        'termo_dados',
     ];
 
     protected function casts(): array
     {
         return [
+            'termo_dados' => 'array',
             'data_retirada' => 'datetime',
             'data_prevista_devolucao' => 'date',
             'data_devolucao' => 'datetime',

@@ -221,7 +221,7 @@
             <x-tables.datatable
                 :header="['Período', 'Tipo', 'Beneficiária', 'Responsável', 'Situação']"
                 :data="$loanHistory"
-                :show-actions="false"
+                :show-actions="auth()->user()->canManageAttendances()"
             />
         @elseif ($tab === 'payments')
             @if (count($payments))
@@ -475,4 +475,31 @@
             </dialog>
         @endif
     </section>
+    @if (auth()->user()->canManageAttendances())
+        @php
+            $autoTerm = session('loan_term_id');
+            $termUrl = $autoTerm && $pump->cessoes->contains(fn ($loan) => $loan->id == $autoTerm && $loan->termo_dados !== null)
+                ? route('pumps.loans.term', $autoTerm) : null;
+        @endphp
+        <dialog id="loan-term-modal" data-dialog-modal data-loan-term-modal
+            @if ($termUrl) data-dialog-auto-open @endif
+            aria-labelledby="loan-term-title"
+            class="m-auto w-[calc(100%-2rem)] max-w-5xl rounded-lg border border-[#eadfe0] bg-white p-4 text-[#111827] backdrop:bg-black/50 sm:p-6">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 id="loan-term-title" class="text-lg font-bold">Termo para assinatura</h2>
+                    <p class="mt-1 text-sm text-[#667085]">Dados registrados no cadastro. Baixe ou imprima o PDF para assinar.</p>
+                </div>
+                <button type="button" data-dialog-close autofocus aria-label="Fechar termo" class="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-[#e4d8d9] focus-visible:outline-2 focus-visible:outline-[#c73570]">
+                    <x-lucide-x class="h-5 w-5" aria-hidden="true" />
+                </button>
+            </div>
+            <iframe @if ($termUrl) src="{{ $termUrl }}" @endif data-loan-term-preview title="PDF do termo para assinatura" class="mt-4 h-[60dvh] w-full rounded-lg border border-[#eadfe0]"></iframe>
+            <p class="mt-3 text-sm text-[#667085]">Se o PDF não aparecer, use Abrir PDF ou Baixar PDF.</p>
+            <div class="mt-4 flex flex-wrap justify-end gap-3">
+                <a href="{{ $termUrl ?? '#' }}" data-loan-term-open target="_blank" rel="noopener" class="inline-flex min-h-11 items-center rounded-lg border border-[#e4d8d9] px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-[#c73570]">Abrir PDF</a>
+                <a href="{{ $termUrl ? $termUrl.'?download=1' : '#' }}" data-loan-term-download class="inline-flex min-h-11 items-center rounded-lg bg-[#c73570] px-4 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-[#c73570]">Baixar PDF</a>
+            </div>
+        </dialog>
+    @endif
 @endsection
